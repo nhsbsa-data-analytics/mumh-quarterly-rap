@@ -28,61 +28,131 @@ logr::log_code()
 
 mumhquarterly::mumh_options()
 
-
 # 4. extract data from NHSBSA DWH -----------------------------------------
 # build connection to database
-# con <- nhsbsaR::con_nhsbsa(
-#   database = "DWCP",
-#   username = rstudioapi::showPrompt(title = "Username",
-#                                     message = "Username"),
-#   password = rstudioapi::askForPassword()
-# )
-#
-# # use functions to construct lazy tables
-# tdim <- mumhquarterly::create_tdim(con = con)
-#
-# org <- mumhquarterly::create_org_dim(con = con)
-#
-# drug <- mumhquarterly::create_drug_dim(con = con,
-#                         bnf_codes = c("0401", "0402", "0403", "0404", "0411"))
-#
-# fact <- mumhquarterly::create_fact(con = con)
-#
-# # join tables to create data. generate query
-# raw_data_query <- fact %>%
-#   dplyr::inner_join(
-#     tdim,
-#     by = "YEAR_MONTH"
-#   ) %>%
-#   dplyr::inner_join(
-#     drug,
-#     by = c("CALC_PREC_DRUG_RECORD_ID" = "RECORD_ID", "YEAR_MONTH")
-#   ) %>%
-#   dplyr::inner_join(
-#     org,
-#     by = c("PRESC_TYPE_PRNT" = "LVL_5_OUPDT", "PRESC_ID_PRNT" = "LVL_5_OU")
-#   ) %>%
-#   dplyr::group_by(
-#     FINANCIAL_YEAR,
-#     FINANCIAL_QUARTER,
-#     YEAR_MONTH,
-#     SECTION_DESCR,
-#     BNF_SECTION,
-#     IDENTIFIED_PATIENT_ID,
-#     IDENTIFIED_FLAG
-#   ) %>%
-#   dplyr::summarise(
-#     ITEM_COUNT = sum(ITEM_COUNT, na.rm = TRUE),
-#     PATIENT_COUNT = sum(IDENTIFIED_FLAG == "Y", na.rm = TRUE),
-#     ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = TRUE)
-#   )
-#
-# # extract data from DWH
-# raw_data <- raw_data_query %>%
-#   dplyr::collect()
+con <- con_nhsbsa(
+  dsn = "FBS_8192k",
+  driver = "Oracle in OraClient19Home1",
+  "DWCP",
+  username = rstudioapi::showPrompt(title = "Username", message = "Username"),
+  password = rstudioapi::askForPassword()
+)
 
-# # disconnect from DWH
-# DBI::dbDisconnect(con)
+#### build time dimension table in schema ####
+
+# drop time dimension if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_MONTH_TDIM")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_MONTH_TDIM")
+}
+
+#build table
+create_tdim(con, start = 201504) %>%
+  compute("MUMH_MONTH_TDIM", analyze = FALSE, temporary = FALSE)
+
+#### build org dimension table in schema ####
+
+# drop org dimension if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_MONTH_PORG_DIM")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_MONTH_PORG_DIM")
+}
+
+#build table
+create_org_dim(con, country = 1) %>%
+  compute("MUMH_MONTH_PORG_DIM", analyze = FALSE, temporary = FALSE)
+
+
+#### build drug dimension table in schema ####
+
+# drop drug dimension if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_MONTH_DRUG_DIM")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_MONTH_DRUG_DIM")
+}
+
+# build table
+create_drug_dim(con, bnf_codes = c("0401", "0402", "0403", "0404", "0411"))  %>%
+  compute("MUMH_MONTH_DRUG_DIM", analyze = FALSE, temporary = FALSE)
+
+#create fact table
+fact <- create_fact(con)
+
+# drop raw data if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_RAW_DATA")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_RAW_DATA")
+}
+
+## create raw data in schema
+fact %>%
+  inner_join(tbl(con, "MUMH_MONTH_TDIM") , by = "YEAR_MONTH") %>%
+  inner_join(tbl(con, "MUMH_MONTH_PORG_DIM") , by = c("PRESC_TYPE_PRNT" = "LVL_5_OUPDT",
+                                                      "PRESC_ID_PRNT" = "LVL_5_OU")) %>%
+  inner_join(tbl(con, "MUMH_MONTH_DRUG_DIM"), by = c("CALC_PREC_DRUG_RECORD_ID" = "RECORD_ID",
+                                                     "YEAR_MONTH" = "YEAR_MONTH")) %>%
+  compute("MUMH_RAW_DATA", analyze = FALSE, temporary = FALSE)
+
+## build and collect quarterly data
+mumh_quarterly <- tbl(con, "MUMH_RAW_DATA") %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, IDENTIFIED_PATIENT_ID, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)/100) %>%
+  mutate(PATIENT_COUNT = case_when(
+    IDENTIFIED_FLAG == "Y" ~ 1,
+    IDENTIFIED_FLAG == "N" ~ 0
+  )) %>%
+  ungroup() %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+            PATIENT_COUNT = sum(PATIENT_COUNT)) %>%
+  rename(SECTION_NAME = SECTION_DESCR,
+         SECTION_CODE = BNF_SECTION) %>%
+  arrange(FINANCIAL_YEAR, FINANCIAL_QUARTER, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
+  collect
+
+## build and collect monthly data
+mumh_monthly <- tbl(con, "MUMH_RAW_DATA") %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, YEAR_MONTH, IDENTIFIED_PATIENT_ID, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)/100) %>%
+  mutate(PATIENT_COUNT = case_when(
+    IDENTIFIED_FLAG == "Y" ~ 1,
+    IDENTIFIED_FLAG == "N" ~ 0
+  )) %>%
+  ungroup() %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, YEAR_MONTH, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+            PATIENT_COUNT = sum(PATIENT_COUNT)) %>%
+  rename(SECTION_NAME = SECTION_DESCR,
+         SECTION_CODE = BNF_SECTION) %>%
+  arrange(YEAR_MONTH, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
+  collect
+
+#write data
+write.csv(mumh_quarterly,
+          "data/mumh_quarterly_data.csv",
+          row.names = FALSE)
+
+write.csv(mumh_monthly,
+          "data/mumh_monthly_data.csv",
+          row.names = FALSE)
+
+DBI::dbDisconnect(con)
 
 # 5. save data to folder  -------------------------------------------------
 
