@@ -7,7 +7,7 @@
 # TODO: investigate using renv package for dependency management
 # add highcharter
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
-              "logr")
+              "logr", "highcharter")
 
 utils::install.packages(req_pkgs, dependencies = TRUE)
 
@@ -152,6 +152,8 @@ patient_identification <- raw_data$quarterly %>%
 logr::put(patient_identification)
 
 # chart data for use in markdown
+
+chart_data<- list()
 
 chart_data$monthly <- raw_data$monthly %>%
   dplyr::group_by(
@@ -398,7 +400,7 @@ bnf_list <- c("0403", "0401", "0402", "0404", "0411")
 for(i in 1:length(bnf_list)) {
 
   bnf_data <- model_data %>%
-    covid_model_test() %>%
+    covid_model() %>%
     filter(SECTION_CODE == bnf_list[i], YEAR_MONTH > 202002) %>%
     select(SECTION_NAME, SECTION_CODE, YEAR_MONTH, ITEM_COUNT, PRED_ITEMS_95_FIT)
 
