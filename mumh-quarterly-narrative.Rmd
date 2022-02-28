@@ -175,7 +175,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 There were 21.2 million antidepressant drug items prescribed in the third quarter of financial year 2021/22. This was a 3.48% increase from 20.5 million items compared with the same quarter a year ago, and a 1.88% increase from 20.8 million items in the previous quarter. Prescribing of antidepressant drugs has been increasing since 2016, with 4.52 million more items prescribed in quarter 3 of 2021/22 than in quarter 3 2016/17, an increase of 27.2% over the period.
 
@@ -214,7 +214,7 @@ chart_data$monthly %>%
 
 
 ```
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 The monthly time series for antidepressant drugs show some regular patterns as well as month-to-month variation; most notably there tends to be less prescribing in months with fewer dispensing days, such as February.
 
@@ -267,7 +267,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 There were 3.55 million hypnotics and anxiolytics prescribed in the third quarter of financial year 2021/22. This was a 2.82% decrease from 3.65 million items compared with the same quarter a year ago, and a 0.82% increase from 3.52 million items in the previous quarter. Prescribing of hypnotics and anxiolytics has been decreasing since 2016, with 413,000 fewer items prescribed in Q3 2021/22 when compared to Q3 2016/17, a decrease of 10.4% over the period.
 
@@ -304,7 +304,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 The monthly time series for hypnotics and anxiolytics show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February.
 
@@ -357,7 +357,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 There were 3.34 million antipsychotic items prescribed in the third quarter of financial year 2021/22. This was a 0.64% increase from 3.32 million items compared with the same quarter a year ago, and a 0.95% increase from 3.31 million items in the previous quarter. Prescribing of antipsychotic drugs has been increasing since 2016, with 403,000 items more prescribed in quarter 3 2021/22 to quarter 3 2016/17, an increase of 13.7% over a period of five years.
 
@@ -394,7 +394,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 The monthly time series for antipsychotics show some regular patterns as well as month-to-month variation; most notably there tends to be less prescribing in months with fewer dispensing days, such as February.
 
@@ -453,7 +453,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 There were 548,000 CNS stimulants and drugs used for ADHD items prescribed in the third quarter of financial year 2021/22. This was a 12.6% increase from 487,000 items compared with the same quarter a year ago, and a 7.75% increase from 509,000 items in the previous quarter. CNS stimulants and drugs used for ADHD have seen a marked increase in usage since 2016, with an increase of 191,000 items from quarter 3 2016/17 to quarter 3 2021/22, an increase of 53.4%.
 
@@ -490,7 +490,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 The monthly time series for CNS stimulants and drugs used for ADHD show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February.
 
@@ -546,7 +546,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 There were 1.03 million drugs for dementia prescribed in the third quarter of financial year 2021/22. This was a 0.67% increase from 1.02 million items compared with the same quarter a year ago, and a 0.96% increase from 1.02 million items in the previous quarter.
 
@@ -584,7 +584,7 @@ chart_data$monthly %>%
 ```
 
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 The monthly time series for drugs used in dementia show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February.
 
@@ -619,7 +619,7 @@ chartdf %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 In the 22-month period from March 2020 to December 2021, 149 million antidepressant items were prescribed in England. This was 1.71 million or 1.16% more than the 147 million items expected based on historical trends. However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
@@ -636,7 +636,7 @@ chartdf %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 In the 22-month period from March 2020 to December 2021, 26.1 million hypnotics and anxiolytics items were prescribed in England. This was 250,000 or 0.97% more than the 25.8 million items expected based on historical trends. However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
@@ -653,7 +653,7 @@ chartdf %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 In the 22-month period from March 2020 to December 2021, 24.0 million antipsychotic items were prescribed in England. This was 4080 or 0.02% more than the 24.0 million items expected based on historical trends. This small increase in prescribed items is in line with the expected range of values for the period.
 
@@ -670,7 +670,7 @@ chartdf %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 In the 22-month period from March 2020 to December 2021, 3.57 million CNS stimulants and drugs used for ADHD items were prescribed in England. This was 71,500 or 2.05% more than the 3.49 million items expected based on historical trends. This increase in prescribed items does not fall outside of the expected range of values for the overall period. However, all three months of quarter 3 2021/22 have been above the number of items expected based on historical trends.  
 
@@ -687,7 +687,7 @@ chartdf %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
 In the 22-month period from March 2020 to December 2021, 7.45 million drugs for dementia items were prescribed in England. This was 753,000 or 9.17% fewer than the 8.20 million items expected based on historical trends. This decrease also falls outside of the expected range of values, showing a statistically significant decrease in prescribing of drugs for dementia in this period when compared to expected values.
 
