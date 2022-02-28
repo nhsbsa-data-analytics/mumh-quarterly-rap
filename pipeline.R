@@ -5,6 +5,7 @@
 
 # 1. install required packages --------------------------------------------
 # TODO: investigate using renv package for dependency management
+# add highcharter
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
               "logr")
 
@@ -12,7 +13,7 @@ utils::install.packages(req_pkgs, dependencies = TRUE)
 
 devtools::install_github(
   "nhsbsa-data-analytics/mumhquarterly",
-  auth_token = readLines("C:/Users/MAWIL/credentials/github-pat.txt")
+  auth_token = readLines("C:/Users/GRALI/credentials/github-pat.txt")
 )
 
 invisible(lapply(c(req_pkgs, "mumhquarterly"), library, character.only = TRUE))
@@ -134,8 +135,8 @@ patient_identification <- raw_data$quarterly %>%
     values_from = c(ITEM_COUNT, ITEM_PAY_DR_NIC, PATIENT_COUNT)
   ) %>%
   dplyr::mutate(
-    RATE = round(ITEM_COUNT_Y/(ITEM_COUNT_Y + ITEM_COUNT_N) * 100, 10)
-  ) %>%
+    RATE = paste0(format(round(ITEM_COUNT_Y/(ITEM_COUNT_Y + ITEM_COUNT_N) * 100, 1),
+                         nsmall = 1), "%")) %>%
   select(
     FINANCIAL_QUARTER,
     `BNF Section Name` = SECTION_NAME,
@@ -149,6 +150,34 @@ patient_identification <- raw_data$quarterly %>%
   dplyr::arrange(`BNF Section Code`)
 
 logr::put(patient_identification)
+
+# chart data for use in markdown
+
+chart_data$monthly <- raw_data$monthly %>%
+  dplyr::group_by(
+    YEAR_MONTH,
+    SECTION_NAME,
+    SECTION_CODE
+  ) %>%
+  dplyr::summarise(
+    ITEM_COUNT = sum(ITEM_COUNT),
+    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+    PATIENT_COUNT = sum(PATIENT_COUNT),
+    .groups = "drop"
+  ) %>%
+  dplyr::group_by(SECTION_NAME, SECTION_CODE) %>%
+  dplyr::mutate(
+    MONTH_INDEX = dplyr::row_number(),
+    MONTH_START = as.Date(paste0(YEAR_MONTH,"01"), format = "%Y%m%d"),
+    MONTH_NUM = lubridate::month(MONTH_START)
+  ) %>%
+  dplyr::left_join(
+    dispensing_days,
+    by = "YEAR_MONTH"
+  ) %>%
+  dplyr::ungroup()
+
+logr::put(chart_data$monthly)
 
 # join monthly data to dispensing days to allow modelling
 model_data <- raw_data$monthly %>%
@@ -362,7 +391,19 @@ openxlsx::saveWorkbook(wb,
                        overwrite = TRUE)
 
 
+#Write covid model data to table for QR
 
+bnf_list <- c("0403", "0401", "0402", "0404", "0411")
+
+for(i in 1:length(bnf_list)) {
+
+  bnf_data <- model_data %>%
+    covid_model_test() %>%
+    filter(SECTION_CODE == bnf_list[i], YEAR_MONTH > 202002) %>%
+    select(SECTION_NAME, SECTION_CODE, YEAR_MONTH, ITEM_COUNT, PRED_ITEMS_95_FIT)
+
+  fwrite(bnf_data, paste0("Y:/Official Stats/MUMH/Covid model tables", as.character(unlist(bnf_data[1,1])), ".csv"))
+}
 
 # 9. render markdown ------------------------------------------------------
 
@@ -373,7 +414,7 @@ rmarkdown::render("mumh-quarterly-narrative.Rmd",
 rmarkdown::render(
   "mumh-quarterly-narrative.Rmd",
   output_format = "word_document",
-  output_file = paste0("outputs/mumh_quarterly_dec21_v001.docx")
-)
+  output_file = "outputs/mumh_quarterly_dec21_v001.docx")
+
 
 logr::log_close()
