@@ -5,7 +5,6 @@
 
 # 1. install required packages --------------------------------------------
 # TODO: investigate using renv package for dependency management
-# add highcharter
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
               "logr", "highcharter")
 
@@ -13,8 +12,8 @@ utils::install.packages(req_pkgs, dependencies = TRUE)
 
 devtools::install_github(
   "nhsbsa-data-analytics/mumhquarterly",
-  auth_token = readLines("C:/Users/GRALI/credentials/github-pat.txt")
-)
+  auth_token = Sys.getenv("GITHUB_PAT")
+  )
 
 invisible(lapply(c(req_pkgs, "mumhquarterly"), library, character.only = TRUE))
 
