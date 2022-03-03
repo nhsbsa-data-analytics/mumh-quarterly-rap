@@ -6,7 +6,7 @@
 # 1. install required packages --------------------------------------------
 # TODO: investigate using renv package for dependency management
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
-              "logr")
+              "logr", "lubridate")
 
 utils::install.packages(req_pkgs, dependencies = TRUE)
 
@@ -377,3 +377,96 @@ rmarkdown::render(
 )
 
 logr::log_close()
+
+# 10. output figures needed for QR purposes --------------------------------
+
+# build rounding function
+# create format function
+myFormat <- function(x) {
+  x <- as.numeric(signif(x, 3))
+  if(x >= 1000000000 ) {
+    output <- signif(x/1000000000,3)
+  } else if(x >= 1000000) {
+    output <- signif(x/1000000,3)
+  } else {
+    output <- prettyNum(signif(x, 3), big.mark = ",")
+  }
+
+  return (output)
+}
+
+length(myFormat(1100000))
+
+#first get max month and quarter
+max_month <- max(raw_data$monthly$YEAR_MONTH)
+
+quarter <- raw_data$monthly %>%
+  dplyr::filter(YEAR_MONTH == max_month) %>%
+  tail(1) %>%
+  pull(FINANCIAL_QUARTER)
+
+#get previous quarter for filtering
+prev_quarter <- quarter(
+  #uses max_month minus 3 months
+  as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
+  type = "quarter",
+  #set for fiscal year starting in April
+  fiscal_start = 4
+)
+
+#get financial year of previous quarter
+prev_quarter_fy <- quarter(
+  #uses max_month minus 3 months
+  as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
+  type = "year.quarter",
+  #set for fiscal year starting in April
+  fiscal_start = 4
+) %>%
+  substr(1,4) %>%
+  as.numeric()
+
+#build filter for previous quarter
+prev_quarter_filter <- paste0(prev_quarter_fy-1, "/", prev_quarter_fy,
+                              " Q", prev_quarter)
+
+#get previous year for filtering
+prev_year <- quarter(
+  #uses max_month minus 3 months
+  as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
+  type = "quarter",
+  #set for fiscal year starting in April
+  fiscal_start = 4
+)
+
+#get financial year of previous year
+prev_year_fy <- quarter(
+  #uses max_month minus 3 months
+  as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
+  type = "year.quarter",
+  #set for fiscal year starting in April
+  fiscal_start = 4
+) %>%
+  substr(1,4) %>%
+  as.numeric()
+
+#build filter for previous year
+prev_year_filter <- paste0(prev_year_fy-1, "/", prev_year_fy,
+                              " Q", prev_year)
+
+#get year and quarter of same month in 2016/17 ago for filtering
+filter_2016 <- paste0("2016", "/", "2017",
+                           " Q", prev_year)
+
+# 2.1 - antidepressants
+cur_volume <- raw_data$quarterly %>%
+  filter(
+    SECTION_NAME == "Antidepressant drugs" ,
+    FINANCIAL_QUARTER == quarter
+    ) %>%
+  select(ITEM_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
+
+
+
+
