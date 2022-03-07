@@ -6,7 +6,7 @@
 # 1. install required packages --------------------------------------------
 # TODO: investigate using renv package for dependency management
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
-              "logr", "highcharter")
+              "logr", "highcharter", "lubridate")
 
 utils::install.packages(req_pkgs, dependencies = TRUE)
 
@@ -424,6 +424,8 @@ logr::log_close()
 
 # build rounding function
 # create format function
+#TODO:  MOVE TO MUMH PACKAGE ONCE TESTED AND WORKING
+
 myFormat <- function(x) {
   x <- as.numeric(signif(x, 3))
   if(x >= 1000000000 ) {
