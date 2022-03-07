@@ -6,7 +6,7 @@
 # 1. install required packages --------------------------------------------
 # TODO: investigate using renv package for dependency management
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
-              "logr", "nhsbsaR")
+              "logr", "nhsbsaR", "lubridate")
 
 utils::install.packages(req_pkgs, dependencies = TRUE)
 
@@ -28,7 +28,75 @@ logr::log_code()
 
 mumhquarterly::mumh_options()
 
-# 4. load most recent data and check if any more data available in DW -----
+# 4. load most recent data and add 3 months to max date -------------------
+
+#get most recent monthly file
+recent_file_monthly <- rownames(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "monthly"
+  )
+))[which.max(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "monthly"
+  )
+)$mtime)]
+
+#read data
+recent_data_monthly <- data.table::fread(recent_file_monthly,
+                                 keepLeadingZeros = TRUE)
+
+
+#get most recent monthly file
+recent_file_quarterly <- rownames(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "quarterly"
+  )
+))[which.max(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "quarterly"
+  )
+)$mtime)]
+
+#read data
+recent_data_quarterly <- data.table::fread(recent_file_quarterly,
+                                         keepLeadingZeros = TRUE)
+
+
+#get max month
+max_month <- as.Date(
+  paste0(
+    max(
+      recent_data_monthly$YEAR_MONTH
+      ),
+    "01"
+    ),
+  format = "%Y%m%d"
+)
+
+#get max month plus one
+max_month_plus <- as.Date(
+  paste0(
+    max(
+      recent_data_monthly$YEAR_MONTH
+    ),
+    "01"
+  ),
+  format = "%Y%m%d"
+) %m+% months(1)
+
+#convert to DW format
+max_month_plus_dw <- as.numeric(paste0(format(max_month_plus,
+                                              "%Y"),
+                                       format(max_month_plus,
+                                              "%m")))
 
 # 5. extract data from NHSBSA DWH -----------------------------------------
 # build connection to database
@@ -39,6 +107,68 @@ con <- con_nhsbsa(
   username = rstudioapi::showPrompt(title = "Username", message = "Username"),
   password = rstudioapi::askForPassword()
 )
+
+#get max month available in DWH
+ym_dim <- dplyr::tbl(con,
+                     from = dbplyr::in_schema("DIM", "YEAR_MONTH_DIM")) %>%
+  # shrink table to remove unnecessary data
+  dplyr::filter(
+    YEAR_MONTH >= 201401L,
+    YEAR_MONTH <= dplyr::sql(
+      "MGMT.PKG_PUBLIC_DWH_FUNCTIONS.f_get_latest_period('EPACT2')"
+    )
+  ) %>%
+  dplyr::select(
+    YEAR_MONTH,
+    FINANCIAL_YEAR,
+    FINANCIAL_QUARTER,
+    FINANCIAL_QUARTER_EXT
+  )  %>%
+  # add month counts for financial quarters and financial years to latest
+  # complete periods
+  dplyr::mutate(
+    # create our own financial quarter column that max/min and sort operations
+    # will work on
+    FINANCIAL_QUARTER_NM = dplyr::sql(
+      "FINANCIAL_YEAR||' Q'||FINANCIAL_QUARTER"
+    ),
+    # window function to perform counts within groups
+    Q_COUNT = dbplyr::win_over(
+      expr = dplyr::sql("count(distinct YEAR_MONTH)"),
+      partition = "FINANCIAL_QUARTER_EXT",
+      con = con
+    ),
+    FY_COUNT = dbplyr::win_over(
+      expr = dplyr::sql("count(distinct YEAR_MONTH)"),
+      partition = "FINANCIAL_YEAR",
+      con = con
+    )
+  )
+
+# extract latest available full financial quarter
+ltst_month <- ym_dim %>%
+  dplyr::filter(Q_COUNT == 3) %>%
+  dplyr::select(YEAR_MONTH, FINANCIAL_QUARTER_EXT, FINANCIAL_QUARTER_NM) %>%
+  dplyr::filter(
+    YEAR_MONTH == max(YEAR_MONTH, na.rm = TRUE)
+  ) %>%
+  dplyr::distinct() %>%
+  dplyr::pull(YEAR_MONTH)
+
+
+  #get max month in dwh
+  max_month_dw <- as.Date(
+    paste0(
+      ltst_month,
+      "01"
+    ),
+    format = "%Y%m%d"
+  )
+
+# only get new data if max month in dwh is greater than that in most recent data
+if(max_month_dw <= max_month) {
+  print("No new quarterly data available in the Data Warehouse, will use most recent saved data.")
+} else {
 
 #### build time dimension table in schema ####
 
@@ -52,7 +182,7 @@ if (exists) {
 }
 
 #build table
-create_tdim(con, start = 201504) %>%
+create_tdim(con, start = max_month_plus_dw) %>%
   compute("MUMH_MONTH_TDIM", analyze = FALSE, temporary = FALSE)
 
 #### build org dimension table in schema ####
@@ -145,44 +275,69 @@ mumh_monthly <- tbl(con, "MUMH_RAW_DATA") %>%
   arrange(YEAR_MONTH, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
   collect
 
-#write data
-write.csv(mumh_quarterly,
-          "data/mumh_quarterly_data.csv",
-          row.names = FALSE)
-
-write.csv(mumh_monthly,
-          "data/mumh_monthly_data.csv",
-          row.names = FALSE)
-
 DBI::dbDisconnect(con)
 
-# 6. save data to folder  -------------------------------------------------
+##join any new data to most recent saved data
+mumh_monthly <- recent_data_monthly %>%
+  bind_rows(mumh_monthly)
 
-save_data2(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_quarterly")
+mumh_quarterly <- recent_data_quarterly %>%
+  bind_rows(mumh_quarterly)
 
 
-# 7. import data ----------------------------------------------------------
+save_data(mumh_quarterly, dir = "Y:/Official Stats/MUMH", filename = "mumh_quarterly")
+
+save_data(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_monthly")
+}
+
+# 6. import data ----------------------------------------------------------
 # import data from data folder to perform aggregations etc without having to
 # maintain connection to DWH
 
-logr::sep("read data")
+  logr::sep("read data")
 
-raw_data <- list()
+  raw_data <- list()
 
-raw_data$monthly <- data.table::fread("data/mumh_monthly_data.csv",
-                                      keepLeadingZeros = TRUE)
+  #read most recent monthly file
+  raw_data$monthly <- data.table::fread(rownames(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "monthly"
+    )
+  ))[which.max(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "monthly"
+    )
+  )$mtime)],
+  keepLeadingZeros = TRUE)
 
-raw_data$quarterly <- data.table::fread("data/mumh_quarterly_data.csv",
-                                        keepLeadingZeros = TRUE)
+  #read most recent quarterly file
+  raw_data$quarterly <- data.table::fread(rownames(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "quarterly"
+    )
+  ))[which.max(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "quarterly"
+    )
+  )$mtime)],
+  keepLeadingZeros = TRUE)
 
-logr::put(raw_data)
+  logr::put(raw_data)
 
-dispensing_days <- mumhquarterly::get_dispensing_days(2022)
+  dispensing_days <- mumhquarterly::get_dispensing_days(2022)
 
-logr::put(dispensing_days)
+  logr::put(dispensing_days)
 
 
-# 8. data manipulation ----------------------------------------------------
+# 7. data manipulation ----------------------------------------------------
 
 logr::sep("data manipulations")
 
@@ -248,7 +403,7 @@ model_data <- raw_data$monthly %>%
 logr::put(model_data)
 
 
-# 9. write data to .xlsx --------------------------------------------------
+# 8. write data to .xlsx --------------------------------------------------
 
 # create dataframe for full patient identification
 patient_identification_excel <- raw_data$quarterly %>%
@@ -436,7 +591,7 @@ openxlsx::saveWorkbook(wb,
 
 
 
-# 10. render markdown ------------------------------------------------------
+# 9. render markdown ------------------------------------------------------
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
