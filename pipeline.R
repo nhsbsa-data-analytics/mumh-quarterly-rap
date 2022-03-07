@@ -6,7 +6,7 @@
 # 1. install required packages --------------------------------------------
 # TODO: investigate using renv package for dependency management
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
-              "logr")
+              "logr", "nhsbsaR")
 
 utils::install.packages(req_pkgs, dependencies = TRUE)
 
@@ -28,7 +28,9 @@ logr::log_code()
 
 mumhquarterly::mumh_options()
 
-# 4. extract data from NHSBSA DWH -----------------------------------------
+# 4. load most recent data and check if any more data available in DW -----
+
+# 5. extract data from NHSBSA DWH -----------------------------------------
 # build connection to database
 con <- con_nhsbsa(
   dsn = "FBS_8192k",
@@ -154,12 +156,12 @@ write.csv(mumh_monthly,
 
 DBI::dbDisconnect(con)
 
-# 5. save data to folder  -------------------------------------------------
+# 6. save data to folder  -------------------------------------------------
 
-# mumhquarterly::save_data(raw_data, filename = "mumh-quarterly-2122q4")
+save_data2(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_quarterly")
 
 
-# 6. import data ----------------------------------------------------------
+# 7. import data ----------------------------------------------------------
 # import data from data folder to perform aggregations etc without having to
 # maintain connection to DWH
 
@@ -180,7 +182,7 @@ dispensing_days <- mumhquarterly::get_dispensing_days(2022)
 logr::put(dispensing_days)
 
 
-# 7. data manipulation ----------------------------------------------------
+# 8. data manipulation ----------------------------------------------------
 
 logr::sep("data manipulations")
 
@@ -246,7 +248,7 @@ model_data <- raw_data$monthly %>%
 logr::put(model_data)
 
 
-# 8. write data to .xlsx --------------------------------------------------
+# 9. write data to .xlsx --------------------------------------------------
 
 # create dataframe for full patient identification
 patient_identification_excel <- raw_data$quarterly %>%
@@ -434,7 +436,7 @@ openxlsx::saveWorkbook(wb,
 
 
 
-# 9. render markdown ------------------------------------------------------
+# 10. render markdown ------------------------------------------------------
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
