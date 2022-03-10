@@ -768,16 +768,43 @@ prev_year_filter <- paste0(prev_year_fy-1, "/", prev_year_fy,
 filter_2016 <- paste0("2016", "/", "2017",
                            " Q", prev_year)
 
-# 2.1 - antidepressants
-cur_volume <- raw_data$quarterly %>%
+# create data
+
+#quarterly
+cur_quart_volume <- raw_data$quarterly %>%
   filter(
-    SECTION_NAME == "Antidepressant drugs" ,
+    SECTION_CODE == bnf_list[1] ,
     FINANCIAL_QUARTER == quarter
     ) %>%
   select(ITEM_COUNT) %>%
   colSums(.) %>%
   as.numeric()
 
+prev_quart_volume <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1] ,
+    FINANCIAL_QUARTER == prev_quarter_filter
+  ) %>%
+  select(ITEM_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
+
+prev_year_quart_volume <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1] ,
+    FINANCIAL_QUARTER == prev_year_filter
+  ) %>%
+  select(ITEM_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
 
 
+qr_data <- data.frame(
+  Period = c(quarter),
+  Measure = c("Volume"),
+  Value = c(cur_quart_volume)
+) %>%
+  mutate(
+    Rounded = format_number(Volume)
+  )
 
