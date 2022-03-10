@@ -426,20 +426,58 @@ logr::log_close()
 # create format function
 #TODO:  MOVE TO MUMH PACKAGE ONCE TESTED AND WORKING
 
-myFormat <- function(x) {
+format_number <- function(x, percentage = FALSE, currency = FALSE) {
+  #create blank wording option
+  wording <- ""
+
+  #round to 3 sig figs
   x <- as.numeric(signif(x, 3))
   if(x >= 1000000000 ) {
     output <- signif(x/1000000000,3)
+    wording <- "billion"
   } else if(x >= 1000000) {
     output <- signif(x/1000000,3)
+    wording <- "million"
   } else {
+    #create comma separated value for number < 1 million
     output <- prettyNum(signif(x, 3), big.mark = ",")
+  }
+
+  #round to 2 decimal places for number < 1
+   if((nchar(output) > 4) & (grepl( ".", output, fixed = TRUE))) {
+     output <- round(as.numeric(output), 2)
+   }
+
+  #add trailing zero to number where needed
+  if((nchar(output) == 3) & (grepl( ".", output, fixed = TRUE))) {
+    output <- as.character(paste0(output, "0"))
+  }
+
+  #add .00 to numbers where needed
+  if((nchar(output) == 1)) {
+    output <- as.character(paste0(output, ".00"))
+  }
+
+  #add .0 if rounds to whole number > 10 and < 100
+  if((nchar(output) == 2) & percentage == TRUE) {
+    output <- as.character(paste0(output, ".0"))
+  }
+
+  #join to wording if needed and trim and trailing white space
+  output <- trimws(as.character(paste0(output, " ", wording)), "right")
+
+  #add % symbol if number is percentage
+  if(percentage == TRUE) {
+    output <- paste0(output, "%")
+  }
+
+  #add £ sign if number is currency
+  if(currency == TRUE) {
+    output <- paste0("£", output)
   }
 
   return (output)
 }
-
-length(myFormat(1100000))
 
 #first get max month and quarter
 max_month <- max(raw_data$monthly$YEAR_MONTH)
