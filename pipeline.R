@@ -15,7 +15,9 @@ devtools::install_github(
   auth_token = Sys.getenv("GITHUB_PAT")
   )
 
-invisible(lapply(c(req_pkgs, "mumhquarterly"), library, character.only = TRUE))
+devtools::install_github("nhsbsa-data-analytics/nhsbsaR")
+
+invisible(lapply(c(req_pkgs, "mumhquarterly", "nhsbsaR"), library, character.only = TRUE))
 
 # 2. setup logging --------------------------------------------------------
 
@@ -28,86 +30,313 @@ logr::log_code()
 
 mumhquarterly::mumh_options()
 
+# 4. load most recent data and add 3 months to max date -------------------
 
-# 4. extract data from NHSBSA DWH -----------------------------------------
+#get most recent monthly file
+recent_file_monthly <- rownames(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "monthly"
+  )
+))[which.max(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "monthly"
+  )
+)$mtime)]
+
+#read data
+recent_data_monthly <- data.table::fread(recent_file_monthly,
+                                 keepLeadingZeros = TRUE)
+
+
+#get most recent monthly file
+recent_file_quarterly <- rownames(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "quarterly"
+  )
+))[which.max(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "quarterly"
+  )
+)$mtime)]
+
+#read data
+recent_data_quarterly <- data.table::fread(recent_file_quarterly,
+                                         keepLeadingZeros = TRUE)
+
+
+#get max month
+max_month <- as.Date(
+  paste0(
+    max(
+      recent_data_monthly$YEAR_MONTH
+      ),
+    "01"
+    ),
+  format = "%Y%m%d"
+)
+
+#get max month plus one
+max_month_plus <- as.Date(
+  paste0(
+    max(
+      recent_data_monthly$YEAR_MONTH
+    ),
+    "01"
+  ),
+  format = "%Y%m%d"
+) %m+% months(1)
+
+#convert to DW format
+max_month_plus_dw <- as.numeric(paste0(format(max_month_plus,
+                                              "%Y"),
+                                       format(max_month_plus,
+                                              "%m")))
+
+# 5. extract data from NHSBSA DWH -----------------------------------------
 # build connection to database
-# con <- nhsbsaR::con_nhsbsa(
-#   database = "DWCP",
-#   username = rstudioapi::showPrompt(title = "Username",
-#                                     message = "Username"),
-#   password = rstudioapi::askForPassword()
-# )
-#
-# # use functions to construct lazy tables
-# tdim <- mumhquarterly::create_tdim(con = con)
-#
-# org <- mumhquarterly::create_org_dim(con = con)
-#
-# drug <- mumhquarterly::create_drug_dim(con = con,
-#                         bnf_codes = c("0401", "0402", "0403", "0404", "0411"))
-#
-# fact <- mumhquarterly::create_fact(con = con)
-#
-# # join tables to create data. generate query
-# raw_data_query <- fact %>%
-#   dplyr::inner_join(
-#     tdim,
-#     by = "YEAR_MONTH"
-#   ) %>%
-#   dplyr::inner_join(
-#     drug,
-#     by = c("CALC_PREC_DRUG_RECORD_ID" = "RECORD_ID", "YEAR_MONTH")
-#   ) %>%
-#   dplyr::inner_join(
-#     org,
-#     by = c("PRESC_TYPE_PRNT" = "LVL_5_OUPDT", "PRESC_ID_PRNT" = "LVL_5_OU")
-#   ) %>%
-#   dplyr::group_by(
-#     FINANCIAL_YEAR,
-#     FINANCIAL_QUARTER,
-#     YEAR_MONTH,
-#     SECTION_DESCR,
-#     BNF_SECTION,
-#     IDENTIFIED_PATIENT_ID,
-#     IDENTIFIED_FLAG
-#   ) %>%
-#   dplyr::summarise(
-#     ITEM_COUNT = sum(ITEM_COUNT, na.rm = TRUE),
-#     PATIENT_COUNT = sum(IDENTIFIED_FLAG == "Y", na.rm = TRUE),
-#     ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = TRUE)
-#   )
-#
-# # extract data from DWH
-# raw_data <- raw_data_query %>%
-#   dplyr::collect()
+con <- con_nhsbsa(
+  dsn = "FBS_8192k",
+  driver = "Oracle in OraClient19Home1",
+  "DWCP",
+  username = rstudioapi::showPrompt(title = "Username", message = "Username"),
+  password = rstudioapi::askForPassword()
+)
 
-# # disconnect from DWH
-# DBI::dbDisconnect(con)
+#get max month available in DWH
+ym_dim <- dplyr::tbl(con,
+                     from = dbplyr::in_schema("DIM", "YEAR_MONTH_DIM")) %>%
+  # shrink table to remove unnecessary data
+  dplyr::filter(
+    YEAR_MONTH >= 201401L,
+    YEAR_MONTH <= dplyr::sql(
+      "MGMT.PKG_PUBLIC_DWH_FUNCTIONS.f_get_latest_period('EPACT2')"
+    )
+  ) %>%
+  dplyr::select(
+    YEAR_MONTH,
+    FINANCIAL_YEAR,
+    FINANCIAL_QUARTER,
+    FINANCIAL_QUARTER_EXT
+  )  %>%
+  # add month counts for financial quarters and financial years to latest
+  # complete periods
+  dplyr::mutate(
+    # create our own financial quarter column that max/min and sort operations
+    # will work on
+    FINANCIAL_QUARTER_NM = dplyr::sql(
+      "FINANCIAL_YEAR||' Q'||FINANCIAL_QUARTER"
+    ),
+    # window function to perform counts within groups
+    Q_COUNT = dbplyr::win_over(
+      expr = dplyr::sql("count(distinct YEAR_MONTH)"),
+      partition = "FINANCIAL_QUARTER_EXT",
+      con = con
+    ),
+    FY_COUNT = dbplyr::win_over(
+      expr = dplyr::sql("count(distinct YEAR_MONTH)"),
+      partition = "FINANCIAL_YEAR",
+      con = con
+    )
+  )
 
-# 5. save data to folder  -------------------------------------------------
+# extract latest available full financial quarter
+ltst_month <- ym_dim %>%
+  dplyr::filter(Q_COUNT == 3) %>%
+  dplyr::select(YEAR_MONTH, FINANCIAL_QUARTER_EXT, FINANCIAL_QUARTER_NM) %>%
+  dplyr::filter(
+    YEAR_MONTH == max(YEAR_MONTH, na.rm = TRUE)
+  ) %>%
+  dplyr::distinct() %>%
+  dplyr::pull(YEAR_MONTH)
 
-# mumhquarterly::save_data(raw_data, filename = "mumh-quarterly-2122q4")
 
+  #get max month in dwh
+  max_month_dw <- as.Date(
+    paste0(
+      ltst_month,
+      "01"
+    ),
+    format = "%Y%m%d"
+  )
+
+# only get new data if max month in dwh is greater than that in most recent data
+if(max_month_dw <= max_month) {
+  print("No new quarterly data available in the Data Warehouse, will use most recent saved data.")
+} else {
+
+#### build time dimension table in schema ####
+
+# drop time dimension if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_MONTH_TDIM")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_MONTH_TDIM")
+}
+
+#build table
+create_tdim(con, start = max_month_plus_dw) %>%
+  compute("MUMH_MONTH_TDIM", analyze = FALSE, temporary = FALSE)
+
+#### build org dimension table in schema ####
+
+# drop org dimension if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_MONTH_PORG_DIM")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_MONTH_PORG_DIM")
+}
+
+#build table
+create_org_dim(con, country = 1) %>%
+  compute("MUMH_MONTH_PORG_DIM", analyze = FALSE, temporary = FALSE)
+
+
+#### build drug dimension table in schema ####
+
+# drop drug dimension if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_MONTH_DRUG_DIM")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_MONTH_DRUG_DIM")
+}
+
+# build table
+create_drug_dim(con, bnf_codes = c("0401", "0402", "0403", "0404", "0411"))  %>%
+  compute("MUMH_MONTH_DRUG_DIM", analyze = FALSE, temporary = FALSE)
+
+#create fact table
+fact <- create_fact(con)
+
+# drop raw data if exists
+exists <- con %>%
+  DBI::dbExistsTable(name = "MUMH_RAW_DATA")
+# Drop any existing table beforehand
+if (exists) {
+  con %>%
+    DBI::dbRemoveTable(name = "MUMH_RAW_DATA")
+}
+
+## create raw data in schema
+fact %>%
+  inner_join(tbl(con, "MUMH_MONTH_TDIM") , by = "YEAR_MONTH") %>%
+  inner_join(tbl(con, "MUMH_MONTH_PORG_DIM") , by = c("PRESC_TYPE_PRNT" = "LVL_5_OUPDT",
+                                                      "PRESC_ID_PRNT" = "LVL_5_OU")) %>%
+  inner_join(tbl(con, "MUMH_MONTH_DRUG_DIM"), by = c("CALC_PREC_DRUG_RECORD_ID" = "RECORD_ID",
+                                                     "YEAR_MONTH" = "YEAR_MONTH")) %>%
+  compute("MUMH_RAW_DATA", analyze = FALSE, temporary = FALSE)
+
+## build and collect quarterly data
+mumh_quarterly <- tbl(con, "MUMH_RAW_DATA") %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, IDENTIFIED_PATIENT_ID, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)/100) %>%
+  mutate(PATIENT_COUNT = case_when(
+    IDENTIFIED_FLAG == "Y" ~ 1,
+    IDENTIFIED_FLAG == "N" ~ 0
+  )) %>%
+  ungroup() %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+            PATIENT_COUNT = sum(PATIENT_COUNT)) %>%
+  rename(SECTION_NAME = SECTION_DESCR,
+         SECTION_CODE = BNF_SECTION) %>%
+  arrange(FINANCIAL_YEAR, FINANCIAL_QUARTER, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
+  collect
+
+## build and collect monthly data
+mumh_monthly <- tbl(con, "MUMH_RAW_DATA") %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, YEAR_MONTH, IDENTIFIED_PATIENT_ID, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)/100) %>%
+  mutate(PATIENT_COUNT = case_when(
+    IDENTIFIED_FLAG == "Y" ~ 1,
+    IDENTIFIED_FLAG == "N" ~ 0
+  )) %>%
+  ungroup() %>%
+  group_by(FINANCIAL_YEAR, FINANCIAL_QUARTER, YEAR_MONTH, SECTION_DESCR, BNF_SECTION, IDENTIFIED_FLAG) %>%
+  summarise(ITEM_COUNT = sum(ITEM_COUNT),
+            ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+            PATIENT_COUNT = sum(PATIENT_COUNT)) %>%
+  rename(SECTION_NAME = SECTION_DESCR,
+         SECTION_CODE = BNF_SECTION) %>%
+  arrange(YEAR_MONTH, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
+  collect
+
+DBI::dbDisconnect(con)
+
+##join any new data to most recent saved data
+mumh_monthly <- recent_data_monthly %>%
+  bind_rows(mumh_monthly)
+
+mumh_quarterly <- recent_data_quarterly %>%
+  bind_rows(mumh_quarterly)
+
+
+save_data(mumh_quarterly, dir = "Y:/Official Stats/MUMH", filename = "mumh_quarterly")
+
+save_data(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_monthly")
+}
 
 # 6. import data ----------------------------------------------------------
 # import data from data folder to perform aggregations etc without having to
 # maintain connection to DWH
 
-logr::sep("read data")
+  logr::sep("read data")
 
-raw_data <- list()
+  raw_data <- list()
 
-raw_data$monthly <- data.table::fread("data/mumh_monthly_data.csv",
-                                      keepLeadingZeros = TRUE)
+  #read most recent monthly file
+  raw_data$monthly <- data.table::fread(rownames(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "monthly"
+    )
+  ))[which.max(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "monthly"
+    )
+  )$mtime)],
+  keepLeadingZeros = TRUE)
 
-raw_data$quarterly <- data.table::fread("data/mumh_quarterly_data.csv",
-                                        keepLeadingZeros = TRUE)
+  #read most recent quarterly file
+  raw_data$quarterly <- data.table::fread(rownames(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "quarterly"
+    )
+  ))[which.max(file.info(
+    list.files(
+      "Y:/Official Stats/MUMH/data",
+      full.names = T,
+      pattern = "quarterly"
+    )
+  )$mtime)],
+  keepLeadingZeros = TRUE)
 
-logr::put(raw_data)
+  logr::put(raw_data)
 
-dispensing_days <- mumhquarterly::get_dispensing_days(2022)
+  dispensing_days <- mumhquarterly::get_dispensing_days(2022)
 
-logr::put(dispensing_days)
+  logr::put(dispensing_days)
 
 
 # 7. data manipulation ----------------------------------------------------
