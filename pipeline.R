@@ -632,7 +632,7 @@ for(i in 1:length(bnf_list)) {
     filter(SECTION_CODE == bnf_list[i], YEAR_MONTH > 202002) %>%
     select(SECTION_NAME, SECTION_CODE, YEAR_MONTH, ITEM_COUNT, PRED_ITEMS_95_FIT)
 
-  fwrite(bnf_data, paste0("Y:/Official Stats/MUMH/Covid model tables", as.character(unlist(bnf_data[1,1])), ".csv"))
+  fwrite(bnf_data, paste0("Y:/Official Stats/MUMH/Covid model tables/", as.character(unlist(bnf_data[1,1])), ".csv"))
 }
 
 # 9. render markdown ------------------------------------------------------
@@ -653,7 +653,7 @@ logr::log_close()
 
 # build rounding function
 # create format function
-#TODO:  MOVE TO MUMH PACKAGE ONCE TESTED AND WORKING
+#TODO:  REMOVE ONCE PULL REQUEST TO MUMH PACKAGE APPROVED
 
 format_number <- function(x, percentage = FALSE, currency = FALSE) {
   #create blank wording option
