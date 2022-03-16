@@ -651,6 +651,8 @@ logr::log_close()
 
 # 10. output figures needed for QR purposes --------------------------------
 
+
+### BUILD FILTERS
 #first get max month and quarter
 max_month <- max(raw_data$monthly$YEAR_MONTH)
 
@@ -759,8 +761,28 @@ max_filter_prev_12_months <- format(as.Date(paste0(max(filter_prev_12_months), "
                                        format = "%Y%m%d"),
                                format = "%B %Y")
 
+#create blank workbook for saving
+qrwb <- openxlsx::createWorkbook()
+
+openxlsx::modifyBaseFont(qrwb, fontName = "Arial", fontSize = 10)
+
+#loop through bnf_list
+for(j in 1:length(bnf_list)){
+
 # create data
-code <- bnf_list[1]
+code <- bnf_list[j]
+name <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == code
+  ) %>%
+  select(SECTION_NAME) %>%
+  unique() %>%
+  pull()
+
+#add sheet to wb with bnf_code
+openxlsx::addWorksheet(qrwb,
+                       sheetName = code,
+                       gridLines = FALSE)
 
 #current quarter volume
 cur_quart_volume <- raw_data$quarterly %>%
@@ -936,6 +958,7 @@ covid_volume_dif_per <- ((covid_volume_actual - covid_volume_predicted)/covid_vo
 
 #build data
 qr_data <- data.frame(
+  Section_Name = rep(name, 26),
   Period = c(quarter,
              prev_year_filter,
              paste0(prev_year_filter, " to ", quarter),
@@ -958,6 +981,9 @@ qr_data <- data.frame(
              paste0(min_filter_12_months, " to ", max_filter_12_months),
              paste0(min_filter_prev_12_months, " to ", max_filter_prev_12_months),
              paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
+             paste0(covid_data_min, " to ", max_filter_12_months),
+             paste0(covid_data_min, " to ", max_filter_12_months),
+             paste0(covid_data_min, " to ", max_filter_12_months),
              paste0(covid_data_min, " to ", max_filter_12_months)
              ),
   Measure = c("Items",
@@ -982,7 +1008,10 @@ qr_data <- data.frame(
               "Mean patients",
               "Mean patients",
               "% change patients",
-              "Items"),
+              "Items",
+              "Items predicted",
+              "Items diff (pred to act)",
+              "% items diff (pred to act)"),
   Value = c(cur_quart_volume,
             prev_year_quart_volume,
             annual_per_change,
@@ -1005,7 +1034,10 @@ qr_data <- data.frame(
             ave_12_month_patients,
             ave_12_month_patients_prev,
             average_patient_change,
-            covid_volume_actual),
+            covid_volume_actual,
+            covid_volume_predicted,
+            covid_volume_dif,
+            covid_volume_dif_per),
   Rounded = c(format_number(cur_quart_volume),
               format_number(prev_year_quart_volume),
               format_number(annual_per_change, percentage = T),
@@ -1028,7 +1060,30 @@ qr_data <- data.frame(
               format_number(ave_12_month_patients),
               format_number(ave_12_month_patients_prev),
               format_number(average_patient_change, percentage = T),
-              format_number(covid_volume_actual))
+              format_number(covid_volume_actual),
+              format_number(covid_volume_predicted),
+              format_number(covid_volume_dif),
+              format_number(covid_volume_dif_per, percentage = T))
 )
 
+#write data to sheet
+openxlsx::writeData(
+  qrwb,
+  sheet = code,
+  startRow = 1,
+  x = qr_data
+)
+
+#auto width columns
+setColWidths(qrwb,
+             sheet = code,
+             cols = 1:5,
+             widths = "auto")
+}
+
+
+#save workbook in shared QR folder
+openxlsx::saveWorkbook(qrwb,
+                       paste0("Y:\\Official Stats\\MUMH\\QR Data\\QR ",max_filter_12_months,".xlsx"),
+                       overwrite = T)
 
