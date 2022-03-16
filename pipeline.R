@@ -651,63 +651,6 @@ logr::log_close()
 
 # 10. output figures needed for QR purposes --------------------------------
 
-# build rounding function
-# create format function
-#TODO:  REMOVE ONCE PULL REQUEST TO MUMH PACKAGE APPROVED
-
-format_number <- function(x, percentage = FALSE, currency = FALSE) {
-  #create blank wording option
-  wording <- ""
-
-  #round to 3 sig figs
-  x <- as.numeric(signif(x, 3))
-  if(x >= 1000000000 ) {
-    output <- signif(x/1000000000,3)
-    wording <- "billion"
-  } else if(x >= 1000000) {
-    output <- signif(x/1000000,3)
-    wording <- "million"
-  } else {
-    #create comma separated value for number < 1 million
-    output <- prettyNum(signif(x, 3), big.mark = ",")
-  }
-
-  #round to 2 decimal places for number < 1
-   if((nchar(output) > 4) & (grepl( ".", output, fixed = TRUE))) {
-     output <- round(as.numeric(output), 2)
-   }
-
-  #add trailing zero to number where needed
-  if((nchar(output) == 3) & (grepl( ".", output, fixed = TRUE))) {
-    output <- as.character(paste0(output, "0"))
-  }
-
-  #add .00 to numbers where needed
-  if((nchar(output) == 1)) {
-    output <- as.character(paste0(output, ".00"))
-  }
-
-  #add .0 if rounds to whole number > 10 and < 100
-  if((nchar(output) == 2) & percentage == TRUE) {
-    output <- as.character(paste0(output, ".0"))
-  }
-
-  #join to wording if needed and trim and trailing white space
-  output <- trimws(as.character(paste0(output, " ", wording)), "right")
-
-  #add % symbol if number is percentage
-  if(percentage == TRUE) {
-    output <- paste0(output, "%")
-  }
-
-  #add £ sign if number is currency
-  if(currency == TRUE) {
-    output <- paste0("£", output)
-  }
-
-  return (output)
-}
-
 #first get max month and quarter
 max_month <- max(raw_data$monthly$YEAR_MONTH)
 
@@ -742,7 +685,7 @@ prev_quarter_filter <- paste0(prev_quarter_fy-1, "/", prev_quarter_fy,
 
 #get previous year for filtering
 prev_year <- quarter(
-  #uses max_month minus 3 months
+  #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "quarter",
   #set for fiscal year starting in April
@@ -751,7 +694,7 @@ prev_year <- quarter(
 
 #get financial year of previous year
 prev_year_fy <- quarter(
-  #uses max_month minus 3 months
+  #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "year.quarter",
   #set for fiscal year starting in April
@@ -764,13 +707,32 @@ prev_year_fy <- quarter(
 prev_year_filter <- paste0(prev_year_fy-1, "/", prev_year_fy,
                               " Q", prev_year)
 
-#get year and quarter of same month in 2016/17 ago for filtering
-filter_2016 <- paste0("2016", "/", "2017",
-                           " Q", prev_year)
+
+prev_5_year <- quarter(
+  #uses max_month minus 12 months
+  as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
+  type = "quarter",
+  #set for fiscal year starting in April
+  fiscal_start = 4
+)
+
+#get financial year of previous quarter
+prev_5_year_quarter_fy <- quarter(
+  #uses max_month minus 3 months
+  as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
+  type = "year.quarter",
+  #set for fiscal year starting in April
+  fiscal_start = 4
+) %>%
+  substr(1,4) %>%
+  as.numeric()
+
+#build filter for previous quarter
+filter_5_years <- paste0(prev_5_year_quarter_fy-1, "/", prev_5_year_quarter_fy,
+                              " Q", prev_5_year)
 
 # create data
-
-#quarterly
+#current quarter volume
 cur_quart_volume <- raw_data$quarterly %>%
   filter(
     SECTION_CODE == bnf_list[1] ,
@@ -780,6 +742,7 @@ cur_quart_volume <- raw_data$quarterly %>%
   colSums(.) %>%
   as.numeric()
 
+#previous quarter volume
 prev_quart_volume <- raw_data$quarterly %>%
   filter(
     SECTION_CODE == bnf_list[1] ,
@@ -789,6 +752,7 @@ prev_quart_volume <- raw_data$quarterly %>%
   colSums(.) %>%
   as.numeric()
 
+#previous year quarter volume
 prev_year_quart_volume <- raw_data$quarterly %>%
   filter(
     SECTION_CODE == bnf_list[1] ,
@@ -798,13 +762,159 @@ prev_year_quart_volume <- raw_data$quarterly %>%
   colSums(.) %>%
   as.numeric()
 
+#get volume from same quarter 5 years ago
+prev_5_year_quart_volume <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1] ,
+    FINANCIAL_QUARTER == filter_5_years
+  ) %>%
+  select(ITEM_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
 
+annual_per_change <- ((cur_quart_volume - prev_year_quart_volume)/prev_year_quart_volume)*100
+quarterly_per_change <- ((cur_quart_volume - prev_quart_volume)/prev_quart_volume)*100
+annual_5_per_change <- ((cur_quart_volume - prev_5_year_quart_volume)/prev_5_year_quart_volume)*100
+
+#get patient count of current quarter
+cur_quart_patients <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1] ,
+    FINANCIAL_QUARTER == quarter
+  ) %>%
+  select(PATIENT_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
+
+#previous quarter patient count
+prev_quart_patients <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1] ,
+    FINANCIAL_QUARTER == prev_quarter_filter
+  ) %>%
+  select(PATIENT_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
+
+#previous year quarter patient count
+prev_year_quart_patients <- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1] ,
+    FINANCIAL_QUARTER == prev_year_filter
+  ) %>%
+  select(PATIENT_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
+
+#get patient count from same quarter 5 years ago
+prev_5_year_quart_patients<- raw_data$quarterly %>%
+  filter(
+    SECTION_CODE == bnf_list[1],
+    FINANCIAL_QUARTER == filter_5_years
+  ) %>%
+  select(PATIENT_COUNT) %>%
+  colSums(.) %>%
+  as.numeric()
+
+annual_per_change_patients <- ((cur_quart_patients - prev_year_quart_patients)/prev_year_quart_patients)*100
+quarterly_per_change_patients <- ((cur_quart_patients - prev_quart_patients)/prev_quart_patients)*100
+annual_5_per_change_patients <- ((cur_quart_patients - prev_5_year_quart_patients)/prev_5_year_quart_patients)*100
+
+#get identified patient rates
+current_quart_identified <- patient_identification_excel %>%
+  filter(`BNF Section Code` == bnf_list[1]) %>%
+  select(quarter)%>%
+  colSums(.) %>%
+  as.numeric()
+
+prev_5_year_quart_identified <- patient_identification_excel %>%
+  filter(`BNF Section Code` == bnf_list[1]) %>%
+  select(filter_5_years)%>%
+  colSums(.) %>%
+  as.numeric()
+
+
+
+
+#build data
 qr_data <- data.frame(
-  Period = c(quarter),
-  Measure = c("Volume"),
-  Value = c(cur_quart_volume)
-) %>%
-  mutate(
-    Rounded = format_number(Volume)
-  )
+  Period = c(quarter,
+             prev_year_filter,
+             paste0(prev_year_filter, " to ", quarter),
+             prev_quarter_filter,
+             paste0(prev_quarter_filter, " to ", quarter),
+             filter_5_years,
+             paste0(filter_5_years, " to ", quarter),
+             paste0(filter_5_years, " to ", quarter),
+             quarter,
+             prev_year_filter,
+             paste0(prev_year_filter, " to ", quarter),
+             prev_quarter_filter,
+             paste0(prev_quarter_filter, " to ", quarter),
+             filter_5_years,
+             paste0(filter_5_years, " to ", quarter),
+             paste0(filter_5_years, " to ", quarter),
+             filter_5_years,
+             quarter,
+             paste0(filter_5_years, " to ", quarter)
+             ),
+  Measure = c("Volume",
+              "Volume",
+              "% change volume",
+              "Volume",
+              "% change volume",
+              "Volume",
+              "Volume change",
+              "% change volume",
+              "Patients",
+              "Patients",
+              "% change patients",
+              "Patients",
+              "% change patients",
+              "Patients",
+              "Patients change",
+              "% change patients",
+              "% identified patients",
+              "% identified patients",
+              "Pecentage points change"),
+  Value = c(cur_quart_volume,
+            prev_year_quart_volume,
+            annual_per_change,
+            prev_quart_volume,
+            quarterly_per_change,
+            prev_5_year_quart_volume,
+            (cur_quart_volume - prev_5_year_quart_volume),
+            annual_5_per_change,
+            cur_quart_patients,
+            prev_year_quart_patients,
+            annual_per_change_patients,
+            prev_quart_patients,
+            quarterly_per_change_patients,
+            prev_5_year_quart_patients,
+            (cur_quart_patients - prev_5_year_quart_patients),
+            annual_5_per_change_patients,
+            prev_5_year_quart_identified,
+            current_quart_identified,
+            current_quart_identified - prev_5_year_quart_identified),
+  Rounded = c(format_number(cur_quart_volume),
+              format_number(prev_year_quart_volume),
+              format_number(annual_per_change, percentage = T),
+              format_number(prev_quart_volume),
+              format_number(quarterly_per_change, percentage = T),
+              format_number(prev_5_year_quart_volume),
+              format_number((cur_quart_volume - prev_5_year_quart_volume)),
+              format_number(annual_5_per_change, percentage = T),
+              format_number(cur_quart_patients),
+              format_number(prev_year_quart_patients),
+              format_number(annual_per_change_patients, percentage = T),
+              format_number(prev_quart_patients),
+              format_number(quarterly_per_change_patients, percentage = T),
+              format_number(prev_5_year_quart_patients),
+              format_number((cur_quart_patients - prev_5_year_quart_patients)),
+              format_number(annual_5_per_change_patients, percentage = T),
+              format_number(prev_5_year_quart_identified, percentage = T),
+              format_number(current_quart_identified, percentage = T),
+              format_number(current_quart_identified - prev_5_year_quart_identified))
+)
+
 
