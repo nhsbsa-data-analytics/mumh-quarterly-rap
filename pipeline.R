@@ -1106,6 +1106,9 @@ for(j in 1:length(bnf_list)){
     )
   )
 
+  #output tables to global enviroment for narrative automation
+  assign(paste0("table_", code), qr_data, envir = globalenv())
+
   #write data to sheet
   openxlsx::writeDataTable(qrwb,
                       sheet = code,
@@ -1133,6 +1136,28 @@ openxlsx::saveWorkbook(
 )
 
 # 10. automate narratives --------------------------------------------------
+#ordinal number function
+ordinal_number <- function(x) {
+  data <- data.frame(
+    Number = c(1,2,3,4),
+    Word = c("first", "second", "third", "fourth")
+  ) %>%
+    filter(Number == x)
+
+  return(data[1,2])
+}
+
+par1a <- paste0(
+  "There were ",
+  table_0401$Rounded[1],
+  " ",
+  tolower(table_0401$Section_Name[1]),
+  " prescribed in the ",
+  ordinal_number(
+    as.numeric(str_sub(quarter,-1,-1))
+    ),
+  " quarter of financial year 2021/22."
+  )
 
 # 11. render markdown ------------------------------------------------------
 
