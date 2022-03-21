@@ -657,21 +657,7 @@ for (i in 1:length(bnf_list)) {
   )
 }
 
-# 9. render markdown ------------------------------------------------------
-
-rmarkdown::render("mumh-quarterly-narrative.Rmd",
-                  output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_dec21_v001.html")
-
-rmarkdown::render("mumh-quarterly-narrative.Rmd",
-                  output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_dec21_v001.docx")
-
-logr::log_close()
-
-# 10. output figures needed for QR purposes --------------------------------
-
-
+# 9. output figures needed for QR purposes --------------------------------
 ### BUILD FILTERS
 #first get max month and quarter
 max_month <- max(raw_data$monthly$YEAR_MONTH)
@@ -803,334 +789,334 @@ openxlsx::modifyBaseFont(qrwb, fontName = "Arial", fontSize = 10)
 #loop through bnf_list
 for(j in 1:length(bnf_list)){
 
-# create data
-code <- bnf_list[j]
-name <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code) %>%
-  select(SECTION_NAME) %>%
-  unique() %>%
-  pull()
+  # create data
+  code <- bnf_list[j]
+  name <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code) %>%
+    select(SECTION_NAME) %>%
+    unique() %>%
+    pull()
 
-#add sheet to wb with bnf_code
-openxlsx::addWorksheet(qrwb,
-                       sheetName = code,
-                       gridLines = FALSE)
+  #add sheet to wb with bnf_code
+  openxlsx::addWorksheet(qrwb,
+                         sheetName = code,
+                         gridLines = FALSE)
 
-#current quarter volume
-cur_quart_volume <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == quarter) %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #current quarter volume
+  cur_quart_volume <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == quarter) %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#previous quarter volume
-prev_quart_volume <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == prev_quarter_filter) %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #previous quarter volume
+  prev_quart_volume <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == prev_quarter_filter) %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#previous year quarter volume
-prev_year_quart_volume <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == prev_year_filter) %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #previous year quarter volume
+  prev_year_quart_volume <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == prev_year_filter) %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#get volume from same quarter 5 years ago
-prev_5_year_quart_volume <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == filter_5_years) %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #get volume from same quarter 5 years ago
+  prev_5_year_quart_volume <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == filter_5_years) %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-annual_per_change <-
-  ((cur_quart_volume - prev_year_quart_volume) / prev_year_quart_volume) *
-  100
-quarterly_per_change <-
-  ((cur_quart_volume - prev_quart_volume) / prev_quart_volume) * 100
-annual_5_per_change <-
-  ((cur_quart_volume - prev_5_year_quart_volume) / prev_5_year_quart_volume) *
-  100
+  annual_per_change <-
+    ((cur_quart_volume - prev_year_quart_volume) / prev_year_quart_volume) *
+    100
+  quarterly_per_change <-
+    ((cur_quart_volume - prev_quart_volume) / prev_quart_volume) * 100
+  annual_5_per_change <-
+    ((cur_quart_volume - prev_5_year_quart_volume) / prev_5_year_quart_volume) *
+    100
 
-#get patient count of current quarter
-cur_quart_patients <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == quarter) %>%
-  select(PATIENT_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #get patient count of current quarter
+  cur_quart_patients <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == quarter) %>%
+    select(PATIENT_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#previous quarter patient count
-prev_quart_patients <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == prev_quarter_filter) %>%
-  select(PATIENT_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #previous quarter patient count
+  prev_quart_patients <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == prev_quarter_filter) %>%
+    select(PATIENT_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#previous year quarter patient count
-prev_year_quart_patients <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == prev_year_filter) %>%
-  select(PATIENT_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #previous year quarter patient count
+  prev_year_quart_patients <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == prev_year_filter) %>%
+    select(PATIENT_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#get patient count from same quarter 5 years ago
-prev_5_year_quart_patients <- raw_data$quarterly %>%
-  filter(SECTION_CODE == code,
-         FINANCIAL_QUARTER == filter_5_years) %>%
-  select(PATIENT_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #get patient count from same quarter 5 years ago
+  prev_5_year_quart_patients <- raw_data$quarterly %>%
+    filter(SECTION_CODE == code,
+           FINANCIAL_QUARTER == filter_5_years) %>%
+    select(PATIENT_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-annual_per_change_patients <-
-  ((cur_quart_patients - prev_year_quart_patients) / prev_year_quart_patients) *
-  100
-quarterly_per_change_patients <-
-  ((cur_quart_patients - prev_quart_patients) / prev_quart_patients) * 100
-annual_5_per_change_patients <-
-  ((cur_quart_patients - prev_5_year_quart_patients) / prev_5_year_quart_patients) *
-  100
+  annual_per_change_patients <-
+    ((cur_quart_patients - prev_year_quart_patients) / prev_year_quart_patients) *
+    100
+  quarterly_per_change_patients <-
+    ((cur_quart_patients - prev_quart_patients) / prev_quart_patients) * 100
+  annual_5_per_change_patients <-
+    ((cur_quart_patients - prev_5_year_quart_patients) / prev_5_year_quart_patients) *
+    100
 
-#get identified patient rates
-current_quart_identified <- patient_identification_excel %>%
-  filter(`BNF Section Code` == code) %>%
-  select(quarter) %>%
-  colSums(.) %>%
-  as.numeric()
+  #get identified patient rates
+  current_quart_identified <- patient_identification_excel %>%
+    filter(`BNF Section Code` == code) %>%
+    select(quarter) %>%
+    colSums(.) %>%
+    as.numeric()
 
-prev_5_year_quart_identified <- patient_identification_excel %>%
-  filter(`BNF Section Code` == code) %>%
-  select(filter_5_years) %>%
-  colSums(.) %>%
-  as.numeric()
+  prev_5_year_quart_identified <- patient_identification_excel %>%
+    filter(`BNF Section Code` == code) %>%
+    select(filter_5_years) %>%
+    colSums(.) %>%
+    as.numeric()
 
-#average monthly patients
-ave_12_month_patients <- raw_data$monthly %>%
-  filter(SECTION_CODE == code,
-         YEAR_MONTH %in% filter_12_months,
-         IDENTIFIED_FLAG == "Y") %>%
-  select(PATIENT_COUNT) %>%
-  colMeans(.) %>%
-  as.numeric()
+  #average monthly patients
+  ave_12_month_patients <- raw_data$monthly %>%
+    filter(SECTION_CODE == code,
+           YEAR_MONTH %in% filter_12_months,
+           IDENTIFIED_FLAG == "Y") %>%
+    select(PATIENT_COUNT) %>%
+    colMeans(.) %>%
+    as.numeric()
 
-ave_12_month_patients_prev <- raw_data$monthly %>%
-  filter(SECTION_CODE == code,
-         YEAR_MONTH %in% filter_prev_12_months,
-         IDENTIFIED_FLAG == "Y") %>%
-  select(PATIENT_COUNT) %>%
-  colMeans(.) %>%
-  as.numeric()
+  ave_12_month_patients_prev <- raw_data$monthly %>%
+    filter(SECTION_CODE == code,
+           YEAR_MONTH %in% filter_prev_12_months,
+           IDENTIFIED_FLAG == "Y") %>%
+    select(PATIENT_COUNT) %>%
+    colMeans(.) %>%
+    as.numeric()
 
-average_patient_change <-
-  ((ave_12_month_patients - ave_12_month_patients_prev) / ave_12_month_patients_prev) *
-  100
+  average_patient_change <-
+    ((ave_12_month_patients - ave_12_month_patients_prev) / ave_12_month_patients_prev) *
+    100
 
-#monthly volumes
-`12_month_volume` <- raw_data$monthly %>%
-  filter(SECTION_CODE == code,
-         YEAR_MONTH %in% filter_12_months) %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  #monthly volumes
+  `12_month_volume` <- raw_data$monthly %>%
+    filter(SECTION_CODE == code,
+           YEAR_MONTH %in% filter_12_months) %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-`12_month_volume_prev` <- raw_data$monthly %>%
-  filter(SECTION_CODE == code,
-         YEAR_MONTH %in% filter_prev_12_months) %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  `12_month_volume_prev` <- raw_data$monthly %>%
+    filter(SECTION_CODE == code,
+           YEAR_MONTH %in% filter_prev_12_months) %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-volume_change <-
-  ((`12_month_volume` - `12_month_volume_prev`) / `12_month_volume_prev`) *
-  100
+  volume_change <-
+    ((`12_month_volume` - `12_month_volume_prev`) / `12_month_volume_prev`) *
+    100
 
-#covid model volumes
-covid_data <- model_data %>%
-  covid_model() %>%
-  filter(SECTION_CODE == code, YEAR_MONTH > 202002) %>%
-  select(SECTION_NAME,
-         SECTION_CODE,
-         YEAR_MONTH,
-         ITEM_COUNT,
-         PRED_ITEMS_95_FIT) %>%
-  ungroup()
+  #covid model volumes
+  covid_data <- model_data %>%
+    covid_model() %>%
+    filter(SECTION_CODE == code, YEAR_MONTH > 202002) %>%
+    select(SECTION_NAME,
+           SECTION_CODE,
+           YEAR_MONTH,
+           ITEM_COUNT,
+           PRED_ITEMS_95_FIT) %>%
+    ungroup()
 
-covid_data_min <- format(as.Date(paste0(202003, "01"),
-                                 format = "%Y%m%d"),
-                         format = "%B %Y")
+  covid_data_min <- format(as.Date(paste0(202003, "01"),
+                                   format = "%Y%m%d"),
+                           format = "%B %Y")
 
-covid_data_month_count <- covid_data %>%
-  select(YEAR_MONTH) %>%
-  unique() %>%
-  nrow()
+  covid_data_month_count <- covid_data %>%
+    select(YEAR_MONTH) %>%
+    unique() %>%
+    nrow()
 
-covid_volume_actual <- covid_data %>%
-  select(ITEM_COUNT) %>%
-  colSums(.) %>%
-  as.numeric()
+  covid_volume_actual <- covid_data %>%
+    select(ITEM_COUNT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-covid_volume_predicted <- covid_data %>%
-  select(PRED_ITEMS_95_FIT) %>%
-  colSums(.) %>%
-  as.numeric()
+  covid_volume_predicted <- covid_data %>%
+    select(PRED_ITEMS_95_FIT) %>%
+    colSums(.) %>%
+    as.numeric()
 
-covid_volume_dif <- covid_volume_actual - covid_volume_predicted
-covid_volume_dif_per <-
-  ((covid_volume_actual - covid_volume_predicted) / covid_volume_predicted) *
-  100
+  covid_volume_dif <- covid_volume_actual - covid_volume_predicted
+  covid_volume_dif_per <-
+    ((covid_volume_actual - covid_volume_predicted) / covid_volume_predicted) *
+    100
 
 
-#build data
-qr_data <- data.frame(
-  Section_Name = rep(name, 29),
-  Period = c(
-    quarter,
-    prev_year_filter,
-    paste0(prev_year_filter, " to ", quarter),
-    prev_quarter_filter,
-    paste0(prev_quarter_filter, " to ", quarter),
-    filter_5_years,
-    paste0(filter_5_years, " to ", quarter),
-    paste0(filter_5_years, " to ", quarter),
-    quarter,
-    prev_year_filter,
-    paste0(prev_year_filter, " to ", quarter),
-    prev_quarter_filter,
-    paste0(prev_quarter_filter, " to ", quarter),
-    filter_5_years,
-    paste0(filter_5_years, " to ", quarter),
-    paste0(filter_5_years, " to ", quarter),
-    filter_5_years,
-    quarter,
-    paste0(filter_5_years, " to ", quarter),
-    paste0(min_filter_12_months, " to ", max_filter_12_months),
-    paste0(min_filter_prev_12_months, " to ", max_filter_prev_12_months),
-    paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
-    paste0(min_filter_12_months, " to ", max_filter_12_months),
-    paste0(min_filter_prev_12_months, " to ", max_filter_prev_12_months),
-    paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
-    paste0(covid_data_min, " to ", max_filter_12_months),
-    paste0(covid_data_min, " to ", max_filter_12_months),
-    paste0(covid_data_min, " to ", max_filter_12_months),
-    paste0(covid_data_min, " to ", max_filter_12_months)
-  ),
-  Measure = c(
-    "Items",
-    "Items",
-    "% change items",
-    "Items",
-    "% change items",
-    "Items",
-    "Items change",
-    "% change volume",
-    "Patients",
-    "Patients",
-    "% change patients",
-    "Patients",
-    "% change patients",
-    "Patients",
-    "Patients change",
-    "% change patients",
-    "% identified patients",
-    "% identified patients",
-    "Pecentage points change",
-    "Mean patients",
-    "Mean patients",
-    "% change patients",
-    "Items",
-    "Items",
-    "% change items",
-    "Items",
-    "Items predicted",
-    "Items diff (pred to act)",
-    "% items diff (pred to act)"
-  ),
-  Value = c(
-    cur_quart_volume,
-    prev_year_quart_volume,
-    annual_per_change,
-    prev_quart_volume,
-    quarterly_per_change,
-    prev_5_year_quart_volume,
-    (cur_quart_volume - prev_5_year_quart_volume),
-    annual_5_per_change,
-    cur_quart_patients,
-    prev_year_quart_patients,
-    annual_per_change_patients,
-    prev_quart_patients,
-    quarterly_per_change_patients,
-    prev_5_year_quart_patients,
-    (cur_quart_patients - prev_5_year_quart_patients),
-    annual_5_per_change_patients,
-    prev_5_year_quart_identified,
-    current_quart_identified,
-    current_quart_identified - prev_5_year_quart_identified,
-    ave_12_month_patients,
-    ave_12_month_patients_prev,
-    average_patient_change,
-    `12_month_volume`,
-    `12_month_volume_prev`,
-    volume_change,
-    covid_volume_actual,
-    covid_volume_predicted,
-    covid_volume_dif,
-    covid_volume_dif_per
-  ),
-  Rounded = c(
-    format_number(cur_quart_volume),
-    format_number(prev_year_quart_volume),
-    format_number(annual_per_change, percentage = T),
-    format_number(prev_quart_volume),
-    format_number(quarterly_per_change, percentage = T),
-    format_number(prev_5_year_quart_volume),
-    format_number((
-      cur_quart_volume - prev_5_year_quart_volume
-    )),
-    format_number(annual_5_per_change, percentage = T),
-    format_number(cur_quart_patients),
-    format_number(prev_year_quart_patients),
-    format_number(annual_per_change_patients, percentage = T),
-    format_number(prev_quart_patients),
-    format_number(quarterly_per_change_patients, percentage = T),
-    format_number(prev_5_year_quart_patients),
-    format_number((
-      cur_quart_patients - prev_5_year_quart_patients
-    )),
-    format_number(annual_5_per_change_patients, percentage = T),
-    format_number(prev_5_year_quart_identified, percentage = T),
-    format_number(current_quart_identified, percentage = T),
-    format_number(current_quart_identified - prev_5_year_quart_identified),
-    format_number(ave_12_month_patients),
-    format_number(ave_12_month_patients_prev),
-    format_number(average_patient_change, percentage = T),
-    format_number(`12_month_volume`),
-    format_number(`12_month_volume_prev`),
-    format_number(volume_change, percentage = T),
-    format_number(covid_volume_actual),
-    format_number(covid_volume_predicted),
-    format_number(covid_volume_dif),
-    format_number(covid_volume_dif_per, percentage = T)
+  #build data
+  qr_data <- data.frame(
+    Section_Name = rep(name, 29),
+    Period = c(
+      quarter,
+      prev_year_filter,
+      paste0(prev_year_filter, " to ", quarter),
+      prev_quarter_filter,
+      paste0(prev_quarter_filter, " to ", quarter),
+      filter_5_years,
+      paste0(filter_5_years, " to ", quarter),
+      paste0(filter_5_years, " to ", quarter),
+      quarter,
+      prev_year_filter,
+      paste0(prev_year_filter, " to ", quarter),
+      prev_quarter_filter,
+      paste0(prev_quarter_filter, " to ", quarter),
+      filter_5_years,
+      paste0(filter_5_years, " to ", quarter),
+      paste0(filter_5_years, " to ", quarter),
+      filter_5_years,
+      quarter,
+      paste0(filter_5_years, " to ", quarter),
+      paste0(min_filter_12_months, " to ", max_filter_12_months),
+      paste0(min_filter_prev_12_months, " to ", max_filter_prev_12_months),
+      paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
+      paste0(min_filter_12_months, " to ", max_filter_12_months),
+      paste0(min_filter_prev_12_months, " to ", max_filter_prev_12_months),
+      paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
+      paste0(covid_data_min, " to ", max_filter_12_months),
+      paste0(covid_data_min, " to ", max_filter_12_months),
+      paste0(covid_data_min, " to ", max_filter_12_months),
+      paste0(covid_data_min, " to ", max_filter_12_months)
+    ),
+    Measure = c(
+      "Items",
+      "Items",
+      "% change items",
+      "Items",
+      "% change items",
+      "Items",
+      "Items change",
+      "% change volume",
+      "Patients",
+      "Patients",
+      "% change patients",
+      "Patients",
+      "% change patients",
+      "Patients",
+      "Patients change",
+      "% change patients",
+      "% identified patients",
+      "% identified patients",
+      "Pecentage points change",
+      "Mean patients",
+      "Mean patients",
+      "% change patients",
+      "Items",
+      "Items",
+      "% change items",
+      "Items",
+      "Items predicted",
+      "Items diff (pred to act)",
+      "% items diff (pred to act)"
+    ),
+    Value = c(
+      cur_quart_volume,
+      prev_year_quart_volume,
+      annual_per_change,
+      prev_quart_volume,
+      quarterly_per_change,
+      prev_5_year_quart_volume,
+      (cur_quart_volume - prev_5_year_quart_volume),
+      annual_5_per_change,
+      cur_quart_patients,
+      prev_year_quart_patients,
+      annual_per_change_patients,
+      prev_quart_patients,
+      quarterly_per_change_patients,
+      prev_5_year_quart_patients,
+      (cur_quart_patients - prev_5_year_quart_patients),
+      annual_5_per_change_patients,
+      prev_5_year_quart_identified,
+      current_quart_identified,
+      current_quart_identified - prev_5_year_quart_identified,
+      ave_12_month_patients,
+      ave_12_month_patients_prev,
+      average_patient_change,
+      `12_month_volume`,
+      `12_month_volume_prev`,
+      volume_change,
+      covid_volume_actual,
+      covid_volume_predicted,
+      covid_volume_dif,
+      covid_volume_dif_per
+    ),
+    Rounded = c(
+      format_number(cur_quart_volume),
+      format_number(prev_year_quart_volume),
+      format_number(annual_per_change, percentage = T),
+      format_number(prev_quart_volume),
+      format_number(quarterly_per_change, percentage = T),
+      format_number(prev_5_year_quart_volume),
+      format_number((
+        cur_quart_volume - prev_5_year_quart_volume
+      )),
+      format_number(annual_5_per_change, percentage = T),
+      format_number(cur_quart_patients),
+      format_number(prev_year_quart_patients),
+      format_number(annual_per_change_patients, percentage = T),
+      format_number(prev_quart_patients),
+      format_number(quarterly_per_change_patients, percentage = T),
+      format_number(prev_5_year_quart_patients),
+      format_number((
+        cur_quart_patients - prev_5_year_quart_patients
+      )),
+      format_number(annual_5_per_change_patients, percentage = T),
+      format_number(prev_5_year_quart_identified, percentage = T),
+      format_number(current_quart_identified, percentage = T),
+      format_number(current_quart_identified - prev_5_year_quart_identified),
+      format_number(ave_12_month_patients),
+      format_number(ave_12_month_patients_prev),
+      format_number(average_patient_change, percentage = T),
+      format_number(`12_month_volume`),
+      format_number(`12_month_volume_prev`),
+      format_number(volume_change, percentage = T),
+      format_number(covid_volume_actual),
+      format_number(covid_volume_predicted),
+      format_number(covid_volume_dif),
+      format_number(covid_volume_dif_per, percentage = T)
+    )
   )
-)
 
-#write data to sheet
-openxlsx::writeData(qrwb,
-                    sheet = code,
-                    startRow = 1,
-                    x = qr_data)
+  #write data to sheet
+  openxlsx::writeData(qrwb,
+                      sheet = code,
+                      startRow = 1,
+                      x = qr_data)
 
-#auto width columns
-setColWidths(qrwb,
-             sheet = code,
-             cols = 1:5,
-             widths = "auto")
+  #auto width columns
+  setColWidths(qrwb,
+               sheet = code,
+               cols = 1:5,
+               widths = "auto")
 }
 
 #save workbook in shared QR folder
@@ -1143,3 +1129,18 @@ openxlsx::saveWorkbook(
   ),
   overwrite = T
 )
+
+# 10. automate narratives --------------------------------------------------
+
+# 11. render markdown ------------------------------------------------------
+
+rmarkdown::render("mumh-quarterly-narrative.Rmd",
+                  output_format = "html_document",
+                  output_file = "outputs/mumh_quarterly_dec21_v001.html")
+
+rmarkdown::render("mumh-quarterly-narrative.Rmd",
+                  output_format = "word_document",
+                  output_file = "outputs/mumh_quarterly_dec21_v001.docx")
+
+logr::log_close()
+
