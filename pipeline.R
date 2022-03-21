@@ -1107,10 +1107,12 @@ for(j in 1:length(bnf_list)){
   )
 
   #write data to sheet
-  openxlsx::writeData(qrwb,
+  openxlsx::writeDataTable(qrwb,
                       sheet = code,
                       startRow = 1,
-                      x = qr_data)
+                      x = qr_data,
+                      tableName = paste0("table_", code),
+                      tableStyle = "none")
 
   #auto width columns
   setColWidths(qrwb,
