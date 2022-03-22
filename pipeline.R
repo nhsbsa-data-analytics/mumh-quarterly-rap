@@ -972,10 +972,33 @@ for(j in 1:length(bnf_list)){
     ((covid_volume_actual - covid_volume_predicted) / covid_volume_predicted) *
     100
 
+  #build names for use in narratives
+  name_formatted <- ""
+  if(name == "Hypnotics and anxiolytics") {
+    name <- "hypnotics and anxiolytics"
+    name_formatted <- "hypnotic and anxiolytic item"
+  } else if(name == "Drugs used in psychoses and related disorders") {
+    name <- "antipsychotic items"
+    name_formatted <- "antipsychotic drug item"
+  } else if(name == "Antidepressant drugs") {
+    name <- "antidepressant drug items"
+    name_formatted <- "antidepressant drug item"
+  } else if(name == "CNS stimulants and drugs used for ADHD") {
+    name <- "CNS stimulants and drugs used for ADHD items"
+    name_formatted <- "CNS stimulants and drugs used for ADHD item"
+  } else if(name == "Drugs for dementia") {
+    name <- "drugs for dementia"
+    name_formatted <- "drug for dementia item"
+  }
+
+
+
+
 
   #build data
   qr_data <- data.frame(
     Section_Name = rep(name, 29),
+    Section_Formatted = rep(name_formatted, 29),
     Period = c(
       quarter,
       prev_year_filter,
@@ -1177,7 +1200,7 @@ par1a <- paste0(
   "There were ",
   narrative_data$Rounded[1],
   " ",
-  tolower(narrative_data$Section_Name[1]),
+  narrative_data$Section_Name[1],
   " prescribed in the ",
   ordinal_quarter,
   " quarter of financial year ",
@@ -1186,7 +1209,7 @@ par1a <- paste0(
   )
 
 #paragraph 1 sentence 2
-#check for annual increase/decrease
+#check for annual increase/decrease in items
 year_change_items <- ""
 if(narrative_data$Value[1] > narrative_data$Value[2]) {
   year_change_items <- " increase"
@@ -1194,7 +1217,7 @@ if(narrative_data$Value[1] > narrative_data$Value[2]) {
   year_change_items <- " decrease"
 }
 
-#check for quarterly increase/decrease
+#check for quarterly increase/decrease in items
 quarter_change_items <- ""
 if(narrative_data$Value[1] > narrative_data$Value[4]) {
   quarter_change_items <- " increase"
@@ -1233,7 +1256,7 @@ if(narrative_data$Value[1] > narrative_data$Value[6]) {
 
 par1c <- paste0(
   "Prescribing of ",
-  tolower(narrative_data$Section_Name[1]),
+  narrative_data$Section_Name[1],
   " has been ",
   year_5_change_items,
   " since ",
@@ -1259,6 +1282,121 @@ par1 <- paste0(
   " ",
   par1c
 )
+
+#paragraph 2 sentence 1
+par2a <- paste0(
+  "There were an estimated ",
+  narrative_data$Rounded[9],
+  " identified patients who were prescribed at least one ",
+  tolower(narrative_data$Section_Formatted[1]),
+  " item in quarter ",
+  str_sub(quarter,-1,-1),
+  " of ",
+  fy_formatted,
+  "."
+)
+
+#paragraph 2 sentence 2
+#check for annual increase/decrease in patients
+year_change_patients <- ""
+if(narrative_data$Value[9] > narrative_data$Value[10]) {
+  year_change_patients <- " increase"
+} else {
+  year_change_patients <- " decrease"
+}
+
+#check for quarterly increase/decrease in patients
+quarter_change_patients <- ""
+if(narrative_data$Value[9] > narrative_data$Value[12]) {
+  quarter_change_patients <- " increase"
+} else {
+  quarter_change_patients <- " decrease"
+}
+
+par2b <- paste0(
+  "This was a ",
+  narrative_data$Rounded[11],
+  year_change_patients,
+  " from ",
+  narrative_data$Rounded[10],
+  " identified patients when compared with the same quarter in ",
+  fy_formatted_prev,
+  ", and a ",
+  narrative_data$Rounded[13],
+  quarter_change_patients,
+  " from ",
+  narrative_data$Rounded[12],
+  " identified patients in the previous quarter."
+)
+
+#paragraph 2 sentence 3
+par2c <- paste0(
+  "The long-term trends for patients receiving hypnotics and anxiolytics are similar to the overall prescribing of items."
+)
+
+#paragraph 2 sentence 4
+#check for 5 year increase/decrease in patients
+year_5_change_patients <- ""
+year_5_up_down_patients <- ""
+if(narrative_data$Value[9] > narrative_data$Value[14]) {
+  year_5_change_patients <- " increase "
+  year_5_up_down_patients <- " more "
+} else {
+  year_5_change_patients <- " decrease "
+  year_5_up_down_patients<- " fewer "
+}
+
+par2d <- paste0(
+  "There were ",
+  narrative_data$Rounded[15],
+  year_5_up_down_patients,
+  "identified patients who received a ",
+  narrative_data$Section_Formatted[1],
+  " in quarter ",
+  str_sub(quarter,-1,-1),
+  " ",
+  fy_formatted,
+  " compared to quarter ",
+  str_sub(quarter,-1,-1),
+  " ",
+  fy_formatted_prev_5,
+  " a",
+  year_5_change_patients,
+  "of ",
+  narrative_data$Rounded[16],
+  "."
+)
+
+#paragraph 2 sentence 5
+par2e <- paste0(
+  "However, it should be noted that this is likely to be an underestimate of the actual",
+  year_5_change_patients,
+  "in patient numbers, as the proportion of patients who could be identified increased. In ",
+  paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
+  ", ",
+  narrative_data$Rounded[17],
+  " of items were prescribed to identified patients, this increased by ",
+  narrative_data$Rounded[19],
+  " percentage points in ",
+  paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
+  " to ",
+  narrative_data$Rounded[18],
+  " of items."
+)
+
+#paragraph 2
+par2 <
+  paste0(
+    par2a,
+    " ",
+    par2b,
+    " ",
+    par2c,
+    " ",
+    par2d,
+    " ",
+    par2e
+  )
 
 # 11. render markdown ------------------------------------------------------
 
