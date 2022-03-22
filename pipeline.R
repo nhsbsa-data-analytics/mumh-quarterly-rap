@@ -1147,17 +1147,118 @@ ordinal_number <- function(x) {
   return(data[1,2])
 }
 
+ordinal_quarter <- ordinal_number(
+  as.numeric(str_sub(quarter,-1,-1))
+)
+
+ordinal_quarter_prev <- ordinal_number(
+  as.numeric(str_sub(prev_quarter_filter,-1,-1))
+)
+
+fy_formatted <- paste0(
+  str_sub(quarter, 1,5),
+  str_sub(quarter, 8,9)
+)
+
+fy_formatted_prev <- paste0(
+  str_sub(prev_year_filter, 1,5),
+  str_sub(prev_year_filter, 8,9)
+)
+
+fy_formatted_prev_5<- paste0(
+  str_sub(filter_5_years, 1,5),
+  str_sub(filter_5_years, 8,9)
+)
+
+narrative_data <- table_0401
+
+#paragraph 1 sentence 1
 par1a <- paste0(
   "There were ",
-  table_0401$Rounded[1],
+  narrative_data$Rounded[1],
   " ",
-  tolower(table_0401$Section_Name[1]),
+  tolower(narrative_data$Section_Name[1]),
   " prescribed in the ",
-  ordinal_number(
-    as.numeric(str_sub(quarter,-1,-1))
-    ),
-  " quarter of financial year 2021/22."
+  ordinal_quarter,
+  " quarter of financial year ",
+  fy_formatted,
+  "."
   )
+
+#paragraph 1 sentence 2
+#check for annual increase/decrease
+year_change_items <- ""
+if(narrative_data$Value[1] > narrative_data$Value[2]) {
+  year_change_items <- " increase"
+} else {
+  year_change_items <- " decrease"
+}
+
+#check for quarterly increase/decrease
+quarter_change_items <- ""
+if(narrative_data$Value[1] > narrative_data$Value[4]) {
+  quarter_change_items <- " increase"
+} else {
+  quarter_change_items <- " decrease"
+}
+
+par1b <- paste0(
+  "This was a ",
+  narrative_data$Rounded[3],
+  year_change,
+  " from ",
+  narrative_data$Rounded[2],
+  " items compared with the same quarter a year ago, and a ",
+  narrative_data$Rounded[5],
+  quarter_change_items,
+  " from ",
+  narrative_data$Rounded[4],
+  " items in the previous quarter."
+)
+
+#paragraph 1 sentence 3
+#check for 5 year increase/decrease
+year_5_change_items <- ""
+year_5_change_items2 <- ""
+year_5_up_down <- ""
+if(narrative_data$Value[1] > narrative_data$Value[6]) {
+  year_5_change_items <- "increasing"
+  year_5_change_items2 <- "increase"
+  year_5_up_down <- "more"
+} else {
+  year_5_change_items <- "decreasing"
+  year_5_change_items2 <- "decrease"
+  year_5_up_down <- "fewer"
+}
+
+par1c <- paste0(
+  "Prescribing of ",
+  tolower(narrative_data$Section_Name[1]),
+  " has been ",
+  year_5_change_items,
+  " since ",
+  fy_formatted_prev_5,
+  ", with ",
+  narrative_data$Rounded[7],
+  " fewer items prescribed in ",
+  paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
+  " when compared to ",
+  paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
+  ", a ",
+  year_5_change_items2,
+  " of ",
+  narrative_data$Rounded[8],
+  " over the period."
+)
+
+#build 1st paragraph
+par1 <- paste0(
+  par1a,
+  " ",
+  par1b,
+  " ",
+  par1c
+)
 
 # 11. render markdown ------------------------------------------------------
 
