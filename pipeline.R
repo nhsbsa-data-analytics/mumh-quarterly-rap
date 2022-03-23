@@ -1457,6 +1457,63 @@ par5 <- paste0(
   par5b
 )
 
+#paragraph 6
+#paragraph 6 sentence 1
+par6a <- paste0(
+  "There were ",
+  narrative_data$Rounded[23],
+  " ",
+  narrative_data$Section_Name[1],
+  " prescribed in the 12 months ",
+  min_filter_12_months,
+  " to ",
+  max_filter_12_months,
+  "."
+)
+
+#check for 12 month increase/decrease in items
+year_change_12_month_items <- ""
+year_up_down_12_month_items <- ""
+if(narrative_data$Value[23] > narrative_data$Value[24]) {
+  year_change_12_month_items <- " increase "
+  year_up_down_12_month_items <- " more "
+} else {
+  year_change_12_month_items <- " decrease "
+  year_up_down_12_month_items<- " fewer "
+}
+
+#paragraph 6 sentence 2
+par6b <- paste0(
+  "This was a ",
+  narrative_data$Rounded[25],
+  year_change_12_month_items,
+  "from ",
+  narrative_data$Rounded[24],
+  " items when compared with ",
+  min_filter_prev_12_months,
+  " to ",
+  max_filter_prev_12_months,
+  "."
+)
+
+#build paragraph 6
+par6 <- paste0(
+  par6a,
+  " ",
+  par6b
+)
+
+#paragraph 7
+par7 <- paste0(
+  "It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19."
+  )
+
+#covid paragraph
+#covid paragraph sentence 1
+covpar1a <- paste0(
+  ""
+)
+
 # 11. render markdown ------------------------------------------------------
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
