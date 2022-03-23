@@ -1385,7 +1385,7 @@ par2e <- paste0(
 )
 
 #paragraph 2
-par2 <
+par2 <-
   paste0(
     par2a,
     " ",
@@ -1397,6 +1397,65 @@ par2 <
     " ",
     par2e
   )
+
+#paragraph 3
+par3 <- paste0(
+  "The monthly time series for ",
+  narrative_data$Section_Name[1],
+  " show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February."
+)
+
+#paragraph 4
+par4 <- paste0(
+  "As patients can appear in more than one month of data, adding the patients for different months together would result in an inaccurate estimate of the number of unique patients that have received prescribing in this period. Therefore, we have calculated the average number of patients for comparison purposes. This average is a mean, calculated by summing the number of patients for the periods in question and dividing by the number of months in the period."
+)
+
+#paragraph 5
+#paragraph 5 sentence 1``
+par5a <- paste0(
+  "The monthly average number of identified patients receiving at least one ",
+  narrative_data$Section_Formatted[1],
+  " in the 12 months ",
+  min_filter_12_months,
+  " to ",
+  max_filter_12_months,
+  " was ",
+  narrative_data$Rounded[20],
+  "."
+)
+
+#paragraph 5 sentence 2
+#check for 12 month increase/decrease in average patients
+year_change_ave_patients <- ""
+year_up_down_ave_patients <- ""
+if(narrative_data$Value[20] > narrative_data$Value[21]) {
+  year_change_ave_patients <- " increase "
+  year_up_down_ave_patients <- " more "
+} else {
+  year_change_ave_patients <- " decrease "
+  year_up_down_ave_patients<- " fewer "
+}
+
+par5b <- paste0(
+  "This was a",
+  year_change_ave_patients,
+  "of ",
+  narrative_data$Rounded[22],
+  " from a monthly average of ",
+  narrative_data$Rounded[21],
+  " identified patients in the period ",
+  min_filter_prev_12_months,
+  " to ",
+  max_filter_prev_12_months,
+  "."
+)
+
+#build paragraph 5
+par5 <- paste0(
+  par5a,
+  " ",
+  par5b
+)
 
 # 11. render markdown ------------------------------------------------------
 
