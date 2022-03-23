@@ -271,7 +271,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 `r par1`
 
-There were an estimated 1.06 million identified patients who were prescribed at least one hypnotic and anxiolytic item in quarter 3 of 2021/22. This was a 1.89% decrease from 1.08 million identified patients when compared with the same quarter in 2020/21, and a 0.70% increase from 1.06 million identified patients in the previous quarter. The long-term trends for patients receiving hypnotics and anxiolytics are similar to the overall prescribing of items. There were 148,000 fewer identified patients who received a hypnotic and anxiolytic item in quarter 3 2021/22 compared to quarter 3 2016/17, a decrease of 12.2%. However, it should be noted that this is likely to be an underestimate of the actual decrease in patient numbers, as the proportion of patients who could be identified increased. In Q3 2016/17, 94.1% of items were prescribed to identified patients, this increased by 2.76 percentage points in Q3 2021/22 to 96.9% of items.
+`r par2`
 
 ```{r monthly_0401}
 
@@ -306,15 +306,15 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
-The monthly time series for hypnotics and anxiolytics show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February.
+`r par3`
 
-As patients can appear in more than one month of data, adding the patients for different months together would result in an inaccurate estimate of the number of unique patients that have received prescribing in this period. Therefore, we have calculated the average number of patients for comparison purposes. This average is a mean, calculated by summing the number of patients for the periods in question and dividing by the number of months in the period.
+`r par4`
 
-The monthly average number of identified patients receiving at least one hypnotic and anxiolytic item in the 12 months January 2021 to December 2021 was 691,000. This was a decrease of 0.67% from a monthly average of 696,000 identified patients in the period January 2020 to December 2020.
+`r par5`
 
-There were 14.1 million hypnotic and anxiolytic items prescribed in the 12 months January 2021 to December 2021. This was a 1.94% decrease from 14.4 million items when compared with January 2020 to December 2020.
+`r par6`
 
-It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19.
+`r par7`
 
 ### 2.3. Antipsychotics
 
@@ -638,7 +638,7 @@ chartdf %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
-In the 22-month period from March 2020 to December 2021, 26.1 million hypnotics and anxiolytics items were prescribed in England. This was 250,000 or 0.97% more than the 25.8 million items expected based on historical trends. However, this increase in prescribed items does not fall outside of the expected range of values for the period.
+`r covpar` However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
 ### 3.3. Drugs used in psychoses and related disorders prescribing during the COVID-19 pandemic {.toc-ignore}
 

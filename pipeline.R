@@ -991,10 +991,6 @@ for(j in 1:length(bnf_list)){
     name_formatted <- "drug for dementia item"
   }
 
-
-
-
-
   #build data
   qr_data <- data.frame(
     Section_Name = rep(name, 29),
@@ -1193,10 +1189,21 @@ fy_formatted_prev_5<- paste0(
   str_sub(filter_5_years, 8,9)
 )
 
-narrative_data <- table_0401
+#build loop to output narrative for each bnf section
+tables <- list()
+tables$`0401` <- table_0401
+tables$`0402` <- table_0402
+tables$`0403` <- table_0403
+tables$`0404` <- table_0404
+tables$`0411` <- table_0411
+
+for(k in 1:length(tables)) {
+narrative_data <- tables[[k]]
+
+print(names(tables)[k])
 
 #paragraph 1 sentence 1
-par1a <- paste0(
+assign(paste0("par1a_", names(tables)[k]), paste0(
   "There were ",
   narrative_data$Rounded[1],
   " ",
@@ -1206,7 +1213,8 @@ par1a <- paste0(
   " quarter of financial year ",
   fy_formatted,
   "."
-  )
+)
+)
 
 #paragraph 1 sentence 2
 #check for annual increase/decrease in items
@@ -1225,18 +1233,21 @@ if(narrative_data$Value[1] > narrative_data$Value[4]) {
   quarter_change_items <- " decrease"
 }
 
-par1b <- paste0(
-  "This was a ",
-  narrative_data$Rounded[3],
-  year_change,
-  " from ",
-  narrative_data$Rounded[2],
-  " items compared with the same quarter a year ago, and a ",
-  narrative_data$Rounded[5],
-  quarter_change_items,
-  " from ",
-  narrative_data$Rounded[4],
-  " items in the previous quarter."
+assign(
+  paste0("par1b_", names(tables)[k]),
+  paste0(
+    "This was a ",
+    narrative_data$Rounded[3],
+    year_change,
+    " from ",
+    narrative_data$Rounded[2],
+    " items compared with the same quarter a year ago, and a ",
+    narrative_data$Rounded[5],
+    quarter_change_items,
+    " from ",
+    narrative_data$Rounded[4],
+    " items in the previous quarter."
+  )
 )
 
 #paragraph 1 sentence 3
@@ -1253,6 +1264,29 @@ if(narrative_data$Value[1] > narrative_data$Value[6]) {
   year_5_change_items2 <- "decrease"
   year_5_up_down <- "fewer"
 }
+
+assign(
+  paste0("par1c_", names(tables)[k]),
+  paste0(
+    "Prescribing of ",
+    narrative_data$Section_Name[1],
+    " has been ",
+    year_5_change_items,
+    " since ",
+    fy_formatted_prev_5,
+    ", with ",
+    narrative_data$Rounded[7],
+    " fewer items prescribed in ",
+    paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
+    " when compared to ",
+    paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
+    ", a ",
+    year_5_change_items2,
+    " of ",
+    narrative_data$Rounded[8],
+    " over the period."
+  )
+)
 
 par1c <- paste0(
   "Prescribing of ",
@@ -1275,12 +1309,15 @@ par1c <- paste0(
 )
 
 #build 1st paragraph
-par1 <- paste0(
-  par1a,
-  " ",
-  par1b,
-  " ",
-  par1c
+assign(
+  paste0("par1_", names(tables)[k]),
+  paste0(
+    get(paste0("par1a_", names(tables)[k])),
+    " ",
+    get(paste0("par1b_", names(tables)[k])),
+    " ",
+    get(paste0("par1c_", names(tables)[k]))
+  )
 )
 
 #paragraph 2 sentence 1
@@ -1289,7 +1326,7 @@ par2a <- paste0(
   narrative_data$Rounded[9],
   " identified patients who were prescribed at least one ",
   tolower(narrative_data$Section_Formatted[1]),
-  " item in quarter ",
+  " in quarter ",
   str_sub(quarter,-1,-1),
   " of ",
   fy_formatted,
@@ -1523,6 +1560,7 @@ covpar1a <- paste0(
   narrative_data$Section_Name[1],
   " were prescribed in England."
 )
+}
 
 #covid paragraph sentence 2
 #check if covid volumes are more/less than predicied
@@ -1543,7 +1581,12 @@ covpar1b <- paste0(
   " items expected based on historical trends."
   )
 
-covpar1b
+#build covid paragraph
+covpar <- paste0(
+  covpar1a,
+  " ",
+  covpar1b
+)
 
 # 11. render markdown ------------------------------------------------------
 
