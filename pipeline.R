@@ -1511,8 +1511,39 @@ par7 <- paste0(
 #covid paragraph
 #covid paragraph sentence 1
 covpar1a <- paste0(
-  ""
+  "In the ",
+  covid_data_month_count,
+  "-month period from ",
+  covid_data_min,
+  " to ",
+  max_filter_12_months,
+  ", ",
+  narrative_data$Rounded[26],
+  " ",
+  narrative_data$Section_Name[1],
+  " were prescribed in England."
 )
+
+#covid paragraph sentence 2
+#check if covid volumes are more/less than predicied
+covid_up_down <- ""
+if(narrative_data$Value[26] > narrative_data$Value[27]) {
+  covid_up_down <- " more "
+} else {
+  covid_up_down<- " fewer "
+}
+covpar1b <- paste0(
+  "This was ",
+  narrative_data$Rounded[28],
+  " or ",
+  narrative_data$Rounded[29],
+  covid_up_down,
+  "than the ",
+  narrative_data$Rounded[27],
+  " items expected based on historical trends."
+  )
+
+covpar1b
 
 # 11. render markdown ------------------------------------------------------
 

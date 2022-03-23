@@ -269,7 +269,7 @@ raw_data$quarterly %>%
 
 Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
-There were 3.55 million hypnotics and anxiolytics prescribed in the third quarter of financial year 2021/22. This was a 2.82% decrease from 3.65 million items compared with the same quarter a year ago, and a 0.82% increase from 3.52 million items in the previous quarter. Prescribing of hypnotics and anxiolytics has been decreasing since 2016, with 413,000 fewer items prescribed in Q3 2021/22 when compared to Q3 2016/17, a decrease of 10.4% over the period.
+`r par1`
 
 There were an estimated 1.06 million identified patients who were prescribed at least one hypnotic and anxiolytic item in quarter 3 of 2021/22. This was a 1.89% decrease from 1.08 million identified patients when compared with the same quarter in 2020/21, and a 0.70% increase from 1.06 million identified patients in the previous quarter. The long-term trends for patients receiving hypnotics and anxiolytics are similar to the overall prescribing of items. There were 148,000 fewer identified patients who received a hypnotic and anxiolytic item in quarter 3 2021/22 compared to quarter 3 2016/17, a decrease of 12.2%. However, it should be noted that this is likely to be an underestimate of the actual decrease in patient numbers, as the proportion of patients who could be identified increased. In Q3 2016/17, 94.1% of items were prescribed to identified patients, this increased by 2.76 percentage points in Q3 2021/22 to 96.9% of items.
 
