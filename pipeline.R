@@ -153,7 +153,7 @@ if(max_month_dw <= max_month) {
   print("No new quarterly data available in the Data Warehouse, will use most recent saved data.")
 } else {
 
-#### build time dimension table in schema ####
+# build time dimension table in schema
 
 # drop time dimension if exists
 exists <- con %>%
@@ -168,7 +168,7 @@ if (exists) {
 create_tdim(con, start = max_month_plus_dw) %>%
   compute("MUMH_MONTH_TDIM", analyze = FALSE, temporary = FALSE)
 
-#### build org dimension table in schema ####
+# build org dimension table in schema
 
 # drop org dimension if exists
 exists <- con %>%
@@ -183,7 +183,7 @@ if (exists) {
 create_org_dim(con, country = 1) %>%
   compute("MUMH_MONTH_PORG_DIM", analyze = FALSE, temporary = FALSE)
 
-#### build drug dimension table in schema ####
+# build drug dimension table in schema
 
 # drop drug dimension if exists
 exists <- con %>%
@@ -1155,6 +1155,7 @@ openxlsx::saveWorkbook(
 )
 
 # 10. automate narratives --------------------------------------------------
+
 #ordinal number function
 ordinal_number <- function(x) {
   data <- data.frame(
@@ -1200,10 +1201,8 @@ tables$`0411` <- table_0411
 for(k in 1:length(tables)) {
 narrative_data <- tables[[k]]
 
-print(names(tables)[k])
-
 #paragraph 1 sentence 1
-assign(paste0("par1a_", names(tables)[k]), paste0(
+par1a <- paste0(
   "There were ",
   narrative_data$Rounded[1],
   " ",
@@ -1214,12 +1213,11 @@ assign(paste0("par1a_", names(tables)[k]), paste0(
   fy_formatted,
   "."
 )
-)
 
 #paragraph 1 sentence 2
 #check for annual increase/decrease in items
 year_change_items <- ""
-if(narrative_data$Value[1] > narrative_data$Value[2]) {
+if (narrative_data$Value[1] > narrative_data$Value[2]) {
   year_change_items <- " increase"
 } else {
   year_change_items <- " decrease"
@@ -1227,35 +1225,32 @@ if(narrative_data$Value[1] > narrative_data$Value[2]) {
 
 #check for quarterly increase/decrease in items
 quarter_change_items <- ""
-if(narrative_data$Value[1] > narrative_data$Value[4]) {
+if (narrative_data$Value[1] > narrative_data$Value[4]) {
   quarter_change_items <- " increase"
 } else {
   quarter_change_items <- " decrease"
 }
 
-assign(
-  paste0("par1b_", names(tables)[k]),
-  paste0(
-    "This was a ",
-    narrative_data$Rounded[3],
-    year_change,
-    " from ",
-    narrative_data$Rounded[2],
-    " items compared with the same quarter a year ago, and a ",
-    narrative_data$Rounded[5],
-    quarter_change_items,
-    " from ",
-    narrative_data$Rounded[4],
-    " items in the previous quarter."
-  )
+par1b <- paste0(
+  "This was a ",
+  narrative_data$Rounded[3],
+  year_change_items,
+  " from ",
+  narrative_data$Rounded[2],
+  " items compared with the same quarter a year ago, and a ",
+  narrative_data$Rounded[5],
+  quarter_change_items,
+  " from ",
+  narrative_data$Rounded[4],
+  " items in the previous quarter."
 )
 
 #paragraph 1 sentence 3
-#check for 5 year increase/decrease
+#check for 5 year increase / decrease
 year_5_change_items <- ""
 year_5_change_items2 <- ""
 year_5_up_down <- ""
-if(narrative_data$Value[1] > narrative_data$Value[6]) {
+if (narrative_data$Value[1] > narrative_data$Value[6]) {
   year_5_change_items <- "increasing"
   year_5_change_items2 <- "increase"
   year_5_up_down <- "more"
@@ -1265,30 +1260,7 @@ if(narrative_data$Value[1] > narrative_data$Value[6]) {
   year_5_up_down <- "fewer"
 }
 
-assign(
-  paste0("par1c_", names(tables)[k]),
-  paste0(
-    "Prescribing of ",
-    narrative_data$Section_Name[1],
-    " has been ",
-    year_5_change_items,
-    " since ",
-    fy_formatted_prev_5,
-    ", with ",
-    narrative_data$Rounded[7],
-    " fewer items prescribed in ",
-    paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
-    " when compared to ",
-    paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
-    ", a ",
-    year_5_change_items2,
-    " of ",
-    narrative_data$Rounded[8],
-    " over the period."
-  )
-)
-
-par1c <- paste0(
+par1c <-   paste0(
   "Prescribing of ",
   narrative_data$Section_Name[1],
   " has been ",
@@ -1298,9 +1270,9 @@ par1c <- paste0(
   ", with ",
   narrative_data$Rounded[7],
   " fewer items prescribed in ",
-  paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
+  paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
   " when compared to ",
-  paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
   ", a ",
   year_5_change_items2,
   " of ",
@@ -1312,13 +1284,18 @@ par1c <- paste0(
 assign(
   paste0("par1_", names(tables)[k]),
   paste0(
-    get(paste0("par1a_", names(tables)[k])),
+    par1a,
     " ",
-    get(paste0("par1b_", names(tables)[k])),
+    par1b,
     " ",
-    get(paste0("par1c_", names(tables)[k]))
+    par1c
   )
 )
+
+#remove sentences from environment
+rm(par1a)
+rm(par1b)
+rm(par1c)
 
 #paragraph 2 sentence 1
 par2a <- paste0(
@@ -1560,7 +1537,6 @@ covpar1a <- paste0(
   narrative_data$Section_Name[1],
   " were prescribed in England."
 )
-}
 
 #covid paragraph sentence 2
 #check if covid volumes are more/less than predicied
@@ -1587,6 +1563,7 @@ covpar <- paste0(
   " ",
   covpar1b
 )
+}
 
 # 11. render markdown ------------------------------------------------------
 
