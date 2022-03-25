@@ -1398,8 +1398,9 @@ par2e <- paste0(
   " of items."
 )
 
-#paragraph 2
-par2 <-
+#build paragraph 2
+assign(
+  paste0("par2_", names(tables)[k]),
   paste0(
     par2a,
     " ",
@@ -1411,12 +1412,23 @@ par2 <-
     " ",
     par2e
   )
+)
+
+#remove sentences from environment
+rm(par2a)
+rm(par2b)
+rm(par2c)
+rm(par2d)
+rm(par2e)
 
 #paragraph 3
-par3 <- paste0(
-  "The monthly time series for ",
-  narrative_data$Section_Name[1],
-  " show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February."
+assign(
+  paste0("par3_", names(tables)[k]),
+  paste0(
+    "The monthly time series for ",
+    narrative_data$Section_Name[1],
+    " show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February."
+  )
 )
 
 #paragraph 4
@@ -1465,11 +1477,18 @@ par5b <- paste0(
 )
 
 #build paragraph 5
-par5 <- paste0(
-  par5a,
-  " ",
-  par5b
+assign(
+  paste0("par5_", names(tables)[k]),
+  paste0(
+    par5a,
+    " ",
+    par5b
+  )
 )
+
+#remove sentences from environment
+rm(par5a)
+rm(par5b)
 
 #paragraph 6
 #paragraph 6 sentence 1
@@ -1511,11 +1530,18 @@ par6b <- paste0(
 )
 
 #build paragraph 6
-par6 <- paste0(
-  par6a,
-  " ",
-  par6b
+assign(
+  paste0("par6_", names(tables)[k]),
+  paste0(
+    par6a,
+    " ",
+    par6b
+  )
 )
+
+#remove sentences from environment
+rm(par6a)
+rm(par6b)
 
 #paragraph 7
 par7 <- paste0(
@@ -1558,11 +1584,18 @@ covpar1b <- paste0(
   )
 
 #build covid paragraph
-covpar <- paste0(
-  covpar1a,
-  " ",
-  covpar1b
+assign(
+  paste0("covpar_", names(tables)[k]),
+  paste0(
+    covpar1a,
+    " ",
+    covpar1b
+  )
 )
+
+#remove sentences from environment
+rm(covpar1a)
+rm(covpar1b)
 }
 
 # 11. render markdown ------------------------------------------------------
