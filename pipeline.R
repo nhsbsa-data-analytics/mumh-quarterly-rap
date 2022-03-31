@@ -1218,26 +1218,26 @@ par1a <- paste0(
 #check for annual increase/decrease in items
 year_change_items <- ""
 if (narrative_data$Value[1] > narrative_data$Value[2]) {
-  year_change_items <- " increase"
+  year_change_items <- " an increase"
 } else {
-  year_change_items <- " decrease"
+  year_change_items <- " a decrease"
 }
 
 #check for quarterly increase/decrease in items
 quarter_change_items <- ""
 if (narrative_data$Value[1] > narrative_data$Value[4]) {
-  quarter_change_items <- " increase"
+  quarter_change_items <- " an increase"
 } else {
-  quarter_change_items <- " decrease"
+  quarter_change_items <- " a decrease"
 }
 
 par1b <- paste0(
-  "This was a ",
+  "This was ",
   narrative_data$Rounded[3],
   year_change_items,
   " from ",
   narrative_data$Rounded[2],
-  " items compared with the same quarter a year ago, and a ",
+  " items compared with the same quarter a year ago, and ",
   narrative_data$Rounded[5],
   quarter_change_items,
   " from ",
@@ -1252,11 +1252,11 @@ year_5_change_items2 <- ""
 year_5_up_down <- ""
 if (narrative_data$Value[1] > narrative_data$Value[6]) {
   year_5_change_items <- "increasing"
-  year_5_change_items2 <- "increase"
+  year_5_change_items2 <- "an increase"
   year_5_up_down <- " more "
 } else {
   year_5_change_items <- "decreasing"
-  year_5_change_items2 <- "decrease"
+  year_5_change_items2 <- "a decrease"
   year_5_up_down <- " fewer "
 }
 
@@ -1274,7 +1274,7 @@ par1c <-   paste0(
   paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
   " when compared to ",
   paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
-  ", a ",
+  ", ",
   year_5_change_items2,
   " of ",
   narrative_data$Rounded[8],
@@ -1315,28 +1315,28 @@ par2a <- paste0(
 #check for annual increase/decrease in patients
 year_change_patients <- ""
 if(narrative_data$Value[9] > narrative_data$Value[10]) {
-  year_change_patients <- " increase"
+  year_change_patients <- " an increase"
 } else {
-  year_change_patients <- " decrease"
+  year_change_patients <- " a decrease"
 }
 
 #check for quarterly increase/decrease in patients
 quarter_change_patients <- ""
 if(narrative_data$Value[9] > narrative_data$Value[12]) {
-  quarter_change_patients <- " increase"
+  quarter_change_patients <- " an increase"
 } else {
-  quarter_change_patients <- " decrease"
+  quarter_change_patients <- " a decrease"
 }
 
 par2b <- paste0(
-  "This was a ",
+  "This was ",
   narrative_data$Rounded[11],
   year_change_patients,
   " from ",
   narrative_data$Rounded[10],
   " identified patients when compared with the same quarter in ",
   fy_formatted_prev,
-  ", and a ",
+  ", and ",
   narrative_data$Rounded[13],
   quarter_change_patients,
   " from ",
@@ -1356,10 +1356,10 @@ par2c <- paste0(
 year_5_change_patients <- ""
 year_5_up_down_patients <- ""
 if(narrative_data$Value[9] > narrative_data$Value[14]) {
-  year_5_change_patients <- " increase "
+  year_5_change_patients <- " an increase "
   year_5_up_down_patients <- " more "
 } else {
-  year_5_change_patients <- " decrease "
+  year_5_change_patients <- " a decrease "
   year_5_up_down_patients<- " fewer "
 }
 
@@ -1377,7 +1377,6 @@ par2d <- paste0(
   str_sub(quarter,-1,-1),
   " ",
   fy_formatted_prev_5,
-  " a",
   year_5_change_patients,
   "of ",
   narrative_data$Rounded[16],
@@ -1458,15 +1457,15 @@ par5a <- paste0(
 year_change_ave_patients <- ""
 year_up_down_ave_patients <- ""
 if(narrative_data$Value[20] > narrative_data$Value[21]) {
-  year_change_ave_patients <- " increase "
+  year_change_ave_patients <- " an increase "
   year_up_down_ave_patients <- " more "
 } else {
-  year_change_ave_patients <- " decrease "
+  year_change_ave_patients <- " a decrease "
   year_up_down_ave_patients<- " fewer "
 }
 
 par5b <- paste0(
-  "This was a",
+  "This was",
   year_change_ave_patients,
   "of ",
   narrative_data$Rounded[22],
