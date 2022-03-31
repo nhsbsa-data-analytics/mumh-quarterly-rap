@@ -1253,11 +1253,11 @@ year_5_up_down <- ""
 if (narrative_data$Value[1] > narrative_data$Value[6]) {
   year_5_change_items <- "increasing"
   year_5_change_items2 <- "increase"
-  year_5_up_down <- "more"
+  year_5_up_down <- " more "
 } else {
   year_5_change_items <- "decreasing"
   year_5_change_items2 <- "decrease"
-  year_5_up_down <- "fewer"
+  year_5_up_down <- " fewer "
 }
 
 par1c <-   paste0(
@@ -1269,7 +1269,8 @@ par1c <-   paste0(
   fy_formatted_prev_5,
   ", with ",
   narrative_data$Rounded[7],
-  " fewer items prescribed in ",
+  year_5_up_down,
+  "items prescribed in ",
   paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
   " when compared to ",
   paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
@@ -1345,7 +1346,9 @@ par2b <- paste0(
 
 #paragraph 2 sentence 3
 par2c <- paste0(
-  "The long-term trends for patients receiving hypnotics and anxiolytics are similar to the overall prescribing of items."
+  "The long-term trends for patients receiving ",
+  narrative_data$Section_Name[1],
+  " are similar to the overall prescribing of items."
 )
 
 #paragraph 2 sentence 4

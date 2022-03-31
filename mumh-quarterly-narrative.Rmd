@@ -40,7 +40,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 <main>
 
-# England April 2016 to December 2021 {.toc-ignore}
+# England April 2016 to `r max_filter_12_months` {.toc-ignore}
 
 Published 3 March 2022
 
@@ -93,7 +93,7 @@ There are many costs incurred when a dispensing contractor fulfils a prescriptio
 
 The first national lockdown introduced as a response to the coronavirus pandemic (COVID-19) was implemented between 23 March and 4 July 2020, with the second national lockdown between 5 November and 2 December 2020. A third national lockdown was implemented on 6 January 2021. The first steps of the [roadmap out of lockdown](https://www.gov.uk/government/publications/covid-19-response-spring-2021/covid-19-response-spring-2021-summary) began in March 2021 with restrictions being lifted throughout Q1 2021/22. With the emergence of the Omicron variant of COVID-19 [new measures were announced](https://www.gov.uk/government/news/measures-against-omicron-variant-come-into-effect-30-november-2021) by the government and began on 30 November 2021. These measures did not include a lockdown but required anyone in contact with a suspected Omicron case to self-isolate. These periods are considered as part of this publication. It is important to note that these statistics cannot infer causality of lockdown measures on the prescribing figures but any inferences made should consider the impact of changing restrictions across the period. 
 
-This publication presents data from April 2016 to December 2021, the most recent available.
+This publication presents data from April 2016 to `r max_filter_12_months`, the most recent available.
 
 References to quarters in these statistics are:
 
@@ -598,7 +598,7 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ## 3. Prescribing during the COVID-19 pandemic 
 
-The number of expected prescription items for the below sections during this period have been calculated by extrapolating figures for March 2020 to December 2021 according to:
+The number of expected prescription items for the below sections during this period have been calculated by extrapolating figures for March 2020 to `r max_filter_12_months` according to:
 
 * the trend in prescription items for each section between April 2015 and February 2020
 * the number of dispensing days that occur in each month
@@ -759,7 +759,7 @@ The patient counts shown in these statistics should only be analysed at the leve
 
 ### 5.2. Trends during COVID-19 {.toc-ignore}
 
-The number of items for each BNF section in the 22-month period March 2020 to December 2021 were compared to the number of items expected to be prescribed based on trends from the 'pre-COVID-19' period. The monthly data for April 2015 to February 2020 was used to extrapolate expected figures for March 2020 to December 2021. These figures were extrapolated according to:
+The number of items for each BNF section in the 22-month period March 2020 to `r max_filter_12_months` were compared to the number of items expected to be prescribed based on trends from the 'pre-COVID-19' period. The monthly data for April 2015 to February 2020 was used to extrapolate expected figures for March 2020 to `r max_filter_12_months`. These figures were extrapolated according to:
 
 * the trends between April 2015 and February 2020
 * the number of dispensing days that occur in each month
