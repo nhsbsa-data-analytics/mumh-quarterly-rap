@@ -1218,26 +1218,26 @@ par1a <- paste0(
 #check for annual increase/decrease in items
 year_change_items <- ""
 if (narrative_data$Value[1] > narrative_data$Value[2]) {
-  year_change_items <- " an increase"
+  year_change_items <- " increase"
 } else {
-  year_change_items <- " a decrease"
+  year_change_items <- " decrease"
 }
 
 #check for quarterly increase/decrease in items
 quarter_change_items <- ""
 if (narrative_data$Value[1] > narrative_data$Value[4]) {
-  quarter_change_items <- " an increase"
+  quarter_change_items <- " increase"
 } else {
-  quarter_change_items <- " a decrease"
+  quarter_change_items <- " decrease"
 }
 
 par1b <- paste0(
-  "This was ",
+  "This was a ",
   narrative_data$Rounded[3],
   year_change_items,
   " from ",
   narrative_data$Rounded[2],
-  " items compared with the same quarter a year ago, and ",
+  " items compared with the same quarter a year ago, and a ",
   narrative_data$Rounded[5],
   quarter_change_items,
   " from ",
@@ -1303,7 +1303,7 @@ par2a <- paste0(
   "There were an estimated ",
   narrative_data$Rounded[9],
   " identified patients who were prescribed at least one ",
-  tolower(narrative_data$Section_Formatted[1]),
+  narrative_data$Section_Formatted[1],
   " in quarter ",
   str_sub(quarter,-1,-1),
   " of ",
@@ -1315,28 +1315,28 @@ par2a <- paste0(
 #check for annual increase/decrease in patients
 year_change_patients <- ""
 if(narrative_data$Value[9] > narrative_data$Value[10]) {
-  year_change_patients <- " an increase"
+  year_change_patients <- " increase"
 } else {
-  year_change_patients <- " a decrease"
+  year_change_patients <- " decrease"
 }
 
 #check for quarterly increase/decrease in patients
 quarter_change_patients <- ""
 if(narrative_data$Value[9] > narrative_data$Value[12]) {
-  quarter_change_patients <- " an increase"
+  quarter_change_patients <- " increase"
 } else {
-  quarter_change_patients <- " a decrease"
+  quarter_change_patients <- " decrease"
 }
 
 par2b <- paste0(
-  "This was ",
+  "This was a ",
   narrative_data$Rounded[11],
   year_change_patients,
   " from ",
   narrative_data$Rounded[10],
   " identified patients when compared with the same quarter in ",
   fy_formatted_prev,
-  ", and ",
+  ", and a ",
   narrative_data$Rounded[13],
   quarter_change_patients,
   " from ",
@@ -1355,19 +1355,33 @@ par2c <- paste0(
 #check for 5 year increase/decrease in patients
 year_5_change_patients <- ""
 year_5_up_down_patients <- ""
+year_5_estimate <- ""
+year_5_change_patients2 <- ""
 if(narrative_data$Value[9] > narrative_data$Value[14]) {
   year_5_change_patients <- " an increase "
   year_5_up_down_patients <- " more "
+  year_5_estimate <- " overestimate "
+  year_5_change_patients2 <- " increase "
 } else {
   year_5_change_patients <- " a decrease "
   year_5_up_down_patients<- " fewer "
+  year_5_estimate <- " underestimate "
+  year_5_change_patients2 <- " decrease "
+}
+
+#check for vowel at beginning of section name
+vowel_check <- tolower(substr(narrative_data$Section_Formatted[1], 1, 1))
+and_a <- "a"
+if(vowel_check %in% c("a", "e", "i", "o", "u")) {
+  and_a <- "an "
 }
 
 par2d <- paste0(
   "There were ",
   narrative_data$Rounded[15],
   year_5_up_down_patients,
-  "identified patients who received a ",
+  "identified patients who received ",
+  and_a,
   narrative_data$Section_Formatted[1],
   " in quarter ",
   str_sub(quarter,-1,-1),
@@ -1377,6 +1391,7 @@ par2d <- paste0(
   str_sub(quarter,-1,-1),
   " ",
   fy_formatted_prev_5,
+  ", ",
   year_5_change_patients,
   "of ",
   narrative_data$Rounded[16],
@@ -1385,9 +1400,16 @@ par2d <- paste0(
 
 #paragraph 2 sentence 5
 par2e <- paste0(
-  "However, it should be noted that this is likely to be an underestimate of the actual",
-  year_5_change_patients,
-  "in patient numbers, as the proportion of patients who could be identified increased. In ",
+  "However, it should be noted that this is likely to be an",
+  year_5_estimate,
+  "of the actual",
+  year_5_change_patients2,
+  "in patient numbers, as the proportion of patients who could be identified increased."
+)
+
+#paragraph 2 sentence 6
+par2f <- paste0(
+  "In ",
   paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
   ", ",
   narrative_data$Rounded[17],
@@ -1412,7 +1434,9 @@ assign(
     " ",
     par2d,
     " ",
-    par2e
+    par2e,
+    " ",
+    par2f
   )
 )
 
@@ -1422,6 +1446,7 @@ rm(par2b)
 rm(par2c)
 rm(par2d)
 rm(par2e)
+rm(par2f)
 
 #paragraph 3
 assign(
