@@ -610,11 +610,9 @@ All sections except drugs for dementia show variation within expected values, wi
 
 ```{r covid_0403_items}
 
-chartdf <- model_data %>%
+ model_data %>%
   covid_model() %>% 
-  filter(SECTION_CODE == "0403", YEAR_MONTH > 202002)
-
-chartdf %>%
+  filter(SECTION_CODE == "0403", YEAR_MONTH > 202002) %>%
   covid_chart_hc(title = "Figure 11: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.3: Antidepressant drugs")
 
 ```
@@ -627,11 +625,9 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ```{r covid_0401_items}
 
-chartdf <- model_data %>%
+model_data %>%
   covid_model() %>% 
-  filter(SECTION_CODE == "0401", YEAR_MONTH > 202002)
-
-chartdf %>%
+  filter(SECTION_CODE == "0401", YEAR_MONTH > 202002) %>%
   covid_chart_hc(title = "Figure 12: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.1: Hypnotics and anxiolytics")
 
 ```
@@ -644,11 +640,9 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ```{r covid_0402_items}
 
-chartdf <- model_data %>%
+model_data %>%
   covid_model() %>% 
-  filter(SECTION_CODE == "0402", YEAR_MONTH > 202002)
-
-chartdf %>%
+  filter(SECTION_CODE == "0402", YEAR_MONTH > 202002) %>%
   covid_chart_hc(title = "Figure 13: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.2: Drugs used in psychoses and related disorders")
 
 ```
@@ -661,11 +655,9 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ```{r covid_0404_items}
 
-chartdf <- model_data %>%
+model_data %>%
   covid_model() %>% 
-  filter(SECTION_CODE == "0404", YEAR_MONTH > 202002)
-
-chartdf %>%
+  filter(SECTION_CODE == "0404", YEAR_MONTH > 202002) %>%
   covid_chart_hc(title = "Figure 14: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.4: CNS stimulants and drugs used for ADHD")
 
 ```
@@ -678,11 +670,9 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ```{r covid_0411_items}
 
-chartdf <- model_data %>%
+model_data %>%
   covid_model() %>% 
-  filter(SECTION_CODE == "0411", YEAR_MONTH > 202002)
-
-chartdf %>%
+  filter(SECTION_CODE == "0411", YEAR_MONTH > 202002) %>%
   covid_chart_hc(title = "Figure 15: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.11: Drugs for dementia")
 
 ```
