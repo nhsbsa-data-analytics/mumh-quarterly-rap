@@ -19,10 +19,10 @@ invisible(lapply(c(req_pkgs, "mumhquarterly", "nhsbsaR"), library, character.onl
 
 # 2. setup logging --------------------------------------------------------
 
-lf <- logr::log_open(autolog = TRUE)
+#lf <- logr::log_open(autolog = TRUE)
 
 # send code to log
-logr::log_code()
+#logr::log_code()
 
 # 3. set options ----------------------------------------------------------
 
@@ -307,7 +307,7 @@ save_data(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_monthly
 # 6. import data ----------------------------------------------------------
 # import data from data folder to perform aggregations etc without having to
 # maintain connection to DWH
-logr::sep("read data")
+#logr::sep("read data")
 
 raw_data <- list()
 
@@ -343,15 +343,15 @@ raw_data$quarterly <- data.table::fread(rownames(file.info(
 )$mtime)],
 keepLeadingZeros = TRUE)
 
-logr::put(raw_data)
+#logr::put(raw_data)
 
 dispensing_days <- mumhquarterly::get_dispensing_days(2022)
 
-logr::put(dispensing_days)
+#logr::put(dispensing_days)
 
 # 7. data manipulation ----------------------------------------------------
 
-logr::sep("data manipulations")
+#logr::sep("data manipulations")
 
 # patient identification rates for most recent data
 period <- raw_data$quarterly %>%
@@ -361,7 +361,7 @@ period <- raw_data$quarterly %>%
                    n = 4) %>%
   dplyr::pull()
 
-logr::put(period)
+#logr::put(period)
 
 # create dataframe
 patient_identification <- raw_data$quarterly %>%
@@ -382,7 +382,7 @@ patient_identification <- raw_data$quarterly %>%
                      values_from = RATE) %>%
   dplyr::arrange(`BNF Section Code`)
 
-logr::put(patient_identification)
+#logr::put(patient_identification)
 
 # chart data for use in markdown
 
@@ -408,7 +408,7 @@ chart_data$monthly <- raw_data$monthly %>%
                    by = "YEAR_MONTH") %>%
   dplyr::ungroup()
 
-logr::put(chart_data$monthly)
+#logr::put(chart_data$monthly)
 
 # join monthly data to dispensing days to allow modelling
 model_data <- raw_data$monthly %>%
@@ -427,7 +427,7 @@ model_data <- raw_data$monthly %>%
                    by = "YEAR_MONTH") %>%
   dplyr::ungroup()
 
-logr::put(model_data)
+#logr::put(model_data)
 
 # 8. write data to .xlsx --------------------------------------------------
 
@@ -446,7 +446,7 @@ patient_identification_excel <- raw_data$quarterly %>%
                      values_from = RATE) %>%
   dplyr::arrange(`BNF Section Code`)
 
-logr::put(patient_identification_excel)
+#logr::put(patient_identification_excel)
 
 # create wb object
 # create list of sheetnames needed (overview and metadata created automatically)
@@ -630,7 +630,7 @@ format_data(wb,
 
 #save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/mumh_quarterly_dec21_v001.xlsx",
+                       "outputs/mumh_quarterly_mar22_v001.xlsx",
                        overwrite = TRUE)
 
 #Write covid model data to table for QR
@@ -1629,11 +1629,11 @@ rm(covpar1b)
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_dec21_v001.html")
+                  output_file = "outputs/mumh_quarterly_mar22_v001.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_dec21_v001.docx")
+                  output_file = "outputs/mumh_quarterly_mar22_v001.docx")
 
-logr::log_close()
+#logr::log_close()
 
