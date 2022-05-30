@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # England April 2016 to `r max_filter_12_months` {.toc-ignore}
 
-Published 3 March 2022
+Published 7 July 2022
 
 ## Key findings
 
@@ -110,7 +110,7 @@ When the NHSBSA processes prescriptions, the NHS number of the patient is identi
 
 These statistics do not contain any personally identifiable data. More details on the statistical disclosure control applied to these statistics is available in section 5 of this summary. More information about how the NHSBSA protects personal information can be found in the [statement on confidentiality and access](https://www.nhsbsa.nhs.uk/policies-and-procedures).
 
-**Table 1: The proportion of items for which an NHS number was recorded for listed BNF sections for previous 4 quarters**
+#### Table 1: The proportion of items for which an NHS number was recorded for listed BNF sections for previous 4 quarters
 
 ```{r pat_ident_rates, out.width="100%"}
 
@@ -144,6 +144,8 @@ Antidepressant drugs are described in the BNF 68 section 4.3:
 
 More information about these medicines can be found in section 4 of this summary.
 
+#### Figure 1: Number of prescribed items and identified patients by financial quarter - BNF 4.3: Antidepressant drugs
+
 ```{r quarterly_003, out.width="100%"}
 
 raw_data$quarterly %>%
@@ -167,7 +169,7 @@ raw_data$quarterly %>%
     dlOn = FALSE,
     xLab = "Financial quarter",
     yLab = "Volume",
-    title = "Figure 1: Number of prescribed items and identified patients by financial quarter - BNF 4.3: Antidepressant drugs"
+    title = ""
   ) %>% 
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
@@ -180,6 +182,8 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 `r par1_0403`
 
 `r par2_0403`
+
+#### Figure 2: Number of prescribed items and identified patients by month - BNF 4.3: Antidepressant drugs
 
 ```{r monthly_0403, out.width="100%"}
 
@@ -201,7 +205,7 @@ chart_data$monthly %>%
     dlOn = FALSE,
     xLab = "Month",
     yLab = "Volume",
-    title = "Figure 2: Number of prescribed items and identified patients by month - BNF 4.3: Antidepressant drugs"
+    title = ""
   ) %>% 
   hc_xAxis(type = "datetime",
            dateTimeLabelFormats = list(month = "%b %y"),
@@ -236,6 +240,8 @@ Hypnotics are used to treat insomnia - a difficulty getting to sleep or staying 
 
 More information about these medicines can be found in section 4 of this summary.
 
+#### Figure 3: Number of prescribed items and identified patients by financial quarter - BNF 4.1: Hypnotics and anxiolytics
+
 ```{r quarterly_0401, out.width="100%"}
 
 raw_data$quarterly %>%
@@ -258,7 +264,7 @@ raw_data$quarterly %>%
     dlOn = FALSE,
     xLab = "Financial quarter",
     yLab = "Volume",
-    title = "Figure 3: Number of prescribed items and identified patients by financial quarter - BNF 4.1: Hypnotics and anxiolytics"
+    title = ""
   ) %>% 
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
@@ -272,6 +278,8 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 `r par1_0401`
 
 `r par2_0401`
+
+#### Figure 4: Number of prescribed items and identified patients by month - BNF 4.1: Hypnotics and anxiolytics
 
 ```{r monthly_0401, out.width="100%"}
 
@@ -292,7 +300,7 @@ chart_data$monthly %>%
     dlOn = FALSE,
     xLab = "Month",
     yLab = "Volume",
-    title = "Figure 4: Number of prescribed items and identified patients by month - BNF 4.1: Hypnotics and anxiolytics"
+    title = ""
   ) %>% 
   hc_xAxis(type = "datetime",
            dateTimeLabelFormats = list(month = "%b %y"),
@@ -326,6 +334,8 @@ These drugs are used to treat psychoses and related disorders. These drugs are c
 
 More information about these medicines can be found in section 4 of this summary.
 
+#### Figure 5: Number of prescribed items and identified patients by financial quarter - BNF 4.2: Drugs used in psychoses and related disorders
+
 ```{r quarterly_0402, out.width="100%"}
 
 raw_data$quarterly %>%
@@ -348,7 +358,7 @@ raw_data$quarterly %>%
     dlOn = FALSE,
     xLab = "Financial quarter",
     yLab = "Volume",
-    title = "Figure 5: Number of prescribed items and identified patients by financial quarter - BNF 4.2: Drugs used in psychoses and related disorders"
+    title = ""
   ) %>% 
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
@@ -362,6 +372,8 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 `r par1_0402`
 
 `r par2_0402`
+
+#### Figure 6: Number of prescribed items and identified patients by month - BNF 4.2: Drugs used in psychoses and related disorders
 
 ```{r monthly_0402, out.width="100%"}
 
@@ -382,7 +394,7 @@ chart_data$monthly %>%
     dlOn = FALSE,
     xLab = "Month",
     yLab = "Volume",
-    title = "Figure 6: Number of prescribed items and identified patients by month - BNF 4.2: Drugs used in psychoses and related disorders"
+    title = ""
   ) %>% 
   hc_xAxis(type = "datetime",
            dateTimeLabelFormats = list(month = "%b %y"),
@@ -423,6 +435,8 @@ CNS stimulants and drugs used for ADHD are described in the BNF 68 section 4.4:
 
 More information about these medicines can be found in section 4 of this summary.
 
+#### Figure 7: Number of prescribed items and identified patients by financial quarter - BNF 4.4: CNS stimulants and drugs used for ADHD
+
 ```{r quarterly_0404, out.width="100%"}
 
 raw_data$quarterly %>%
@@ -445,7 +459,7 @@ raw_data$quarterly %>%
     dlOn = FALSE,
     xLab = "Financial quarter",
     yLab = "Volume",
-    title = "Figure 7: Number of prescribed items and identified patients by financial quarter - BNF 4.4: CNS stimulants and drugs used for ADHD"
+    title = ""
   ) %>% 
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
@@ -458,6 +472,8 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 `r par1_0404`
 
 `r par2_0404`
+
+#### Figure 8: Number of prescribed items and identified patients by month - BNF 4.4: CNS stimulants and drugs used for ADHD
 
 ```{r monthly_0404, out.width="100%"}
 
@@ -478,7 +494,7 @@ chart_data$monthly %>%
     dlOn = FALSE,
     xLab = "Month",
     yLab = "Volume",
-    title = "Figure 8: Number of prescribed items and identified patients by month - BNF 4.4: CNS stimulants and drugs used for ADHD"
+    title = ""
   ) %>% 
   hc_xAxis(type = "datetime",
            dateTimeLabelFormats = list(month = "%b %y"),
@@ -515,6 +531,8 @@ Drugs for dementia are described in the BNF 68 section 4.11:
 
 More information about these medicines can be found in section 4 of this summary.
 
+#### Figure 9: Number of prescribed items and identified patients by financial quarter - BNF 4.11: Drugs for dementia
+
 ```{r quarterly_0411, out.width="100%"}
 
 raw_data$quarterly %>%
@@ -537,7 +555,7 @@ raw_data$quarterly %>%
     dlOn = FALSE,
     xLab = "Financial quarter",
     yLab = "Volume",
-    title = "Figure 9: Number of prescribed items and identified patients by financial quarter - BNF 4.11: Drugs for dementia"
+    title = ""
   ) %>% 
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
@@ -551,6 +569,8 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 `r par1_0411`
 
 `r par2_0411`
+
+#### Figure 10: Number of prescribed items and identified patients by month - BNF 4.11: Drugs for dementia
 
 ```{r monthly_0411, out.width="100%"}
 
@@ -571,7 +591,7 @@ chart_data$monthly %>%
     dlOn = FALSE,
     xLab = "Month",
     yLab = "Volume",
-    title = "Figure 10: Number of prescribed items and identified patients by month - BNF 4.11: Drugs for dementia"
+    title = ""
   ) %>% 
   hc_xAxis(type = "datetime",
            dateTimeLabelFormats = list(month = "%b %y"),
@@ -608,12 +628,14 @@ All sections except drugs for dementia show variation within expected values, wi
 
 ### 3.1. Antidepressant Prescribing during the COVID-19 pandemic {.toc-ignore}
 
+#### Figure 11: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.3: Antidepressant drugs
+
 ```{r covid_0403_items, out.width="100%"}
 
  model_data %>%
   covid_model() %>% 
   filter(SECTION_CODE == "0403", YEAR_MONTH > 202002) %>%
-  covid_chart_hc(title = "Figure 11: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.3: Antidepressant drugs")
+  covid_chart_hc(title = "")
 
 ```
 
@@ -623,12 +645,14 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.2. Hypnotics and anxiolytics prescribing during the COVID-19 pandemic {.toc-ignore}
 
+#### Figure 12: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.1: Hypnotics and anxiolytics
+
 ```{r covid_0401_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
   filter(SECTION_CODE == "0401", YEAR_MONTH > 202002) %>%
-  covid_chart_hc(title = "Figure 12: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.1: Hypnotics and anxiolytics")
+  covid_chart_hc(title = "")
 
 ```
 
@@ -638,12 +662,14 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.3. Drugs used in psychoses and related disorders prescribing during the COVID-19 pandemic {.toc-ignore}
 
+#### Figure 13: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.2: Drugs used in psychoses and related disorders
+
 ```{r covid_0402_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
   filter(SECTION_CODE == "0402", YEAR_MONTH > 202002) %>%
-  covid_chart_hc(title = "Figure 13: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.2: Drugs used in psychoses and related disorders")
+  covid_chart_hc(title = "")
 
 ```
 
@@ -653,12 +679,14 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.4. CNS stimulants and drugs used for ADHD prescribing during the COVID-19 pandemic {.toc-ignore}
 
+#### Figure 14: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.4: CNS stimulants and drugs used for ADHD
+
 ```{r covid_0404_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
   filter(SECTION_CODE == "0404", YEAR_MONTH > 202002) %>%
-  covid_chart_hc(title = "Figure 14: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.4: CNS stimulants and drugs used for ADHD")
+  covid_chart_hc(title = "")
 
 ```
 
@@ -668,12 +696,14 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.5. Drugs for dementia prescribing during the COVID-19 pandemic {.toc-ignore}
 
+#### Figure 15: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.11: Drugs for dementia
+
 ```{r covid_0411_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
   filter(SECTION_CODE == "0411", YEAR_MONTH > 202002) %>%
-  covid_chart_hc(title = "Figure 15: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.11: Drugs for dementia")
+  covid_chart_hc(title = "")
 
 ```
 
