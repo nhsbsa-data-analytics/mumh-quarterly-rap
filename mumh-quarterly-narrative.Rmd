@@ -112,7 +112,7 @@ These statistics do not contain any personally identifiable data. More details o
 
 **Table 1: The proportion of items for which an NHS number was recorded for listed BNF sections for previous 4 quarters**
 
-```{r pat_ident_rates}
+```{r pat_ident_rates, out.width="100%"}
 
 patient_identification %>%
 
@@ -144,7 +144,7 @@ Antidepressant drugs are described in the BNF 68 section 4.3:
 
 More information about these medicines can be found in section 4 of this summary.
 
-```{r quarterly_003}
+```{r quarterly_003, out.width="100%"}
 
 raw_data$quarterly %>%
   #added financial year filter now only using rolling years
@@ -181,7 +181,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 `r par2_0403`
 
-```{r monthly_0403}
+```{r monthly_0403, out.width="100%"}
 
 chart_data$monthly %>% 
   #year month filter added for rolling years in narrative
@@ -236,7 +236,7 @@ Hypnotics are used to treat insomnia - a difficulty getting to sleep or staying 
 
 More information about these medicines can be found in section 4 of this summary.
 
-```{r quarterly_0401}
+```{r quarterly_0401, out.width="100%"}
 
 raw_data$quarterly %>%
   dplyr::filter(SECTION_CODE == "0401"& FINANCIAL_YEAR!="2015/2016") %>% 
@@ -273,7 +273,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 `r par2_0401`
 
-```{r monthly_0401}
+```{r monthly_0401, out.width="100%"}
 
 chart_data$monthly %>% 
   dplyr::filter(SECTION_CODE == "0401"& YEAR_MONTH>201603) %>% 
@@ -326,7 +326,7 @@ These drugs are used to treat psychoses and related disorders. These drugs are c
 
 More information about these medicines can be found in section 4 of this summary.
 
-```{r quarterly_0402}
+```{r quarterly_0402, out.width="100%"}
 
 raw_data$quarterly %>%
   dplyr::filter(SECTION_CODE == "0402"& FINANCIAL_YEAR!="2015/2016") %>% 
@@ -363,7 +363,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 `r par2_0402`
 
-```{r monthly_0402}
+```{r monthly_0402, out.width="100%"}
 
 chart_data$monthly %>% 
   dplyr::filter(SECTION_CODE == "0402"& YEAR_MONTH>201603) %>% 
@@ -423,7 +423,7 @@ CNS stimulants and drugs used for ADHD are described in the BNF 68 section 4.4:
 
 More information about these medicines can be found in section 4 of this summary.
 
-```{r quarterly_0404}
+```{r quarterly_0404, out.width="100%"}
 
 raw_data$quarterly %>%
   dplyr::filter(SECTION_CODE == "0404"& FINANCIAL_YEAR!="2015/2016") %>% 
@@ -459,7 +459,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 `r par2_0404`
 
-```{r monthly_0404}
+```{r monthly_0404, out.width="100%"}
 
 chart_data$monthly %>% 
   dplyr::filter(SECTION_CODE == "0404"& YEAR_MONTH>201603) %>% 
@@ -515,7 +515,7 @@ Drugs for dementia are described in the BNF 68 section 4.11:
 
 More information about these medicines can be found in section 4 of this summary.
 
-```{r quarterly_0411}
+```{r quarterly_0411, out.width="100%"}
 
 raw_data$quarterly %>%
   dplyr::filter(SECTION_CODE == "0411"& FINANCIAL_YEAR!="2015/2016") %>% 
@@ -552,7 +552,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 `r par2_0411`
 
-```{r monthly_0411}
+```{r monthly_0411, out.width="100%"}
 
 chart_data$monthly %>% 
   dplyr::filter(SECTION_CODE == "0411"& YEAR_MONTH>201603) %>% 
@@ -608,7 +608,7 @@ All sections except drugs for dementia show variation within expected values, wi
 
 ### 3.1. Antidepressant Prescribing during the COVID-19 pandemic {.toc-ignore}
 
-```{r covid_0403_items}
+```{r covid_0403_items, out.width="100%"}
 
  model_data %>%
   covid_model() %>% 
@@ -623,7 +623,7 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.2. Hypnotics and anxiolytics prescribing during the COVID-19 pandemic {.toc-ignore}
 
-```{r covid_0401_items}
+```{r covid_0401_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
@@ -638,7 +638,7 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.3. Drugs used in psychoses and related disorders prescribing during the COVID-19 pandemic {.toc-ignore}
 
-```{r covid_0402_items}
+```{r covid_0402_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
@@ -653,7 +653,7 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.4. CNS stimulants and drugs used for ADHD prescribing during the COVID-19 pandemic {.toc-ignore}
 
-```{r covid_0404_items}
+```{r covid_0404_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
@@ -668,7 +668,7 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 ### 3.5. Drugs for dementia prescribing during the COVID-19 pandemic {.toc-ignore}
 
-```{r covid_0411_items}
+```{r covid_0411_items, out.width="100%"}
 
 model_data %>%
   covid_model() %>% 
