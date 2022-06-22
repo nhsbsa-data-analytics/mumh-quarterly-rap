@@ -151,6 +151,8 @@ max_month_dw <- as.Date(paste0(ltst_month,
 # only get new data if max month in dwh is greater than that in most recent data
 if(max_month_dw <= max_month) {
   print("No new quarterly data available in the Data Warehouse, will use most recent saved data.")
+
+  DBI::dbDisconnect(con)
 } else {
 
 # build time dimension table in schema
@@ -492,7 +494,7 @@ create_metadata(wb,
 write_sheet(
   wb,
   "Patient_Identification",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to December 2021 - Proportion of items for which an NHS number was recorded (%)",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to March 2022 - Proportion of items for which an NHS number was recorded (%)",
   c(
     "The below proportions reflect the percentage of prescription items where a PDS verified NHS number was recorded."
   ),
@@ -512,7 +514,7 @@ format_data(wb,
             "Patient_Identification",
             c("C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
               "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-              "AA", "AB", "AC"),
+              "AA", "AB", "AC", "AD"),
             "right",
             "0.00")
 
@@ -521,7 +523,7 @@ format_data(wb,
 write_sheet(
   wb,
   "Monthly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to December 2021 totals by year month",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to March 2022 totals by year month",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -578,7 +580,7 @@ format_data(wb,
 write_sheet(
   wb,
   "Quarterly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to December 2021 totals by quarter",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to March 2022 totals by quarter",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."

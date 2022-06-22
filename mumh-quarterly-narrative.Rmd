@@ -46,24 +46,24 @@ Published 7 July 2022
 
 ## Key findings
 
-Between October to December 2021:
+Between January to March 2022:
 
-* there were 21.2 million antidepressant drugs prescribed, a 1.88% increase from 20.8 million items in the previous quarter, and a 3.48% increase from 20.5 million items compared with the same quarter in 2020/21.
+* there were 21.0 million antidepressant drugs prescribed, a 0.78% decrease from 21.2 million items in the previous quarter, and a 4.06% increase from 20.2 million items compared with the same quarter in 2020/21.
 
-* CNS stimulants and drugs used for ADHD have shown an increase of 7.75%, with 548,000 items in this quarter compared to 509,000 items in the previous quarter. This is also a 12.6% increase on 487,000 items from the same quarter in 2020/21.
+* CNS stimulants and drugs used for ADHD have shown an increase of 3.14%, with 566,000 items in this quarter compared to 548,000 items in the previous quarter. This is also a 18.5% increase on 477,000 items from the same quarter in 2020/21.
 
-In the 22-month period since the implementation of lockdown measures during the coronavirus (COVID-19) pandemic, between March 2020 and December 2021:
+In the 25-month period since the implementation of lockdown measures during the coronavirus (COVID-19) pandemic, between March 2020 and March 2022:
 
-* there were 1.71 million more antidepressant prescription items issued than expected based on historical trends. However, this was not a statistically significant increase for the period.
+* there were 1.95 million more antidepressant prescription items issued than expected based on historical trends. However, this was not a statistically significant increase for the period.
 
-* there were 753,000 fewer drugs for dementia prescription items issued than expected based on historical trends. This was a statistically significant decrease for the period.
+* there were 888,000 fewer drugs for dementia prescription items issued than expected based on historical trends. This was a statistically significant decrease for the period.
 
 ---
 
 ## 1. Introduction
 ### 1.1. Scope {.toc-ignore} 
 
-Mental health is a key area of the [NHS Long Term Plan](https://www.longtermplan.nhs.uk/) published in 2019.
+Severe mental illness (SMI) is one of the five clinical areas of focus of the [Core20PLUS5](https://www.england.nhs.uk/about/equality/equality-hub/core20plus5/) approach to reducing health inequalities.
 
 This publication aims to describe the prescribing of medicines used to improve mental health in England that are subsequently dispensed in the community in England, Scotland, Wales, Isle of Man or the Channel Islands by a pharmacy, appliance contractor, dispensing doctor, or have been personally administered by a GP practice. They do not include data on medicines used in secondary care, prisons, or issued by a private prescriber.
 
@@ -675,7 +675,7 @@ model_data %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
-`r covpar_0402` This small increase in prescribed items is in line with the expected range of values for the period.
+`r covpar_0402` This small decrease in prescribed items is in line with the expected range of values for the period.
 
 ### 3.4. CNS stimulants and drugs used for ADHD prescribing during the COVID-19 pandemic {.toc-ignore}
 
@@ -692,7 +692,7 @@ model_data %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
 
-`r covpar_0404` This increase in prescribed items does not fall outside of the expected range of values for the overall period. However, beginning in August 2021 and including all three months of quarter 3 2021/22, there have been four consecutive months above the number of items expected based on historical trends.  
+`r covpar_0404` This increase in prescribed items does not fall outside of the expected range of values for the overall period. However, beginning in August 2021 and including all three months of quarter 4 2021/22, there have been eight consecutive months above the number of items expected based on historical trends.  
 
 ### 3.5. Drugs for dementia prescribing during the COVID-19 pandemic {.toc-ignore}
 
@@ -850,6 +850,6 @@ Newburn Riverside
 Newcastle upon Tyne  
 NE15 8NY
 
-**Responsible statistician:** Grace Libby
+**Responsible statistician:** Graham Platten
 
 </main>
