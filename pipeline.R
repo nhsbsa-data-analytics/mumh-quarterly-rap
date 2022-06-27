@@ -6,14 +6,14 @@
 req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
               "logr", "highcharter", "lubridate", "dbplyr")
 
-# utils::install.packages(req_pkgs, dependencies = TRUE)
-#
-# devtools::install_github(
-#   "nhsbsa-data-analytics/mumhquarterly",
-#   auth_token = Sys.getenv("GITHUB_PAT")
-#   )
-
-#devtools::install_github("nhsbsa-data-analytics/nhsbsaR")
+#  utils::install.packages(req_pkgs, dependencies = TRUE)
+# # #
+#   devtools::install_github(
+#     "nhsbsa-data-analytics/mumhquarterly",
+#     auth_token = Sys.getenv("GITHUB_PAT")
+#     )
+# #
+#  devtools::install_github("nhsbsa-data-analytics/nhsbsaR")
 
 invisible(lapply(c(req_pkgs, "mumhquarterly", "nhsbsaR"), library, character.only = TRUE))
 
@@ -1295,10 +1295,59 @@ assign(
   )
 )
 
+#paragraph 1 sentence 3 alternative for none linear increase
+#check for 5 year increase / decrease
+year_5_change_items_a <- ""
+year_5_change_items2_a <- ""
+year_5_up_down_a <- ""
+if (narrative_data$Value[1] > narrative_data$Value[6]) {
+  year_5_change_items_a <- "increased"
+  year_5_change_items2_a <- "an increase"
+  year_5_up_down_a <- " more "
+} else {
+  year_5_change_items_a <- "decreased"
+  year_5_change_items2_a <- "a decrease"
+  year_5_up_down_a <- " fewer "
+}
+
+par1c_a <-   paste0(
+  "Prescribing of ",
+  narrative_data$Section_Name[1],
+  " has ",
+  year_5_change_items_a,
+  " since ",
+  fy_formatted_prev_5,
+  ", with ",
+  narrative_data$Rounded[7],
+  year_5_up_down_a,
+  "items prescribed in ",
+  paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
+  " when compared to ",
+  paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
+  ", ",
+  year_5_change_items2_a,
+  " of ",
+  narrative_data$Rounded[8],
+  " over the period."
+)
+
+#build 1st paragraph with alternative sentence 3
+assign(
+  paste0("par1_a", names(tables)[k]),
+  paste0(
+    par1a,
+    " ",
+    par1b,
+    " ",
+    par1c_a
+  )
+)
+
 #remove sentences from environment
 rm(par1a)
 rm(par1b)
 rm(par1c)
+rm(par1c_a)
 
 #paragraph 2 sentence 1
 par2a <- paste0(
@@ -1631,7 +1680,7 @@ rm(covpar1b)
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_mar22_v001.html")
+                  output_file = "outputs/mumh_quarterly_mar22_v001a.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
