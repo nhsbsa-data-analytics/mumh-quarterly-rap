@@ -1422,7 +1422,7 @@ if(narrative_data$Value[9] > narrative_data$Value[14]) {
 
 #check for vowel at beginning of section name
 vowel_check <- tolower(substr(narrative_data$Section_Formatted[1], 1, 1))
-and_a <- "a"
+and_a <- "a "
 if(vowel_check %in% c("a", "e", "i", "o", "u")) {
   and_a <- "an "
 }
@@ -1680,7 +1680,7 @@ rm(covpar1b)
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_mar22_v001a.html")
+                  output_file = "outputs/mumh_quarterly_mar22_v001.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
