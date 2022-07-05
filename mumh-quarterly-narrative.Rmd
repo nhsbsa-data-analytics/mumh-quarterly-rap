@@ -48,22 +48,22 @@ Published 7 July 2022
 
 Between January to March 2022:
 
-* there were 21.0 million antidepressant drugs prescribed, a 0.78% decrease from 21.2 million items in the previous quarter, and a 4.06% increase from 20.2 million items compared with the same quarter in 2020/21.
+* there were an estimated 21.0 million antidepressant drugs prescribed, a 0.78% decrease from the 21.2 million items in the previous quarter, and a 4.06% increase from the 20.2 million items compared with the same quarter in 2020/21.
 
-* CNS stimulants and drugs used for ADHD have shown an increase of 3.14%, with 566,000 items in this quarter compared to 548,000 items in the previous quarter. This is also a 18.5% increase on 477,000 items from the same quarter in 2020/21.
+* CNS stimulants and drugs used for ADHD have shown an increase of 3.14%, with an estimated 566,000 items in this quarter compared to the 548,000 items in the previous quarter. This is also a 18.5% increase on the 477,000 items from the same quarter in 2020/21.
 
 In the 25-month period since the implementation of lockdown measures during the coronavirus (COVID-19) pandemic, between March 2020 and March 2022:
 
-* there were 1.95 million more antidepressant prescription items issued than expected based on historical trends. However, this was not a statistically significant increase for the period.
+* there were an estimated 1.95 million more antidepressant prescription items issued than expected based on historical trends. However, this was not a statistically significant increase for the period.
 
-* there were 888,000 fewer drugs for dementia prescription items issued than expected based on historical trends. This was a statistically significant decrease for the period.
+* there were an estimated 888,000 fewer drugs for dementia prescription items issued than expected based on historical trends. This was a statistically significant decrease for the period.
 
 ---
 
 ## 1. Introduction
 ### 1.1. Scope {.toc-ignore} 
 
-Severe mental illness (SMI) is one of the five clinical areas of focus of the [Core20PLUS5](https://www.england.nhs.uk/about/equality/equality-hub/core20plus5/) approach to reducing health inequalities.
+Mental health is a key area of the [NHS Long Term Plan](https://www.longtermplan.nhs.uk/) published in 2019. The Long Term Plan looks at increasing funding for overall mental health, children's mental health and supporting care for people with dementia. It also focuses on improving community care for severe mental illness which is also one of the five clinical areas of focus of the [Core20PLUS5](https://www.england.nhs.uk/about/equality/equality-hub/core20plus5/) approach to reducing health inequalities.
 
 This publication aims to describe the prescribing of medicines used to improve mental health in England that are subsequently dispensed in the community in England, Scotland, Wales, Isle of Man or the Channel Islands by a pharmacy, appliance contractor, dispensing doctor, or have been personally administered by a GP practice. They do not include data on medicines used in secondary care, prisons, or issued by a private prescriber.
 
