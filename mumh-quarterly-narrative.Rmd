@@ -177,7 +177,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par1_0403`
 
@@ -218,7 +218,7 @@ chart_data$monthly %>%
 
 
 ```
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par3_0403`
 
@@ -273,7 +273,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par1_0401`
 
@@ -312,7 +312,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par3_0401`
 
@@ -367,7 +367,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par1_0402`
 
@@ -406,7 +406,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par3_0402`
 
@@ -467,7 +467,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par1_0404`
 
@@ -506,7 +506,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par3_0404`
 
@@ -564,7 +564,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par1_a0411`
 
@@ -604,7 +604,7 @@ chart_data$monthly %>%
 ```
 
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r par3_0411`
 
@@ -639,7 +639,7 @@ All sections except drugs for dementia show variation within expected values, wi
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r covpar_0403` However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
@@ -656,7 +656,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r covpar_0401` However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
@@ -673,7 +673,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r covpar_0402` This small decrease in prescribed items is in line with the expected range of values for the period.
 
@@ -690,7 +690,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r covpar_0404` This increase in prescribed items does not fall outside of the expected range of values for the overall period. However, beginning in August 2021 and including all three months of quarter 4 2021/22, there have been eight consecutive months above the number of items expected based on historical trends.  
 
@@ -707,7 +707,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec21_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_mar22_v001.xlsx)
 
 `r covpar_0411` This decrease also falls outside of the expected range of values, showing a statistically significant decrease in prescribing of drugs for dementia in this period when compared to expected values.
 
