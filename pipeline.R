@@ -347,7 +347,9 @@ keepLeadingZeros = TRUE)
 
 #logr::put(raw_data)
 
-dispensing_days <- mumhquarterly::get_dispensing_days(2022)
+#calculate dispensing days for sue in covid model
+#use latest year of current financial year, eg. 2023 for financial year 2022/23
+dispensing_days <- mumhquarterly::get_dispensing_days(2023)
 
 #logr::put(dispensing_days)
 
@@ -494,7 +496,7 @@ create_metadata(wb,
 write_sheet(
   wb,
   "Patient_Identification",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to March 2022 - Proportion of items for which an NHS number was recorded (%)",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to June 2022 - Proportion of items for which an NHS number was recorded (%)",
   c(
     "The below proportions reflect the percentage of prescription items where a PDS verified NHS number was recorded."
   ),
@@ -514,7 +516,7 @@ format_data(wb,
             "Patient_Identification",
             c("C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
               "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-              "AA", "AB", "AC", "AD"),
+              "AA", "AB", "AC", "AD", "AE"),
             "right",
             "0.00")
 
@@ -523,7 +525,7 @@ format_data(wb,
 write_sheet(
   wb,
   "Monthly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to March 2022 totals by year month",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to June 2022 totals by year month",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -580,7 +582,7 @@ format_data(wb,
 write_sheet(
   wb,
   "Quarterly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to March 2022 totals by quarter",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to June 2022 totals by quarter",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -632,7 +634,7 @@ format_data(wb,
 
 #save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/mumh_quarterly_mar22_v001.xlsx",
+                       "outputs/mumh_quarterly_jun22_v001.xlsx",
                        overwrite = TRUE)
 
 #Write covid model data to table for QR
@@ -647,7 +649,9 @@ for (i in 1:length(bnf_list)) {
            SECTION_CODE,
            YEAR_MONTH,
            ITEM_COUNT,
-           PRED_ITEMS_95_FIT)
+           PRED_ITEMS_95_FIT,
+           PRED_ITEMS_95_LWR,
+           PRED_ITEMS_95_UPR)
 
   fwrite(
     bnf_data,
@@ -1680,11 +1684,11 @@ rm(covpar1b)
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_mar22_v001.html")
+                  output_file = "outputs/mumh_quarterly_jun22_v001.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_mar22_v001.docx")
+                  output_file = "outputs/mumh_quarterly_jun22_v001.docx")
 
 #logr::log_close()
 
