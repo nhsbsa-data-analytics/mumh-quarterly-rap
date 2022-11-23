@@ -1,0 +1,437 @@
+---
+title: "Medicines Used in Mental Health (MUMH) – England"
+always_allow_html: true
+output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    anchor_sections: no
+    css: www/style.css
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+---
+  
+  <script>
+    $(document).ready(function() {
+      $('#header').prepend('<img src=`r knitr::image_uri("www/bsa_logo.svg")` alt=\"NHSBSA logo\" style=\"position:relative; float: right; top: 0; right: 0; padding: 10px; width: 25%;\">');
+  });
+</script>
+  
+  <style type="text/css">
+  
+  body, td {
+    font-size: 16px;
+    font-family: sans-serif;
+  }
+</style>
+  <html lang="en">
+  
+```{r setup, include=FALSE}
+# set code chunk options to disable echo by default
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+
+```
+
+<main>
+  
+# Background Information and Methodology {.toc-ignore}
+  
+## December 2022 {.toc-ignore}
+  
+  
+---
+  
+## 1. Background information
+  
+The Medicines Used in Mental Health annual publication and quarterly summary statistics show the volumes of prescription items and unique patients for a subset of drugs that have been classified as being used primarily for the treatment of mental health disorders and illnesses. These drugs are described by the British National Formulary (BNF) sections:
+
+ * BNF section 4.1 – Hypnotics and anxiolytics
+ * BNF section 4.2 – Drugs used for psychoses and related disorders 
+ * BNF section 4.3 – Antidepressant drugs
+ * BNF section 4.4 – CNS stimulants and drugs used for ADHD
+ * BNF section 4.11 – Drugs for dementia
+
+These sections are held in the same structure of the BNF prior to the release of version 70.
+
+The annual statistics also include breakdowns of prescribing by age band, sex, and the Index of Multiple Deprivation (IMD). These breakdowns are not included in the quarterly statistics at this time. 
+
+This publication can have a wide range of uses including informing government or local NHS policy and allowing public scrutiny of national and regional prescribing habits. 
+
+Prescription data is a long-standing administrative source of data that has been used by commissioners, providers, government, academia, industry, and media to inform local and national policy, in academic research, to monitor medicine uptake, and allow public scrutiny of prescribing habits. It is collected by the NHS Business Services Authority (NHSBSA) for the operational purpose of reimbursing and remunerating dispensing contractors for the costs of supplying drugs and devices, along with essential and advanced services, to NHS patients. The data that forms the basis of these statistics is collected as a by-product of this process.
+
+### 1.1. How prescription data is collected  {.toc-ignore}
+
+Data is collected from the submission of prescriptions by dispensing contractors to the NHSBSA. These prescriptions can be issued by GPs and other authorised prescribers such as nurses, dentists, and allied health professionals. Prescriptions that are issued by hospitals can also be dispensed in the community and submitted for reimbursement. Prescriptions that are issued in hospitals and fulfilled by the hospital pharmacy or dispensary are not included in this data.
+
+Prescriptions can be issued as either a paper form or as an electronic message using the Electronic Prescription Service (EPS). EPS prescriptions make up most of prescribing and dispensing activity carried out in England, accounting for 88%<sup>1</sup>  of all prescriptions dispensed in England during 2021. EPS messages are submitted by the dispensing contractor once the prescription has been fulfilled and issued to the patient. The message is initially sent to the NHS Spine, maintained by NHS Digital, and then sent to the NHSBSA for processing. Paper prescriptions are compiled by the dispensing contractor and sent to the NHSBSA at the end of each month by secure courier. These paper prescriptions are then scanned and transformed into digital images, which are passed through intelligent character recognition (ICR) to extract the relevant data from them. Most paper forms go through ICR without any manual intervention. However, there are cases where operator intervention is required to accurately capture information from the prescription form. This manual intervention can be required for many reasons, such as if a form is handwritten or information is obscured by a pharmacy stamp.
+
+After this processing for the reimbursement and remuneration of dispensing contractors, data is extracted from the NHSBSA transactional systems alongside data from the NHSBSA drug and organisational databases and loaded in to the NHSBSA Enterprise Data Warehouse (EDW). During this extract, load and transform (ELT) process a series of business logic is applied to the data to make it easier to use and more useful than if it were to be kept in its raw form. The EDW is the source used by many of our reporting systems and data extracts, including ePACT2, eDEN, eOPS, the English Prescribing Dataset (EPD), and Official Statistics publications.
+
+<small><sup>1</sup> Source – NHSBSA Enterprise Data Warehouse.</small>
+
+### 1.2.1 Drug data held by the NHSBSA {.toc-ignore}
+
+The NHSBSA has a single drug database<sup>2</sup>  that is used for both the reimbursement and reporting of drugs, appliances, and medical devices. This database is called Common Drug Reference (CDR) and holds all drug related information, including BNF classification, SNOMED CT, price and much more. This database is also the basis for the NHS Dictionary of Medicines and Devices (DM+D), which the NHSBSA maintain with support from NHS Digital. In these statistics we use the BNF, preparation class, and SNOMED CT classifications for drugs, appliances, and medical devices.
+
+Drugs are held on CDR at an individual pack level. For example, Paracetamol 500mg tablets 16 pack and Paracetamol 500mg tablets 32 pack have separate entries in the database, along with separate entries for each supplier of the pack and any proprietary versions. 
+
+The NHSBSA holds drug and prescription data at a pack level and uses this information for the correct reimbursement of dispensing contractors. However, the most granular data that we release in our reporting systems and other data outputs, including these statistics, is at a product level.
+
+<small><sup>2</sup> Before March 2020 the NHSBSA maintained two drug databases that were difficult to align and reconcile. These were combined and the legacy system decommissioned by the ‘One Drug Database’ project.</small>
+
+#### 1.2.1 British National Formulary (BNF) hierarchy
+
+These statistics use the therapeutic classifications defined in the BNF to group medicines together based on their primary therapeutic indication. The NHSBSA uses and maintains the classification system of the BNF implemented prior to the release of edition 70, including the six pseudo BNF chapters (18 to 23) created by NHS Prescription Services used to classify products that fall outside of chapters 1 to 15. Most of these presentations held in these pseudo chapters are dressings, appliances, and medical devices. Each January the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing BNF codes and moving within the hierarchy.
+
+The BNF has multiple levels, in descending order from the largest grouping to smallest they are chapter, section, paragraph, sub-paragraph, chemical substance, product, and individual presentation. Presentations in chapters 20 to 23 do not have assigned BNF paragraphs, sub-paragraphs, chemical substances, or products.
+
+
+
+### 1.3. Other data held by the NHSBSA {.toc-ignore}
+
+#### 1.3.1 Personal Demographic Data Service data
+
+The Personal Demographic Service (PDS) is a part of NHS Digital that holds information that allows healthcare professionals to identify patients and match them to their health records. This includes information such as NHS number, date of birth, gender, registered address and registered GP practice.
+
+Each month when data is loaded into the NHSBSA Data & Insight Data Warehouse, NHS numbers that have been captured are sent to PDS to verify them. That list includes all NHS numbers that were scanned in that month and previously verified NHS numbers that have a birthday in that month. Details held by PDS are returned to the NHSBSA, including updates to previously verified NHS numbers. 
+
+As this process takes time new and updated verified data from PDS is loaded into the NHSBSA Data & Insight Data Warehouse the month after the NHS numbers were first scanned. For example, a new NHS number received in January and subsequently verified would be classed as ‘not verified’ in January and ‘verified’ in February. In February the additional information about that patient such as gender and age would become available.
+
+
+
+## 2. Methodology
+
+### 2.1 Patient details {.toc-ignore}
+
+#### 2.1.1 Patient age
+
+To report a patient’s age consistently across a financial year these statistics classify a patient based on their age on the 30th of September of that given financial year. This uses information from PDS for verified NHS numbers only. Information relating to NHS numbers that have not been verified by PDS are displayed in these statistics under the ‘unknown/indeterminate’ age band.
+
+There are some inconsistencies within the PDS data that is held within the NHSBSA Data & Insight Data Warehouse. These occur when a patient has had their information updated and can hold more than one date of birth. In these instances, multiple counting can occur for patients, although this is estimated to only affect a very small number of patients. We will investigate methodologies to reduce the impact of these inconsistencies.
+
+#### 2.1.2 Patient gender/sex
+
+The NHSBSA does not capture information relating to a patient’s sex or gender from a prescription during processing activities. Gender is instead obtained from the PDS. Therefore, gender information is only available for patients that we have been able obtain a matched NHS number for. It should be noted that this definition does not conform to the latest national standards for data reporting. Therefore, we use the terms gender and the classifications of male and female as stored in our historic data. 
+
+In these statistics this gender information has been more accurately referred to as patient sex in the statistical summaries and statistical summary tables.
+
+
+A patient is classified in one of four ways for gender by PDS:
+
+	0 – Unknown
+
+	1 – Male
+
+	2 – Female
+
+	9 – Indeterminate (unable to be classified as either male or female)
+
+
+The NHSBSA also codifies gender for patients where we have been unable to match their NHS number to PDS as ‘Unknown’.
+
+In these statistics patients that hold a gender of 0 – unknown and 9 – indeterminate have been grouped together into a single category.
+
+A patient’s gender may change over time due to several reasons. Therefore, in these statistics it is possible for a patient to be recorded against multiple genders.
+
+#### 2.1.3  Patient deprivation
+
+The [English Indices of Deprivation 2019](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019) have been used in these statistics as a measure of the level of deprivation of the areas in which prescriptions have been issued. In particular, that headline Index of Multiple Deprivation (IMD) is included. IMD data has been joined to the National Statistics Postcode lookup (NSPL) UK May 2022 release using lower-layer super output area (LSOA) 2011. This combined dataset has then been joined to prescription data using the postcode of the prescribing organisation that issued the item. The LSOAs are analysed in groups, or ‘deciles’ each representing 10% of the areas from the deprivation scores, to the lowest. The measure of deprivation reported in these statistics is the IMD decile of the area in which the prescribing organisation is located.
+
+Where a practice or other prescribing organisation has closed, the latest postcode held on record for that organisation has been used to assign an IMD decile.
+
+Where a prescribing organisation’s postcode has not been able to be matched to NSPL or the prescriber has not been identified, the records are reported as ‘unknown’ IMD decile. 
+
+
+
+### 2.2 Changes to BNF classifications {.toc-ignore}
+
+These statistics use the BNF therapeutic classifications defined in the British National Formulary (BNF) using the classification system prior to BNF edition 70. Every January, the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing classification between years of MUMH data. The NHSBSA publishes the latest BNF information each year via its information systems. This is currently done via the [Information Services Portal (ISP)](https://www.nhsbsa.nhs.uk/access-our-data-products/information-services-portal-isp) but may in the near future be transitioned to the [NHSBSA Open Data Portal (ODP)](https://opendata.nhsbsa.net/).
+
+### 2.3 Item trends during COVID-19 {.toc-ignore}
+
+The number of items for each BNF section in the 28 month period March 2020 to June 2022 were compared to the number of items expected to be prescribed based on trends from the ‘pre-COVID-19’ period. The monthly data for April 2015 to February 2020 was used to create a linear regression forecast for March 2020 to December 2021, with the actual totals compared. By using a linear regression, this predicts a future value based on a line of best fit of previous values. This linear regression extrapolated figures according to:
+
+*	The trends between April 2015 and February 2020
+*	The number of dispensing days that occur in each month
+*	The typical differences between each month of the year observed between April 2015 and February 2020
+
+This model states expected figures if trends had continued as before but doesn't confirm causation of any differences. Factors other than COVID-19 may have influenced prescribing, such as:
+
+*	Changes in patient behaviour, demographics, or morbidity
+*	External environmental factors that could drive prescribing
+*	Any (and all) policy initiatives and guidance
+*	Other local priorities and resources
+
+
+## 3. Changes to this publication
+
+
+### 3.1. Age band and sex breakdown {.toc-ignore}
+
+
+From 2021/222 we have amended the annual publication has to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries.
+
+### 3.2. Actual Cost {.toc-ignore}
+
+An additional table has been included in this publication showing the actual cost  for prescription items dispensed in the community at national level. Previous publications only included the Net Ingredient Cost (NIC) for prescriptions dispensed in the community.
+
+
+<!-- ### 3.3. Planned changes to this publication {.toc-ignore} -->
+
+
+
+## 4. Strengths and limitations
+
+### 4.1. Strengths {.toc-ignore}
+
+The main strength of these statistics is the completeness of the dataset and accuracy of information captured during processing activities carried out by the NHSBSA. This dataset covers all prescribing that has been dispensed in the community in England, Scotland, Wales, and the Channel Islands, with consistency in the way data has been captured across the whole dataset. All the data has come from the same administrative source. This administrative data is required to be as accurate as possible as it is used for paying dispensing contractors for services provided to NHS patients.
+
+The NHSBSA’s decision to transition to a single source of drug information in April 2020 also means that the accuracy of these statistics has increased, with known issues and limitations with the previous legacy system being eliminated. This incorporates items previously captured as unspecified drugs now being captured correctly and an increase in the accuracy of capture of quantity information about prescribed drugs. Also due to the editorial policy of DM+D, there is now greater consistency in the naming of presentations.
+
+
+### 4.2. Limitations {.toc-ignore}
+
+These statistics exclude prescriptions that were issued but not presented for dispensing and prescriptions that were not submitted to the NHSBSA for processing and reimbursement. Prescriptions issued and dispensed in prisons, hospitals and private prescriptions are also excluded.
+
+Additional patient information received from PDS for matched NHS numbers is not returned until after the monthly ETL process for prescription data into the NHSBSA Data & Insight Data Warehouse is complete, and so the year in progress monthly or quarterly patient counts may include some unverified data and subsequently be revised in a later publication.
+
+The NHSBSA do not capture the clinical indication of a prescription and therefore do not know the reason why a prescription was issued, or the condition it is intended to treat. Many drugs have multiple uses, and although classified in the BNF by their primary therapeutic use may be issued to treat a condition outside of this. Due to this, these statistics may not give accurate estimations of prescribing to treat specific conditions. For example, some drugs that are classified as antidepressants are issued to treat migraine, chronic pain, myalgic encephalomyelitis (ME) and a range of other conditions. 
+
+## 5. Revisions
+
+Any revisions that we make to these statistics will be made in line with our [Revisions and Corrections policy](https://www.nhsbsa.nhs.uk/policies-and-procedures). Any significant errors that are identified within these statistics after their publication that would result in the contradiction of conclusions previously drawn from the data will be notified of prominently on our website and any other platforms that host these statistics, corrected as soon as possible, and communicated clearly to users and stakeholders.
+
+
+## 6. Related statistics, comparability and useful resources
+
+The NHSBSA releases the Official Statistics publication on MUMH in England. [A similar release is produced by the devolved administration for Scotland](https://www.isdscotland.org/Health-topics/Prescribing-and-medicines/Community-Dispensing/Mental-Health/). However, there are a number of differences between the countries in the way that data is captured and classified. Therefore, caution should be taken when drawing comparisons between the separate datasets. Public Health Scotland have begun a [public consultation](https://www.publichealthscotland.scot/consultations/consultation-on-the-closure-and-replacement-of-medicines-used-in-mental-health-annual-report/) into the closure and replacement of their Medicines used in Mental Health publication.
+
+Each devolved authority within the UK makes its own decisions on presentations that are allowable on a prescription; however, all use a common formulary, the British National Formulary, which is used to classify drugs based on primary therapeutic use.
+
+
+### 6.1 NHS Digital mental health hub {.toc-ignore}
+
+The [mental health data hub](https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/mental-health-data-hub) is a collection of interactive dashboards and useful links covering mental health data in England.
+
+### 6.2 Office for National Statistics (ONS) mental health statistics{.toc-ignore}
+
+ONS publishes several [statistical publications](https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/mentalhealth) relating to mental health.
+
+### 6.3 NHSBSA Open Data Portal {.toc-ignore}
+
+The [NHSBSA Open Data Portal](https://opendata.nhsbsa.net/) is the platform where we host our open data products, including the presentation level data tables released as part of these statistics. 
+
+### 6.4 Code of Practice for Statistics {.toc-ignore}
+
+These statistics have been produced in compliance of the Code of Practice for Statistics. You can find more on the code of practice and its pillars, principles and practices from the [UK Statistics Authority website](https://code.statisticsauthority.gov.uk/).
+
+## 7. Quality of the statistics
+
+We aim to provide users of this publication with an evidence-based assessment of its quality and the quality of the data from which it is produced. We do so to demonstrate our commitment to comply with the UK Statistics Authority’s (UKSA) Code of Practice for Statistics, particularly the pillar of Quality and its principles.
+
+**Q1 Suitable data sources** – Statistics should be based on the most appropriate data to meet intended uses. The impact of any data limitations for use should be assessed, minimised, and explained.
+
+**Q2 Sound methods** – Producers of statistics and data should use the best available methods and recognised standards and be open about their decisions.
+
+**Q3 Assured quality** – Producers of statistics and data should explain clearly how they assure themselves that statistics and data are accurate, reliable, coherent, and timely.
+
+This is an assessment of the quality of these statistics against the European standard for quality reporting and its dimensions specific to statistical outputs, particularly:
+  
+*	Relevance
+*	Accuracy and reliability
+*	Timeliness and punctuality
+*	Accessibility
+*	Coherence and comparability
+
+These principles guide us and are complimented by the UKSA’s regulatory standard for the Quality Assurance of Administrative Data (QAAD). You can view our QAAD assessment of prescription data on [our website](https://www.nhsbsa.nhs.uk/statistical-collections).
+
+### 7.1. Relevance {.toc-ignore}
+
+***This dimension covers the degree to which the product meets user need in both coverage and content***
+  
+The MUMH publication, released annually, as well as a quarterly summary statistic, summarises the number of items prescribed for drugs related to mental health. The annual statistics also give patient breakdowns including by 5 year age band, gender, and IMD decile. These statistics cover from financial year 2015/16 onwards, allowing the analysis of long term trends in prescribing. These publications are the first in a new series released by the NHSBSA. We believe that they can be used to inform policy decisions at a national and local level, by the public to scrutinise prescribing habits, and by academia and applied health researchers for matters relating to public health. The NHSBSA also routinely receives Freedom of Information requests and parliamentary questions about this subject matter. 
+
+We will be gathering feedback from users of these statistics on an on-going basis to help shape them and ensure that they remain relevant and of use.
+
+
+### 7.2 Accuracy and Reliability {.toc-ignore}
+
+***This dimension covers the statistics proximity between an estimate and the unknown true value***
+  
+#### 7.2.1. Accuracy  {.toc-ignore}
+  
+These statistics are derived from data collected during processing activities carried out by the NHSBSA to reimburse dispensing contractors for providing services to NHS patients. Prescriptions are scanned and subject to rigorous automatic and manual validation processes to ensure accurate payments are made to dispensing contractors. Where electronic prescriptions are used the scope for manual intervention and input into data is reduced dramatically.
+
+The figures used are collected as an essential part of the process of reimbursing dispensing contractors (mainly pharmacists and dispensing doctors) for medicines supplied. All prescriptions which are dispensed in England need to be submitted to the NHSBSA if the dispenser is to be reimbursed, and so coverage should be complete. Due to the manual processes involved in the processing of prescriptions there may be random inaccuracies in capturing prescription information which are then reflected in the data. NHS Prescription Services, a division of NHSBSA, internally quality assures the data that is captured from prescriptions to a 99.8◘0% level via a statistically valid random sample of 50,000 items that are reprocessed monthly. The latest reported [Prescription Processing Information Accuracy](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/payments-and-pricing/how-we-process-prescriptions) from NHS Prescriptions services, which covers the 12 month period July 2021 to June 2022, is 99.92%.
+
+#### 7.2.2. Reliability {.toc-ignore}
+
+Within the primary care data, as there is a manual data entry element to this system then inevitably some small errors may occur in the data. The NHSBSA and NHS Prescription Services take measures to minimise these errors. This includes the presence of a permanent dedicated accuracy team within NHS Prescription services which provides feedback to operators around any errors identified to help prevent regular occurrence.
+
+
+### 7.3. Timeliness and punctuality {.toc-ignore}
+
+***Timeliness refers to the time gap between publication and the reference period. Punctuality refers to the gap between planned and actual publication dates***
+  
+The MUMH publication is published annually, along with a set of quarterly summary statistics. The publication date is determined by the availability of the data, dependent on the completion of processing by NHS Prescription Services while allowing adequate time for the compilation, and quality assurance, of the publication. The data is usually available six weeks after the end of the month that the data relates to. We aim to release the annual publication, along with the quarterly updates, as close to availability of data as possible for the time period in question. The date of release for the annual publication and quarterly updates will be announced in advance in line with our [statistical release calendar](https://www.nhsbsa.nhs.uk/announcements/statistical-publication-calendar).
+
+
+### 7.4. Accessibility and clarity {.toc-ignore}
+
+***Accessibility is the ease with which users can access the data, also reflecting the format in which the data are available and the availability of supporting information. Clarity refers to the quality and sufficiency of the metadata, illustrations, and accompanying advice***
+  
+The statistical summary narrative for this publication is presented as an HTML webpage, with supporting documentation also released in HTML format. Summary data and additional analysis is presented in tables in Excel files.
+
+The R code used to produce the publication will also be made available from the [NHSBSA GitHub](https://github.com/nhsbsa-data-analytics) in due course.
+
+***Clarity***
+  
+A glossary of terms is included in this document.
+
+
+### 7.5. Coherence and comparability {.toc-ignore}
+
+***Coherence is the degree to which data have been derived from different sources or methods but refer to the same topic or similar. Comparability is the degree to which data can be compared over time and domain***
+  
+The MUMH publications are the only statistics available on the prescribing of mental health related drugs that have been dispensed in the community. The statistics are all derived from the same administrative data source with the same methodology applied to all data points.
+
+The figures released in these statistics relating to item counts and total costs can be recreated from the English Prescribing Dataset (EPD) administrative data feed, available from the NHSBSA Open Data Portal (ODP). NHSBSA Information Services provide this data feed, and this feed is not an official statistic.
+
+This publication closely mirrors the content of the Medicines Used in Mental Health publication release by Information Services Division (ISD) for NHS Scotland. We intend to include further measures, including measures of Defined Daily Doses (DDDs) to bring this publication more in line with the Scottish publication, allowing better comparisons to be made between England and Scotland. 
+DDDs also allow for international comparisons.
+
+Comparability with other publications produced by the NHSBSA can be determined using the [Official Statistics guidance table](https://www.nhsbsa.nhs.uk/statistical-collections), which is maintained with the release of each new publication. This table shows how all of NHSBSA’s publications compare across a range of measures to help users identify the best publication for their needs or understand where differences in figures may occur.
+
+#### 7.5.1. Comparisons over time {.toc-ignore}
+
+In order to allow for comparisons to be made over time these statistics cover the whole period for which data is available, from financial year 2015/16 onwards.
+
+Changes to the figures over time should be interpreted in the wider context of the prescribing system as a whole, including in the availability of medicines, release of new medicines, their costs and changing prescribing guidelines. All medicines are shown by their latest BNF classification, as described in section 2 – methodology.
+
+
+***Trade-offs between output quality components
+This dimension describes the extent to which different aspects of quality are balanced against each other***
+
+The main trade-off in this publication is the balance between timeliness and data quality. Sufficient time is allowed from the data being made available to allow for the information to be produced and quality assured. 
+We are releasing these experimental Official Statistics to allow users to begin analysing them, however we intend to introduce further data cleansing in the future that will improve the quality and accuracy of these statistics. This will be introduced once the data cleansing can be done in a timely manner and will not impact the release of the publication. The impact is expected to be a small amount of reclassification that will not impact most of the main conclusions or user’s analysis.
+
+***Assessment of user needs and perceptions
+This dimension covers the processes for finding out about users and uses and their views on the statistical products***
+
+Alongside the release of these statistics the NHSBSA will also be releasing a continuous feedback survey, allowing users to quickly tell us their thoughts on the content and utility of these statistics. This feedback, along with feedback gathered from other routes such as direct contact, will be used to shape the content and style of future MUMH publications and other statistical products from the NHSBSA. This publication also has a detailed user engagement plan specific to MUMH.
+
+***Performance, cost and respondent burden
+This dimension describes the effectiveness, efficiency and economy of the statistical output***
+
+There is no respondent burden for MUMH data, as all data are extracted from existing NHSBSA information and transactional systems. 
+This initial release has been developed with a reproducible analytical pipeline (RAP) in mind and RAP principles applied where possible. This development has been done in R and the code used will be made publicly available at the [NHSBSA GitHub](https://github.com/nhsbsa-data-analytics) in due course. Further development is planned to the RAP used for this publication to automate as many tasks as possible. 
+
+***Confidentiality, transparency and security
+The procedures and policy used to ensure sound confidentiality, security and transparent practices***
+
+Trustworthy statistics and the data behind them are an important part of well-informed decision making, and are vital to support improvement across the wider health and social care system. It is accepted, however, that where statistics provide information on small numbers of individuals, the NHS Business Services Authority have a duty under data protection law to avoid directly or indirectly revealing any personal details. In addition, NHSBSA staff members are required to adhere to relevant NHS data confidentiality guidelines.
+
+The NHSBSA has robust confidentiality and security policies that were adhered to during the production of these statistics. More information on these policies and how we follow them can be found in our [Confidentiality and Access Statement](https://www.nhsbsa.nhs.uk/sites/default/files/2021-05/Confidentiality_and_Access_Statement_v002.pdf).
+
+A risk assessment around potential disclosure of personal identifiable information through these statistics was carried out during their production. In line with the NHSBSA’s Statistical Disclosure Control Policy, patient counts less than five, or item and cost information where a patient count of less than five can be inferred, have been redacted. Patient counts have also been omitted from geographical breakdowns below national level due to the level of redaction that would be applied.
+
+***Quality assurance of administrative data***
+
+In addition to the assessment, we have followed the Quality Assurance of Administrative Data (QAAD) toolkit, as described by the Office for Statistics Regulation (OSR). Using the toolkit, we established the level of assurance we are seeking (or “benchmark”) for each source. The assurance levels are set as basic, enhanced, or comprehensive depending on the risk of quality concerns for that source, based on various factors.
+
+We have made a judgement about the suitability of the administrative data for use in producing this publication, this is designed to be pragmatic and proportionate. [The QAAD assessment for prescription data can be found on the NHSBSA website](https://www.nhsbsa.nhs.uk/statistical-collections).
+
+
+
+## 8. Glossary of terms used in these statistics
+
+#### Age
+
+A patient’s age, and therefore 5 year age band, has been calculated at 30 September for the given financial year. This age has been calculated using the patient date of birth shared with the NHSBSA from PDS.
+
+
+#### British National Formulary (BNF)
+
+MUMH data uses the therapeutic classifications defined in the British National Formulary (BNF) using the classification system prior to edition 70. NHS Prescription Services have created pseudo BNF chapters for items not included in BNF chapters 1 to 15. The majority of such items are dressings and appliances, which have been classified into six pseudo BNF chapters (18 to 23).
+
+Information on why a drug is prescribed is not available in this dataset. Since drugs can be prescribed to treat more than one condition, it may not be possible to separate the different conditions for which a drug may have been prescribed.
+
+The BNF has multiple levels, in descending order from largest grouping to smallest: chapter, section, paragraph, sub-paragraph, chemical substance, product, presentation. Presentations in chapters 20-23 do not have an assigned BNF paragraph, sub-paragraph, chemical substance or product.
+
+#### Chemical substance
+
+A chemical substance is the name of the main active ingredient in a drug. Appliances do not hold a true chemical substance. It is determined by the British National Formulary (BNF) for drugs, or the NHSBSA for appliances. For example, Amoxicillin.
+
+
+
+#### Cost
+
+In British pound sterling (GBP). The amount that would be paid using the basic price of the prescribed drug or appliance and the quantity prescribed, sometimes called 'Net Ingredient Cost' (NIC). The basic price is given either in the Drug Tariff or is determined from prices published by manufacturers, wholesalers, or suppliers. Basic price is set out in Parts VIII and IX of the Drug Tariff. For any drugs or appliances not in Part VIII, the price is usually taken from the manufacturer, wholesaler, or supplier of the product.
+
+#### Dispensed in the community
+
+When a prescription item is dispensed in the community this means that it has been dispensed by a community pharmacy or other dispensing contractor. This does not include medicines dispensed within hospitals and prisons.
+
+#### Dispensing contractor / dispenser
+
+A dispensing contractor or dispenser can be a community pharmacy or appliance contractor (a dispenser that specialises in dispensing dressing, appliances and medical devices). 
+
+Prescriptions can also be dispensed by the dispensary of a dispensing practice or personally administered at a practice. Dispensing practices usually exist in more rural areas where the need for a dispenser is deemed necessary but it is not deemed financially viable to establish a community pharmacy.
+
+
+#### Gender / sex
+
+Information relating to a patient’s gender is not captured by the NHSBSA. This is instead derived by PDS data that is shared with the NHSBSA for NHS numbers that have been matched. This term is not consistent with national data standards. For more information on this please see section 2 – methodology.
+
+#### Identified patients
+
+An identified patient is where an NHS number captured by the NHSBSA during prescription processing activities has been successfully matched to an NHS number held by the Personal Demographic Service (PDS), and PDS data, such as date of birth and gender, returned to the NHSBSA.
+
+
+#### Integrated Care Board (ICB) {.toc-ignore}
+
+Integrated care boards (ICBs) are a statutory NHS organisation responsible for developing a plan in collaboration with NHS trusts/foundation trusts and other system partners for meeting the health needs of the population, managing the NHS budget and arranging for the provision of health services in the defined area. They took over the functions of Sustainability and Transformation Partnerships (STPs) in July 2022.
+
+#### Items
+
+The term Items refers to the number of times a product appears on a prescription form. Prescription forms include both paper prescriptions and electronic messages.
+
+#### Prescription/prescription form
+
+A prescription (also referenced as a prescription form) has two incarnations: a paper form, and an electronic prescription available via EPS. A paper prescription can hold up to a maximum of ten items. A single electronic prescription can hold a maximum of four items.
+
+#### Presentation
+A presentation is the name given to the specific type, strength, and pharmaceutical formulation of a drug or the specific type of an appliance. For example, Paracetamol 500mg tablets.
+
+
+## 9. Feedback and contact us
+
+Feedback is important to us; we welcome any questions and comments relating to these statistics. 
+
+Please quote ‘MUMH – Background Information and Methodology Note’ in the subject title of any correspondence.
+
+You can complete a [short survey about this publication](https://online1.snapsurveys.com/Official_Statistics_Feedback) to help us improve the Official Statistics that we produce. All responses will remain anonymous and individuals will not be identifiable in any report that we produce.
+
+You can view our [privacy policy](https://www.nhsbsa.nhs.uk/our-policies/privacy) on our website to see how your data is used and stored.
+
+You can contact us by:
+  
+**Email:** nhsbsa.statistics@nhs.net
+
+**You can also write to us at:**
+  
+NHSBSA - Statistics  
+NHS Business Services Authority  
+Stella House  
+Goldcrest Way  
+Newburn Riverside  
+Newcastle upon Tyne  
+NE15 8NY
+
+</main>
+  
