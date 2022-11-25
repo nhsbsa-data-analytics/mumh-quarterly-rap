@@ -84,7 +84,7 @@ The NHSBSA holds drug and prescription data at a pack level and uses this inform
 
 <small><sup>2</sup> Before March 2020 the NHSBSA maintained two drug databases that were difficult to align and reconcile. These were combined and the legacy system decommissioned by the ‘One Drug Database’ project.</small>
 
-#### 1.2.1 British National Formulary (BNF) hierarchy
+#### 1.2 British National Formulary (BNF) hierarchy
 
 These statistics use the therapeutic classifications defined in the BNF to group medicines together based on their primary therapeutic indication. The NHSBSA uses and maintains the classification system of the BNF implemented prior to the release of edition 70, including the six pseudo BNF chapters (18 to 23) created by NHS Prescription Services used to classify products that fall outside of chapters 1 to 15. Most of these presentations held in these pseudo chapters are dressings, appliances, and medical devices. Each January the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing BNF codes and moving within the hierarchy.
 
@@ -100,7 +100,7 @@ The Personal Demographic Service (PDS) is a part of NHS Digital that holds infor
 
 Each month when data is loaded into the NHSBSA Data & Insight Data Warehouse, NHS numbers that have been captured are sent to PDS to verify them. That list includes all NHS numbers that were scanned in that month and previously verified NHS numbers that have a birthday in that month. Details held by PDS are returned to the NHSBSA, including updates to previously verified NHS numbers. 
 
-As this process takes time new and updated verified data from PDS is loaded into the NHSBSA Data & Insight Data Warehouse the month after the NHS numbers were first scanned. For example, a new NHS number received in January and subsequently verified would be classed as ‘not verified’ in January and ‘verified’ in February. In February the additional information about that patient such as gender and age would become available.
+As this process takes time, new and updated verified data from PDS is loaded into the NHSBSA Data & Insight Data Warehouse the month after the NHS numbers were first scanned. For example, a new NHS number received in January and subsequently verified would be classed as ‘not verified’ in January and ‘verified’ in February. In February the additional information about that patient such as gender and age would become available.
 
 
 
@@ -156,16 +156,16 @@ These statistics use the BNF therapeutic classifications defined in the British 
 
 The number of items for each BNF section in the 28 month period March 2020 to June 2022 were compared to the number of items expected to be prescribed based on trends from the ‘pre-COVID-19’ period. The monthly data for April 2015 to February 2020 was used to create a linear regression forecast for March 2020 to December 2021, with the actual totals compared. By using a linear regression, this predicts a future value based on a line of best fit of previous values. This linear regression extrapolated figures according to:
 
-*	The trends between April 2015 and February 2020
-*	The number of dispensing days that occur in each month
-*	The typical differences between each month of the year observed between April 2015 and February 2020
+*	the trends between April 2015 and February 2020
+*	the number of dispensing days that occur in each month
+*	the typical differences between each month of the year observed between April 2015 and February 2020
 
 This model states expected figures if trends had continued as before but doesn't confirm causation of any differences. Factors other than COVID-19 may have influenced prescribing, such as:
 
-*	Changes in patient behaviour, demographics, or morbidity
-*	External environmental factors that could drive prescribing
-*	Any (and all) policy initiatives and guidance
-*	Other local priorities and resources
+*	changes in patient behaviour, demographics, or morbidity
+*	external environmental factors that could drive prescribing
+*	any (and all) policy initiatives and guidance
+*	other local priorities and resources
 
 
 ## 3. Changes to this publication
@@ -173,8 +173,7 @@ This model states expected figures if trends had continued as before but doesn't
 
 ### 3.1. Age band and sex breakdown {.toc-ignore}
 
-
-From 2021/222 we have amended the annual publication has to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries.
+From 2021/2022 we have amended the annual publication  to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries.
 
 ### 3.2. Actual Cost {.toc-ignore}
 
@@ -209,7 +208,7 @@ Any revisions that we make to these statistics will be made in line with our [Re
 
 ## 6. Related statistics, comparability and useful resources
 
-The NHSBSA releases the Official Statistics publication on MUMH in England. [A similar release is produced by the devolved administration for Scotland](https://www.isdscotland.org/Health-topics/Prescribing-and-medicines/Community-Dispensing/Mental-Health/). However, there are a number of differences between the countries in the way that data is captured and classified. Therefore, caution should be taken when drawing comparisons between the separate datasets. Public Health Scotland have begun a [public consultation](https://www.publichealthscotland.scot/consultations/consultation-on-the-closure-and-replacement-of-medicines-used-in-mental-health-annual-report/) into the closure and replacement of their Medicines used in Mental Health publication.
+The NHSBSA releases the Official Statistics publication on MUMH in England. [A similar release was produced by the devolved administration for Scotland](https://www.isdscotland.org/Health-topics/Prescribing-and-medicines/Community-Dispensing/Mental-Health/). This is no longer produced and the latest release can be found [here](https://www.publichealthscotland.scot/publications/medicines-used-in-mental-health/medicines-used-in-mental-health-years-between-2010-to-2011-and-2019-to-2020/).However, there are a number of differences between the countries in the way that data is captured and classified. Therefore, caution should be taken when drawing comparisons between the separate datasets. 
 
 Each devolved authority within the UK makes its own decisions on presentations that are allowable on a prescription; however, all use a common formulary, the British National Formulary, which is used to classify drugs based on primary therapeutic use.
 
@@ -267,7 +266,7 @@ We will be gathering feedback from users of these statistics on an on-going basi
   
 These statistics are derived from data collected during processing activities carried out by the NHSBSA to reimburse dispensing contractors for providing services to NHS patients. Prescriptions are scanned and subject to rigorous automatic and manual validation processes to ensure accurate payments are made to dispensing contractors. Where electronic prescriptions are used the scope for manual intervention and input into data is reduced dramatically.
 
-The figures used are collected as an essential part of the process of reimbursing dispensing contractors (mainly pharmacists and dispensing doctors) for medicines supplied. All prescriptions which are dispensed in England need to be submitted to the NHSBSA if the dispenser is to be reimbursed, and so coverage should be complete. Due to the manual processes involved in the processing of prescriptions there may be random inaccuracies in capturing prescription information which are then reflected in the data. NHS Prescription Services, a division of NHSBSA, internally quality assures the data that is captured from prescriptions to a 99.8◘0% level via a statistically valid random sample of 50,000 items that are reprocessed monthly. The latest reported [Prescription Processing Information Accuracy](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/payments-and-pricing/how-we-process-prescriptions) from NHS Prescriptions services, which covers the 12 month period July 2021 to June 2022, is 99.92%.
+The figures used are collected as an essential part of the process of reimbursing dispensing contractors (mainly pharmacists and dispensing doctors) for medicines supplied. All prescriptions which are dispensed in England need to be submitted to the NHSBSA if the dispenser is to be reimbursed, and so coverage should be complete. Due to the manual processes involved in the processing of prescriptions there may be random inaccuracies in capturing prescription information which are then reflected in the data. NHS Prescription Services, a division of NHSBSA, internally quality assures the data that is captured from prescriptions to a 99.80% level via a statistically valid random sample of 50,000 items that are reprocessed monthly. The latest reported [Prescription Processing Information Accuracy](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/payments-and-pricing/how-we-process-prescriptions) from NHS Prescriptions services, which covers the 12 month period July 2021 to June 2022, is 99.92%.
 
 #### 7.2.2. Reliability {.toc-ignore}
 
