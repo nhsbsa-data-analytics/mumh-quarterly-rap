@@ -180,11 +180,11 @@ From 2021/2022 we have amended the annual publication  to show patients broken d
 
 ### 4.1. Strengths {.toc-ignore}
 
-The main strength of these statistics is the completeness of the dataset and accuracy of information captured during processing activities carried out by the NHSBSA. This dataset covers all prescribing that has been dispensed in the community in England, Scotland, Wales, and the Channel Islands, with consistency in the way data has been captured across the whole dataset. This administrative data is required to be as accurate as possible as it is used for paying dispensing contractors for services provided to NHS patients.
+The main strength of these statistics is the completeness of the dataset and accuracy of information captured during processing activities carried out by the NHSBSA. This dataset covers all prescribing of medicines in England that are subsequently dispensed in the community in England, Scotland, Wales, Isle of Man or the Channel Islands, with consistency in the way data has been captured across the whole dataset. It does not include data on medicines used in secondary care, prisons, or issued by a private prescriber. This administrative data is required to be as accurate as possible as it is used for paying dispensing contractors for services provided to NHS patients.
 
 All the data has come from the same administrative source. Using one source of data ensures that the data is complete and all data required for this publication is present.
 
-The data used in this publication is extracted from the same source as all of our [Official Statistics statistical collections](https://www.nhsbsa.nhs.uk/statistical-collections) which include data on prescribing or dispensing in secondary care. This allows comparability across other publications. Our [Official Statistics guidance table](https://www.nhsbsa.nhs.uk/sites/default/files/2022-10/Official_Statistics_guidance_table_v004.odt) shows the comparability criteria amongst our publications.
+The data used in this publication is extracted from the same source as all of our [Official Statistics statistical collections](https://www.nhsbsa.nhs.uk/statistical-collections) which include data on prescribing or dispensing in secondary care. This allows comparability across other publications. Our [Official Statistics guidance table](https://www.nhsbsa.nhs.uk/sites/default/files/2022-10/Official_Statistics_guidance_table_v004.odt) shows the comparability criteria between our publications.
 
 ### 4.2. Limitations {.toc-ignore}
 
