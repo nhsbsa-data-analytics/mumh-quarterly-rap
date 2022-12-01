@@ -170,28 +170,21 @@ This model states expected figures if trends had continued as before but doesn't
 
 ## 3. Changes to this publication
 
-
 ### 3.1. Age band and sex breakdown {.toc-ignore}
 
 From 2021/2022 we have amended the annual publication  to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries.
 
-### 3.2. Actual Cost {.toc-ignore}
-
-An additional table has been included in this publication showing the actual cost  for prescription items dispensed in the community at national level. Previous publications only included the Net Ingredient Cost (NIC) for prescriptions dispensed in the community.
-
-
 <!-- ### 3.3. Planned changes to this publication {.toc-ignore} -->
-
-
 
 ## 4. Strengths and limitations
 
 ### 4.1. Strengths {.toc-ignore}
 
-The main strength of these statistics is the completeness of the dataset and accuracy of information captured during processing activities carried out by the NHSBSA. This dataset covers all prescribing that has been dispensed in the community in England, Scotland, Wales, and the Channel Islands, with consistency in the way data has been captured across the whole dataset. All the data has come from the same administrative source. This administrative data is required to be as accurate as possible as it is used for paying dispensing contractors for services provided to NHS patients.
+The main strength of these statistics is the completeness of the dataset and accuracy of information captured during processing activities carried out by the NHSBSA. This dataset covers all prescribing that has been dispensed in the community in England, Scotland, Wales, and the Channel Islands, with consistency in the way data has been captured across the whole dataset. This administrative data is required to be as accurate as possible as it is used for paying dispensing contractors for services provided to NHS patients.
 
-The NHSBSA’s decision to transition to a single source of drug information in April 2020 also means that the accuracy of these statistics has increased, with known issues and limitations with the previous legacy system being eliminated. This incorporates items previously captured as unspecified drugs now being captured correctly and an increase in the accuracy of capture of quantity information about prescribed drugs. Also due to the editorial policy of DM+D, there is now greater consistency in the naming of presentations.
+All the data has come from the same administrative source. Using one source of data ensures that the data is complete and all data required for this publication is present.
 
+The data used in this publication is extracted from the same source as all of our [Official Statistics statistical collections](https://www.nhsbsa.nhs.uk/statistical-collections) which include data on prescribing or dispensing in secondary care. This allows comparability across other publications. Our [Official Statistics guidance table](https://www.nhsbsa.nhs.uk/sites/default/files/2022-10/Official_Statistics_guidance_table_v004.odt) shows the comparability criteria amongst our publications.
 
 ### 4.2. Limitations {.toc-ignore}
 
