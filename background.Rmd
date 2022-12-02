@@ -34,7 +34,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
-
 ```
 
 <main>
@@ -184,7 +183,7 @@ The main strength of these statistics is the completeness of the dataset and acc
 
 All the data has come from the same administrative source. Using one source of data ensures that the data is complete and all data required for this publication is present.
 
-The data used in this publication is extracted from the same source as all of our [Official Statistics statistical collections](https://www.nhsbsa.nhs.uk/statistical-collections) which include data on prescribing or dispensing in secondary care. This allows comparability across other publications. Our [Official Statistics guidance table](https://www.nhsbsa.nhs.uk/sites/default/files/2022-10/Official_Statistics_guidance_table_v004.odt) shows the comparability criteria between our publications.
+The data used in this publication is extracted from the same source as all of our [Official Statistics statistical collections](https://www.nhsbsa.nhs.uk/statistical-collections). This allows comparability across other publications. Our [Official Statistics guidance table (ODT: 69KB)](https://www.nhsbsa.nhs.uk/sites/default/files/2022-10/Official_Statistics_guidance_table_v004.odt) shows the comparability criteria between our publications.
 
 ### 4.2. Limitations {.toc-ignore}
 
@@ -201,7 +200,7 @@ Any revisions that we make to these statistics will be made in line with our [Re
 
 ## 6. Related statistics, comparability and useful resources
 
-The NHSBSA releases the Official Statistics publication on MUMH in England. [A similar release was produced by the devolved administration for Scotland](https://www.isdscotland.org/Health-topics/Prescribing-and-medicines/Community-Dispensing/Mental-Health/). This is no longer produced and the latest release can be found [here](https://www.publichealthscotland.scot/publications/medicines-used-in-mental-health/medicines-used-in-mental-health-years-between-2010-to-2011-and-2019-to-2020/).However, there are a number of differences between the countries in the way that data is captured and classified. Therefore, caution should be taken when drawing comparisons between the separate datasets. 
+The NHSBSA releases the Official Statistics publication on MUMH in England. [A similar release was produced by the devolved administration for Scotland](https://www.isdscotland.org/Health-topics/Prescribing-and-medicines/Community-Dispensing/Mental-Health/). This is no longer produced and the latest release can be found [here](https://www.publichealthscotland.scot/publications/medicines-used-in-mental-health/medicines-used-in-mental-health-years-between-2010-to-2011-and-2019-to-2020/). However, there are a number of differences between the countries in the way that data is captured and classified. Therefore, caution should be taken when drawing comparisons between the separate datasets. 
 
 Each devolved authority within the UK makes its own decisions on presentations that are allowable on a prescription; however, all use a common formulary, the British National Formulary, which is used to classify drugs based on primary therapeutic use.
 
