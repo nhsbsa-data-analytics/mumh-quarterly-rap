@@ -1277,9 +1277,9 @@ par1c <-   paste0(
   narrative_data$Rounded[7],
   year_5_up_down,
   "items prescribed in ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted),
   " when compared to ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted_prev_5),
   ", ",
   year_5_change_items2,
   " of ",
@@ -1325,9 +1325,9 @@ par1c_a <-   paste0(
   narrative_data$Rounded[7],
   year_5_up_down_a,
   "items prescribed in ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted),
   " when compared to ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted_prev_5),
   ", ",
   year_5_change_items2_a,
   " of ",
@@ -1440,11 +1440,11 @@ par2d <- paste0(
   narrative_data$Section_Formatted[1],
   " in quarter ",
   str_sub(quarter,-1,-1),
-  " ",
+  " of ",
   fy_formatted,
   " compared to quarter ",
   str_sub(quarter,-1,-1),
-  " ",
+  " of ",
   fy_formatted_prev_5,
   ", ",
   year_5_change_patients,
@@ -1465,13 +1465,13 @@ par2e <- paste0(
 #paragraph 2 sentence 6
 par2f <- paste0(
   "In ",
-  paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter,-2,-1), " of ", fy_formatted_prev_5),
   ", ",
   narrative_data$Rounded[17],
   " of items were prescribed to identified patients, this increased by ",
   narrative_data$Rounded[19],
   " percentage points in ",
-  paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
+  paste0(str_sub(quarter,-2,-1), " of ", fy_formatted),
   " to ",
   narrative_data$Rounded[18],
   " of items."
@@ -1627,7 +1627,7 @@ rm(par6b)
 
 #paragraph 7
 par7 <- paste0(
-  "It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19."
+  "It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19. All remaining domestic legal restrictions were officially lifted in England on 24 February 2022."
   )
 
 #covid paragraph
