@@ -496,7 +496,7 @@ create_metadata(wb,
 write_sheet(
   wb,
   "Patient_Identification",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to June 2022 - Proportion of items for which an NHS number was recorded (%)",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to September 2022 - Proportion of items for which an NHS number was recorded (%)",
   c(
     "The below proportions reflect the percentage of prescription items where a PDS verified NHS number was recorded."
   ),
@@ -511,12 +511,12 @@ format_data(wb,
             "left",
             "")
 
-#right align columns and round to 2 DP - C to AC (!!NEED TO UPDATE AS DATA EXPANDS!!)
+#right align columns and round to 2 DP - C to AF (!!NEED TO UPDATE AS DATA EXPANDS!!)
 format_data(wb,
             "Patient_Identification",
             c("C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
               "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-              "AA", "AB", "AC", "AD", "AE"),
+              "AA", "AB", "AC", "AD", "AE", "AF"),
             "right",
             "0.00")
 
@@ -525,7 +525,7 @@ format_data(wb,
 write_sheet(
   wb,
   "Monthly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to June 2022 totals by year month",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to September 2022 totals by year month",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -582,7 +582,7 @@ format_data(wb,
 write_sheet(
   wb,
   "Quarterly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to June 2022 totals by quarter",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to September 2022 totals by quarter",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -634,7 +634,7 @@ format_data(wb,
 
 #save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/mumh_quarterly_jun22_v001.xlsx",
+                       "outputs/mumh_quarterly_sep22_v001.xlsx",
                        overwrite = TRUE)
 
 #Write covid model data to table for QR
@@ -674,7 +674,7 @@ quarter <- raw_data$monthly %>%
   pull(FINANCIAL_QUARTER)
 
 #get previous quarter for filtering
-prev_quarter <- quarter(
+prev_quarter <- lubridate::quarter(
   #uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
   type = "quarter",
@@ -683,7 +683,7 @@ prev_quarter <- quarter(
 )
 
 #get financial year of previous quarter
-prev_quarter_fy <- quarter(
+prev_quarter_fy <- lubridate::quarter(
   #uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
   type = "year.quarter",
@@ -698,7 +698,7 @@ prev_quarter_filter <- paste0(prev_quarter_fy-1, "/", prev_quarter_fy,
                               " Q", prev_quarter)
 
 #get previous year for filtering
-prev_year <- quarter(
+prev_year <- lubridate::quarter(
   #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "quarter",
@@ -707,7 +707,7 @@ prev_year <- quarter(
 )
 
 #get financial year of previous year
-prev_year_fy <- quarter(
+prev_year_fy <- lubridate::quarter(
   #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "year.quarter",
@@ -722,7 +722,7 @@ prev_year_filter <- paste0(prev_year_fy - 1, "/", prev_year_fy,
                            " Q", prev_year)
 
 
-prev_5_year <- quarter(
+prev_5_year <- lubridate::quarter(
   #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
   type = "quarter",
@@ -731,7 +731,7 @@ prev_5_year <- quarter(
 )
 
 #get financial year of previous quarter
-prev_5_year_quarter_fy <- quarter(
+prev_5_year_quarter_fy <- lubridate::quarter(
   #uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
   type = "year.quarter",
@@ -1277,9 +1277,9 @@ par1c <-   paste0(
   narrative_data$Rounded[7],
   year_5_up_down,
   "items prescribed in ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted),
   " when compared to ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted_prev_5),
   ", ",
   year_5_change_items2,
   " of ",
@@ -1325,9 +1325,9 @@ par1c_a <-   paste0(
   narrative_data$Rounded[7],
   year_5_up_down_a,
   "items prescribed in ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted),
   " when compared to ",
-  paste0(str_sub(quarter, -2, -1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted_prev_5),
   ", ",
   year_5_change_items2_a,
   " of ",
@@ -1440,11 +1440,11 @@ par2d <- paste0(
   narrative_data$Section_Formatted[1],
   " in quarter ",
   str_sub(quarter,-1,-1),
-  " ",
+  " of ",
   fy_formatted,
   " compared to quarter ",
   str_sub(quarter,-1,-1),
-  " ",
+  " of ",
   fy_formatted_prev_5,
   ", ",
   year_5_change_patients,
@@ -1465,13 +1465,13 @@ par2e <- paste0(
 #paragraph 2 sentence 6
 par2f <- paste0(
   "In ",
-  paste0(str_sub(quarter,-2,-1), " ", fy_formatted_prev_5),
+  paste0(str_sub(quarter,-2,-1), " of ", fy_formatted_prev_5),
   ", ",
   narrative_data$Rounded[17],
   " of items were prescribed to identified patients, this increased by ",
   narrative_data$Rounded[19],
   " percentage points in ",
-  paste0(str_sub(quarter,-2,-1), " ", fy_formatted),
+  paste0(str_sub(quarter,-2,-1), " of ", fy_formatted),
   " to ",
   narrative_data$Rounded[18],
   " of items."
@@ -1627,7 +1627,7 @@ rm(par6b)
 
 #paragraph 7
 par7 <- paste0(
-  "It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19."
+  "It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19. All remaining domestic legal restrictions were officially lifted in England on 24 February 2022."
   )
 
 #covid paragraph
@@ -1684,11 +1684,11 @@ rm(covpar1b)
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_jun22_v001.html")
+                  output_file = "outputs/mumh_quarterly_sep22_v001.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_jun22_v001.docx")
+                  output_file = "outputs/mumh_quarterly_sep22_v001.docx")
 
 #logr::log_close()
 

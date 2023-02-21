@@ -42,21 +42,25 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # England April 2017 to `r max_filter_12_months` {.toc-ignore}
 
-Published 8 September 2022
+Published 8 December 2022
 
 ## Key findings
 
-Between April to June 2022:
+Between July to September 2022:
 
-* there were an estimated 21.2 million antidepressant drugs prescribed, a 1.17% increase from the 21.0 million items in the previous quarter, and a 3.58% increase from the 20.5 million items compared with the same quarter in 2020/21.
+* there were an estimated 21.4 million antidepressant drugs items prescribed, an increase of 0.93% from the 21.2 million items in the previous quarter
 
-*	CNS stimulants and drugs used for ADHD have shown an increase of 6.82%, with an estimated 604,000 items in this quarter compared to the 566,000 items in the previous quarter. This is also an 18.7% increase from the 509,000 items from the same quarter in 2020/21.
+*	antidepressant drugs items also increased by 3.22% from the 20.8 million items in the same quarter in 2021/22
 
-In the 28-month period since the implementation of lockdown measures during the coronavirus (COVID-19) pandemic, between March 2020 and June 2022:
+* drugs for dementia items have shown a 1.68% increase, with an estimated 1.06 million items prescribed in this quarter compared to 1.04 million items in the previous quarter
 
-* there were an estimated 2.36 million more antidepressant prescription items issued than expected based on historical trends. However, this was not a statistically significant increase for the period.
+* drugs for dementia items also increased by 3.27% from the 1.02 million items in the same quarter in 2021/22
 
-* there were an estimated 1.01 million fewer drugs for dementia prescription items issued than expected based on historical trends. This was a statistically significant decrease for the period.
+In the 31-month period since the implementation of lockdown measures during the coronavirus (COVID-19) pandemic, between March 2020 and September 2022, there were an estimated:
+
+* 2.77 million more antidepressant prescription items issued than expected based on historical trends, however, this was not a statistically significant increase for the period
+
+* 5.34 million more CNS stimulants and drugs used for ADHD items issued than expected based on historical trends, a statistically significant increase for the period
 
 ---
 
@@ -93,7 +97,7 @@ There are many costs incurred when a dispensing contractor fulfils a prescriptio
 
 The first national lockdown introduced as a response to the coronavirus pandemic (COVID-19) was implemented between 23 March and 4 July 2020, with the second national lockdown between 5 November and 2 December 2020. A third national lockdown was implemented on 6 January 2021. The first steps of the [roadmap out of lockdown](https://www.gov.uk/government/publications/covid-19-response-spring-2021/covid-19-response-spring-2021-summary) began in March 2021 with restrictions being lifted throughout Q1 2021/22. With the emergence of the Omicron variant of COVID-19 [new measures were announced](https://www.gov.uk/government/news/measures-against-omicron-variant-come-into-effect-30-november-2021) by the government and began on 30 November 2021. These measures did not include a lockdown but required anyone in contact with a suspected Omicron case to self-isolate. All domestic legal COVID-19 restrictions were officially lifted in England on 24 February 2022. These periods are considered as part of this publication. It is important to note that these statistics cannot infer causality of lockdown measures on the prescribing figures, but any inferences made should consider the impact of changing restrictions across the period. 
 
-This publication presents data from April 2016 to `r max_filter_12_months`, the most recent available.
+This publication presents data from April 2017 to `r max_filter_12_months`, the most recent available.
 
 References to quarters in these statistics are:
 
@@ -177,7 +181,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par1_0403`
 
@@ -218,7 +222,7 @@ chart_data$monthly %>%
 
 
 ```
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par3_0403`
 
@@ -273,7 +277,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par1_0401`
 
@@ -312,7 +316,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par3_0401`
 
@@ -367,7 +371,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par1_0402`
 
@@ -406,7 +410,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par3_0402`
 
@@ -467,7 +471,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par1_0404`
 
@@ -506,7 +510,7 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par3_0404`
 
@@ -564,7 +568,7 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par1_a0411`
 
@@ -604,7 +608,7 @@ chart_data$monthly %>%
 ```
 
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r par3_0411`
 
@@ -639,7 +643,7 @@ Antidepressant drugs, drugs used in psychoses and related disorders, and hypnoti
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r covpar_0403` However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
@@ -656,7 +660,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r covpar_0401` However, this increase in prescribed items does not fall outside of the expected range of values for the period.
 
@@ -673,7 +677,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r covpar_0402` This small decrease in prescribed items is in line with the expected range of values for the period.
 
@@ -690,9 +694,9 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
-`r covpar_0404` This increase in prescribed items falls outside of the expected range of values for the overall period. Beginning in August 2021 and including all 3 months of quarter 1 2022/23, there have been 11 consecutive months above the number of items expected based on historical trends. 
+`r covpar_0404` This increase in prescribed items falls outside of the expected range of values for the overall period. Since November 2021 and including all 3 months of quarter 2 2022/23, there have been 11 consecutive months above the number of items expected based on historical trends. 
 
 ### 3.5. Drugs for dementia prescribing during the COVID-19 pandemic {.toc-ignore}
 
@@ -707,7 +711,7 @@ model_data %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_jun22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
 
 `r covpar_0411` This decrease also falls outside of the expected range of values, showing a statistically significant decrease in prescribing of drugs for dementia in this period when compared to expected values.
 
@@ -779,7 +783,7 @@ The patient counts shown in these statistics should only be analysed at the leve
 
 ### 5.2. Trends during COVID-19 {.toc-ignore}
 
-The number of items for each BNF section in the 28-month period March 2020 to `r max_filter_12_months` were compared to the number of items expected to be prescribed based on trends from the 'pre-COVID-19' period. The monthly data for April 2015 to February 2020 was used to extrapolate expected figures for March 2020 to `r max_filter_12_months`. These figures were extrapolated according to:
+The number of items for each BNF section in the 31-month period March 2020 to `r max_filter_12_months` were compared to the number of items expected to be prescribed based on trends from the 'pre-COVID-19' period. The monthly data for April 2015 to February 2020 was used to extrapolate expected figures for March 2020 to `r max_filter_12_months`. These figures were extrapolated according to:
 
 * the trends between April 2015 and February 2020
 * the number of dispensing days that occur in each month
