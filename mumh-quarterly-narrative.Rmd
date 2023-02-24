@@ -450,7 +450,7 @@ raw_data$quarterly %>%
   hc_legend(enabled = TRUE)
   
 ```
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
 Prescribing of CNS stimulants and drugs for ADHD continues to show an upwards trend, with 646,000 items prescribed in October to December 2022. This was an increase on 607,000 items in the previous three months, and from 548,000 items in October to December 2021. Since October to December 2017 there has been a 69.1% increase, with an estimated 264,000 more items prescribed in October to December 2022.
 
@@ -489,9 +489,11 @@ chart_data$monthly %>%
 
 ```
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
+The monthly average of identified patients receiving at least one CNS stimulants and drugs used for ADHD item over January to December 2021 was 116,000. In 2021, there was a monthly average of 98,900, so this has further increased. 
 
+There was also an increase in items prescribed, from 2.04 million items in January to December 2021, to 2.42 million in 2022.
 
 ### 2.5. Drugs for dementia
 
@@ -539,8 +541,11 @@ raw_data$quarterly %>%
   
 ```
 
-Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
+Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
+There were 1.08 million drugs for dementia prescribed in October to December 2022. This is a small rise from 1.06 million items in the previous three months. Although items have increased overall by 9.47% since October to December 2017, drugs for dementia have not shown a consistent long term trend over this time. 
+
+An estimated 242,000 identified patients in October to December 2022 were prescribed at least one drugs for dementia item. This was only a small increase on identified patients in the previous three months. Like items, identified patients have not shown a consistent trend.
 
 
 #### Figure 10: Number of prescribed items and identified patients by month - BNF 4.11: Drugs for dementia
@@ -577,9 +582,11 @@ chart_data$monthly %>%
 ```
 
 
-Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_sep22_v001.xlsx)
+Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
+The monthly average number of identified patients from January to December 2021 for drugs for dementia items was 194,000, a small rise from 188,000 in 2021.
 
+Over January to December 2022 4.19 million drugs for dementia items were prescribed. This was also a small increase from 2021, when there were 4.03 million items.
 
 ## 3. Prescribing during the COVID-19 pandemic 
 
