@@ -1785,13 +1785,13 @@ rm(covpar1b)
 
 # 11. render markdown ------------------------------------------------------
 
-rmarkdown::render("mumh-quarterly-narrative-auto.Rmd",
+rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_dec22_auto_v001.html")
+                  output_file = "outputs/mumh_quarterly_dec22_v002.html")
 
-rmarkdown::render("mumh-quarterly-narrative-auto.Rmd",
+rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_dec22_auto_v001.docx")
+                  output_file = "outputs/mumh_quarterly_dec22_v002.docx")
 
 #logr::log_close()
 
