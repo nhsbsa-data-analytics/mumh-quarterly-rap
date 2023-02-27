@@ -44,11 +44,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 Published 8 March 2023
 
-``` {r changes_box}
-
 `r mumhquarterly::infoBox_border(header = "Changes to these statistics", text = paste0("For this release, we have rewritten the statistical summary narrative to be shorter. We have also made changes to the methodology of the model used in predicting items based on prescribing trends from before the Covid-19 pandemic. We are interested in any feedback about the publication or these changes, which you can send by using our ", htmltools::HTML("<a href='https://online1.snapsurveys.com/Official_Statistics_Feedback'>Official Statistics feedback survey</a>"),"."), width = "100%")`
-
-```
 
 ## Key findings
 
@@ -71,21 +67,19 @@ In the 34-month period since the implementation of lockdown measures during the 
 
 The [NHS Long Term Plan](https://www.longtermplan.nhs.uk/) published in 2019 focuses on improving mental health care in the UK. The Long Term Plan aims to provide more funding for mental health services, particularly for children and people with dementia. It also seeks to improve community care for those with severe mental illnesses as part of the [Core20PLUS5](https://www.england.nhs.uk/about/equality/equality-hub/core20plus5/) approach to reduce health inequalities.
 
-This publication provides information on the medicines used to treat mental health conditions in England. The information included only covers medicines prescribed in England that then dispensed in the community in England, Scotland, Wales, Isle of Man of the Channel Islands by a pharmacy, appliance contractor, dispensing doctor, or have been personally administered by a GP practice. The publication does not include data on medicines used in hospitals, prisons or prescribed by private doctors. Is also discusses how the COVID-19 pandemic has affected the use of these medicines.
+This publication provides information on the medicines used to treat mental health conditions in England. The information included only covers medicines prescribed in England that are then dispensed in the community in England, Scotland, Wales, Isle of Man of the Channel Islands by a pharmacy, appliance contractor, dispensing doctor, or have been personally administered by a GP practice. The publication does not include data on medicines used in hospitals, prisons or prescribed by private doctors. Is also discusses how the COVID-19 pandemic has affected the use of these medicines.
 
 The publication uses the British National Formulary (BNF), a list of medicines that is used in the UK to classify medicines according to their primary therapeutic use. Medication may also be prescribed for other purposes beyond their intended use. For instance, certain antidepressants may be recommended to individuals experiencing chronic pain. The NHSBSA does not capture the clinical indication of a prescription during processing. The publication focuses on five sections of the BNF that cover medicines used to treat anxiety, depression, psychosis, attention deficit hyperactivity disorder (ADHD), and dementia.
 
-It’s important to note that the publication does not discuss the costs associated with the provision of there medicines. However, this information is available in the supporting summary tables which accompany this release. Additionally, it’s worth noting that medicines are not the only way to treat mental health conditions, and this publication does not capture information on the use of other metal health services, such as psychological therapies. As a result, this publication may not give a complete picture of the number of people receiving treatment for mental health conditions.
+It’s important to note that the publication does not discuss the costs associated with the provision of these medicines. However, this information is available in the supporting summary tables which accompany this release. Additionally, it’s worth noting that medicines are not the only way to treat mental health conditions, and this publication does not capture information on the use of other metal health services, such as psychological therapies. As a result, this publication may not give a complete picture of the number of people receiving treatment for mental health conditions.
 
-Prescribing of medications in primary care is only part of the big picture for mental health care in England. The [NHS Digital mental health data hub] (https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/mental-health-data-hub) has links to statistics on a range of related topics which may provide further context. These include a mental health bulletin, reports on children and young people's mental health surveys, dementia assessment and referral statistics, and more.
+Prescribing of medications in primary care is only part of the big picture for mental health care in England. The [NHS Digital mental health data hub](https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/mental-health-data-hub) has links to statistics on a range of related topics which may provide further context. These include a mental health bulletin, reports on children and young people's mental health surveys, dementia assessment and referral statistics, and more.
 
 ### 1.2. Definitions {.toc-ignore}
 
-``` {r definition_infoboxes}
-
 ::::{.row}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("Item", text = "A single unit of mediciation listed separately on a prescription form.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("Item", text = "A single unit of medication listed separately on a prescription form.", width = "100%")`
 :::
 :::{.col-md-4}
 `r mumhquarterly::infoBox_no_border("Patient", text = "A unique NHS number verified from a prescription form.", width = "100%")`
@@ -94,8 +88,6 @@ Prescribing of medications in primary care is only part of the big picture for m
 `r mumhquarterly::infoBox_no_border("NIC", text = "The Net Ingredient Cost (NIC) is the basic price of the medication and the quantity prescribed", width = "100%")`
 :::
 ::::
-
-```
 
 In this publication, an example of an item would be Fluoxetine 20mg tables x56.
 
@@ -134,7 +126,6 @@ patient_identification %>%
 
 ```
 
-Where the proportion of identified patients has increased, this could result in an overestimation of any increases in patients receiving prescribing for a BNF section. Where the proportion has fallen, this could result in an underestimate.
 ---
 
 ## 2. Results and commentary
@@ -599,6 +590,8 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
+The lack of consistent trends over time for dementia drugs can be seen again in Figure 10. There is some evidence of patterns across time, notably the same decrease in months with fewer dispensing days such as February. Decreases in February can be seen in all BNF sections in this publication.
+
 The monthly average number of identified patients from January to December 2021 for drugs for dementia items was 194,000, a small rise from 188,000 in 2021.
 
 Over January to December 2022, 4.19 million drugs for dementia items were prescribed. This was also a small increase from 2021, when there were 4.03 million items.
@@ -752,10 +745,6 @@ Dementia is a disease that leads to progressive loss of brain function typified 
 Dementia mainly affects older people but can also occur in people as young as thirty due to either alcohol abuse or HIV/AIDS. No cure for dementia currently exists. However, drugs may slow the rate of decline or in some patients make a small improvement in symptoms. Despite this, disease progression is inevitable.
 
 You can find more information about the [various types of dementia](https://www.nhs.uk/conditions/dementia/) on the NHS website.
-
-### 4.6. Related statistics and resources
-
-Prescribing of medications in primary care is only part of the big picture for mental health care in England. The [NHS Digital mental health data hub] (https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/mental-health-data-hub) has links to statistics on a range of related topics which may provide useful context. These include reports on children and young people's mental health surveys, a mental health bulletin, dementia assessment and referral statistics, and more.
 
 ---
 
