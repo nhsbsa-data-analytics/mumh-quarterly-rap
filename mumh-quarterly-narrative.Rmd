@@ -454,7 +454,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 
 Prescribing of CNS stimulants and drugs for ADHD continues to show an upwards trend, with 646,000 items prescribed in October to December 2022. This was an increase on 607,000 items in the previous three months, and from 548,000 items in October to December 2021. Since October to December 2017 there has been a 69.1% increase, with an estimated 264,000 more items prescribed in October to December 2022.
 
-Both items and identified patients are increasing over time. An estimated 180,000 identified patients were prescribed at least one CNS stimulants and drugs used for ADHD item in October to December 2022. This was a noticeable increase from 170,000 in the previous three months, and from 149,000 in October to December 2021. CNS stimulants and drugs used for ADHD have seen a larger rise in the proportion of patients identified than other BNF sections. This may result in an overestimate of the actual increase. More information about patient identification can be found in the introduction.
+Both items and identified patients are increasing over time. An estimated 180,000 identified patients were prescribed at least one CNS stimulants and drugs used for ADHD item in October to December 2022. This was a noticeable increase from 170,000 in the previous three months, and from 149,000 in October to December 2021. There has been an overall rise of 82,600 identified patients since October to December 2017, an 84.8% increase. CNS stimulants and drugs used for ADHD have seen a larger rise in the proportion of patients identified than other BNF sections. This may result in an overestimate of the actual increase. More information about patient identification can be found in the introduction.
 
 #### Figure 8: Number of prescribed items and identified patients by month - BNF 4.4: CNS stimulants and drugs used for ADHD
 
@@ -491,7 +491,7 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-The monthly average of identified patients receiving at least one CNS stimulants and drugs used for ADHD item over January to December 2021 was 116,000. In 2021, there was a monthly average of 98,900, so this has further increased. 
+The monthly average of identified patients receiving at least one CNS stimulants and drugs used for ADHD item over January to December 2021 was 116,000. In 2021, there was a monthly average of 98,900, so this is an increase. 
 
 There was also an increase in items prescribed, from 2.04 million items in January to December 2021, to 2.42 million in 2022.
 
