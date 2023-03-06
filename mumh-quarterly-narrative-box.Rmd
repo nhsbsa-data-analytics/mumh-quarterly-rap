@@ -700,19 +700,6 @@ The monthly average number of identified patients from January to December 2022 
 In 2022, 4.19 million drugs for dementia items were prescribed. This was also a small increase from 2021, when there were 4.03 million items prescribed.
 
 
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r infoBox_no_border(header = "Changes to these statistics", text = "this is a larger box with more text to test the height stay the same. this is a larger box with more text to test the height stay the same", width = "100%")`
-:::
-:::{.col-md-4}
-`r infoBox_no_border("This is box 2", text = "this text goes in the middle", width = "100%")`
-:::
-:::{.col-md-4}
-`r infoBox_no_border("This is box 2", text = "this text goes in the middle", width = "100%")`
-:::
-::::
-
-
 ---
 
 ## 4. Background
