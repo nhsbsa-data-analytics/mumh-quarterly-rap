@@ -182,6 +182,14 @@ This model states expected figures if trends had continued as before but doesn't
 
 From 2021/2022 we have amended the annual publication  to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries.
 
+### 3.2. Item trends during COVID-19  {.toc-ignore}
+
+The linear regression model used to predict trends was updated to include age and gender as discussed in 2.3. Previously the linear regression model was based only on:
+
+*	the trends between April 2015 and February 2020
+*	the number of dispensing days that occur in each month
+*	the typical differences between each month of the year observed between April 2015 and February 2020
+
 <!-- ### 3.3. Planned changes to this publication {.toc-ignore} -->
 
 ## 4. Strengths and limitations
