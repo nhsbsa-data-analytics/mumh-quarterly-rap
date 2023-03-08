@@ -44,32 +44,31 @@ knitr::opts_chunk$set(echo = FALSE,
 
 Published 9 March 2023
 
-`r mumhquarterly::infoBox_border(header = "Changes to these statistics", text = paste0("For this release, we have made changes to the methodology of the model used in predicting items based on prescribing trends from before the Covid-19 pandemic. We are interested in any feedback about the publication or these changes, which you can send by using our ", htmltools::HTML("<a href='https://online1.snapsurveys.com/Official_Statistics_Feedback'>Official Statistics feedback survey</a>"),"."), width = "100%")`
+`r mumhquarterly::infoBox_border(header = "Changes to these statistics", text = paste0("For this release, we have made changes to the methodology of the model used to explore the impacts of the Coronavirus (COVID-19) pandemic on prescribing trends. We are interested in any feedback about the publication or these changes, which you can send by using our ", htmltools::HTML("<a href='https://online1.snapsurveys.com/Official_Statistics_Feedback'>Official Statistics feedback survey</a>"),"."), width = "100%")`
 
 ## Key findings
 
-::::{.row style="display: flex;"}
+Between October and December 2022:
+
+::::{.row style="display: flex; padding-bottom: 15px;"}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "21.7 million antidepressant items were prescribed to an estimated 6.59 million identified patients.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>21.7 million antidepressant items were prescribed to an estimated 6.59 million identified patients.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "CNS stimulants and drugs for ADHD increased by 6.28%.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Prescribing of CNS stimulants and drugs for ADHD items increased by 6.28%.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Drugs for dementia have remained below expected values based on pre-covid trends.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Prescribing of drugs for dementia items remained below expected values based on pre-pandemic trends.</b>", width = "100%")`
 :::
 ::::
 
+Of the five BNF sections covered in these statistics, antidepressants remained the section with the largest number of identified patients and items prescribed. Between October to December 2022, 21.7 million antidepressants were prescribed to an estimated 6.59 million identified patients. These were small increases compared to the previous quarter. 
 
-Of the five BNF sections covered in these statistics, antidepressants remained the section with the largest number of identified patients and items prescribed. Between October to December 2022, 21.7 million antidepressants were prescribed to an estimated 6.59 million identified patients. These were small increases compared to the previous three months. 
+Prescribing of CNS stimulants and drugs for ADHD increased by 6.28% over the same period to 646,000 items, the largest percentage change of all drug groups in this publication. Antipsychotics and drugs for dementia also showed small increases in prescribing.
 
-CNS stimulants and drugs for ADHD increased by 6.28% over the same period to 646,000 items, the largest percentage change of all sections in this publication. Antipsychotics and drugs for dementia also showed small increases.
+Hypnotics and anxiolytics were the only group of drugs that showed a decrease in prescribing between October to December 2022. Identified patients decreased by a slightly greater proportion than items, but remained above one million patients.
 
-Hypnotics and anxiolytics were the only group of drugs that did not increase between October to December 2022. They showed a slight decrease, but overall remained similar to the previous quarter. Identified patients decreased by a slightly greater proportion than items, but remained above one million patients.
-
-All sections saw a small decrease in both items and identified patients from November to December 2022. This is the first time since 2018 that items and identified patients have both decreased during this time of year across all sections.
-
-Across October to December 2022, the number of expected items prescribed was extrapolated based on pre-covid trends. Antidepressants, hypnotics and anxiolytics, and antipsychotics were mostly within the range of values expected. However, CNS stimulants and drugs for ADHD remained above and drugs for dementia remained below the range of expected items prescribed.
+All drug groups saw a small decrease in both items prescribed and identified patients from November to December 2022. This is the first time since 2018 that items and identified patients have both decreased during this time of year across all sections.
 
 ---
 
@@ -78,38 +77,31 @@ Across October to December 2022, the number of expected items prescribed was ext
 
 `r mumhquarterly::infoBox_border("Background ", text = "The [NHS Long Term Plan](https://www.longtermplan.nhs.uk/) published in 2019 focuses on improving mental health care in the UK. It aims to provide more funding for mental health services, particularly for children and people with dementia. The [Core20PLUS5](https://www.england.nhs.uk/about/equality/equality-hub/core20plus5/) approach  to reduce health inequalities also seeks to improve community care for those with severe mental illnesses.", width = "100%")`
 
-This publication provides information on medicines used to treat mental health conditions in England. It covers medicines prescribed in England that are then dispensed in the community in England, Scotland, Wales, Isle of Man of the Channel Islands by a pharmacy, appliance contractor, dispensing doctor, or have been personally administered by a GP practice. The publication does not include data on medicines used in hospitals, prisons or prescribed by private doctors. It also discusses how the COVID-19 pandemic has affected the use of these medicines.
+This publication provides information on medicines used to treat mental health conditions in England. It covers medicines prescribed in England that are then dispensed in the community in England, Scotland, Wales, Isle of Man of the Channel Islands. The publication does not include data on medicines used in hospitals, prisons or prescribed by private doctors. It also explores how the COVID-19 pandemic has affected the use of these medicines.
 
-`r mumhquarterly::infoBox_border("Classification", text = "This publication uses the British National Formulary (BNF), a list of medicines used in the UK to classify medicines according to their primary therapeutic use. Medication may also be prescribed for other purposes beyond their intended use. For example, certain antidepressants may be recommended to individuals experiencing chronic pain. The NHSBSA does not capture the clinical indication of a prescription during processing.
-
-The five sections of the BNF included in this publication cover medicines which are primarily use to treat anxiety, depression, psychosis, attention deficit hyperactivity disorder (ADHD), and dementia.", width = "100%")`
+The five sections of the BNF included in this publication cover medicines which are primarily use to treat anxiety, depression, psychosis, attention deficit hyperactivity disorder (ADHD), and dementia.
 
 This summary narrative does not discuss the costs associated with the provision of these medicines, but this information is available in the supporting summary tables which accompany this release. Medicines are not the only way to treat mental health conditions, and this publication does not capture information on the use of other mental health services, such as psychological therapies. Therefore, this publication may not give a complete picture of the number of people receiving treatment for mental health conditions. Information on where to find related statistics can be found in Section 4.
 
 ### 1.2. Definitions {.toc-ignore}
 
+`r mumhquarterly::infoBox_border("Item", text = "A single unit of medication listed separately on a prescription form. In this publication, an example of an item would be Fluoxetine 20mg tables x56.", width = "100%")`
 
-`r mumhquarterly::infoBox_border("Item", text = "A single unit of medication listed separately on a prescription form.", width = "100%")`
+`r mumhquarterly::infoBox_border("Patient", text = "A unique NHS number verified from a prescription form. Verification of an NHS number for patient identification is done by the NHS Personal Demographics Service (PDS).", width = "100%")`
 
-`r mumhquarterly::infoBox_border("Patient", text = "A unique NHS number verified from a prescription form.", width = "100%")`
+`r mumhquarterly::infoBox_border("NIC", text = "The Net Ingredient Cost (NIC) is the basic price of the medication and the quantity prescribed. It does not include other fees incurred by dispensing contractors, such as controlled drug fees or the single activity fee. The basic price is determined by the [Drug Tariff](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff) or by the manufacturer, wholesaler, or supplier of the product.", width = "100%")`
 
-`r mumhquarterly::infoBox_border("NIC", text = "The Net Ingredient Cost (NIC) is the basic price of the medication and the quantity prescribed.", width = "100%")`
-
-In this publication, an example of an item would be Fluoxetine 20mg tables x56.
-
-Verification of an NHS number for patient identification is done by the NHS Personal Demographics Service (PDS).
-
-The NIC does not include other fees incurred by dispensing contractors, such as controlled drug fees or the single activity fee. The basic price is determined by the [Drug Tariff](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff) or by the manufacturer, wholesaler, or supplier of the product.
+`r mumhquarterly::infoBox_border("Classification", text = "This publication uses the British National Formulary (BNF), which lists medicines used in the UK and classifies them according to their primary therapeutic use. Medication may also be prescribed for other purposes beyond their intended use. For example, certain antidepressants may be recommended to individuals experiencing chronic pain. The NHSBSA does not capture the clinical indication of a prescription during processing.", width = "100%")`
 
 ### 1.3. Time periods {.toc-ignore}
 
-These statistics cover the period of the coronavirus (COVID-19) pandemic. A detailed [timeline](https://commonslibrary.parliament.uk/research-briefings/cbp-9068/) of events and restrictions in the UK during this time can be found on the UK parliament website. The impact of COVID-19 should be considered when comparing across time periods 
-
 The data in this publication covers the period from April 2017 to December 2022. Q1, Q2, Q3, and Q4 refer to different periods within a financial year. You can find more information on the [Medicines Used in Mental Health - England webpage](https://www.nhsbsa.nhs.uk/statistical-collections/medicines-used-mental-health-england).
+
+These statistics cover the period of the coronavirus (COVID-19) pandemic. A detailed [timeline](https://commonslibrary.parliament.uk/research-briefings/cbp-9068/) of events and restrictions in the UK during this time can be found on the UK parliament website. The impact of COVID-19 should be considered when comparing across time periods 
 
 ### 1.4. Patient identification {.toc-ignore}
 
-When the NHSBSA processes prescriptions it is not always possible to identify capture the NHS number of the patient.. Table 1 shows the proportion of items for which a patient could be identified. This means that the data relating to patient counts represents most, but not all, patients.
+When the NHSBSA processes prescriptions it is not always possible to capture the NHS number of the patient. Table 1 shows the proportion of items for which a patient could be identified. This means that the data relating to patient counts represents most, but not all, patients.
 
 Due to an increase in digital prescription processing through the Electronic Prescription Service (EPS) during the COVID-19 pandemic, more patients were identified in 2020/21 and 2021/22 compared to previous years. As patient identification rates increased, any increases in the number of identified patients between periods are likely to be an overestimate of the actual increase in patient numbers. This is because the proportion of patients who could be identified has increased. Conversely, any decrease over the same period is likely to be an underestimate of the actual decrease.
 
@@ -183,21 +175,21 @@ raw_data$quarterly %>%
 ```
 Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
+::::{.row style="display: flex; padding-bottom: 15px;"}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "21.7 million items prescribed in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>22 million antidepressant items prescribed in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "5.59 million identified patients in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>5.6 million identified patients received an antidepressant in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items and patients continue to trend upwards for antidepressants.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Items and patients continue to trend upwards for antidepressants.</b>", width = "100%")`
 :::
 ::::
 
 In October to December 2022, prescribing of antidepressant drug items increased to 21.7 million items, 2.67% more than the same time last year. This continues the long-term trend for antidepressant prescribing, which has risen by 25% since 2017/18. 
 
-An estimated 6.59 million identified patients were prescribed at least one antidepressant item between July to September 2022. This was not a notable change from the previous 3 months, but estimated identified patients are increasing along the same long-term trend as items.   
+An estimated 6.59 million identified patients were prescribed at least one antidepressant item between October to December 2022. This was not a notable change from the previous 3 months, but estimated identified patients are increasing along the same long-term trend as items.   
 
 #### Figure 2: Number of prescribed items and identified patients by month - BNF 4.3: Antidepressant drugs
 
@@ -236,14 +228,16 @@ chart_data$monthly %>%
 ```
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Monthly there were an average of 4.57 million patients.", width = "100%")`
+::::{.row style="display: flex; padding-bottom: 15px;"}
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>On average, 4.6 million patients received an antidepressant each month in 2022.</b>", width = "100%")`
 :::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items have increased 3.37% in 2022 from 2021.", width = "100%")`
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Antidepressant items increased by 3.4% between 2021 and 2022.</b>", width = "100%")`
 :::
 ::::
+
+
 Figure 2 shows antidepressant prescribing continues to have regular and seasonal patterns. For all BNF sections in this publication, months with fewer dispensing days, such as February, tend to have less prescribing. Despite the month-to-month variation, antidepressants show a clear increase over time.
 
 In 2022, there was a monthly average of 4.57 million identified patients receiving at least one antidepressant item. This was a small increase from the monthly average of 4.45 million identified patients in 2021.
@@ -295,15 +289,15 @@ raw_data$quarterly %>%
 
 Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
+::::{.row style="display: flex; padding-bottom: 15px;"}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "3.44 million items prescribed in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>3.4 million hypnotic and anxiolytic items prescribed in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "1.03 million identified patients in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>1 million identified patients received prescribing in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items and patients continue to trend upwards for hypnotics and anxiolytics .", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Items and patients continue to trend downwards for hypnotics and anxiolytics.</b>", width = "100%")`
 :::
 ::::
 
@@ -346,12 +340,12 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Monthly there were an average of 676,000 patients.", width = "100%")`
+::::{.row style="display: flex; padding-bottom: 15px;"}
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>On average, 680,000 patients received prescribing each month in 2022.</b>", width = "100%")`
 :::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items have decreased 2.14% in 2022 from 2021.", width = "100%")`
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Hypnotics and anxiolytics items decreased by 2.1% between 2021 and 2022.</b>", width = "100%")`
 :::
 ::::
 
@@ -363,7 +357,7 @@ January to December 2022 also had a small decrease in hypnotics and anxiolytics 
 
 ### 2.3. Antipsychotics
 
-`r mumhquarterly::infoBox_border(" ", text = "These drugs are used to treat psychoses and related disorders. These drugs are classified and described under the BNF 68 section 4.2:
+`r mumhquarterly::infoBox_border(" ", text = "These drugs are used to treat psychoses and related disorders, and are referred to under the umbrella term antipsychotics. These drugs are classified and described under the BNF 68 section 4.2:
 
 * BNF paragraph 4.2.1 - Antipsychotic drugs
 * BNF paragraph 4.2.2 - Antipsychotic depot injections
@@ -406,15 +400,15 @@ raw_data$quarterly %>%
 
 Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
+::::{.row style="display: flex; padding-bottom: 15px;"}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "3.38 million items prescribed in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>3.4 million antipsychotic items prescribed in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "646,000 million identified patients in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>650,000 identified patients received an antipsychotic in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items and patients continue to trend upwards for antipsychotics.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Items and patients continue to trend upwards for antipsychotics.</b>", width = "100%")`
 :::
 ::::
 
@@ -457,16 +451,16 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Monthly there were an average of 493,000 patients.", width = "100%")`
+::::{.row style="display: flex; padding-bottom: 15px;"}
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>On average, 490,000 patients received an antipsychotic each month in 2022.</b>", width = "100%")`
 :::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items have increased 1.16% in 2022 from 2021.", width = "100%")`
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Antipsychotic items increased by 1.2% between 2021 and 2022.</b>", width = "100%")`
 :::
 ::::
 
-The regular and seasonal patterns over time for antipsychotics can be seen in Figure 6. The month-to-month changes for antispychotics items are more volatile than the changes in identified patient numbers.
+The regular and seasonal patterns over time for antipsychotics can be seen in Figure 6. The month-to-month changes for antipsychotics items tend to be proportionally larger than the changes in identified patient numbers.
 
 From January to December 2022, there were on average 493,000 identified patients per month who received at least one antipsychotic item. Unlike the other BNF sections, this was almost unchanged from 492,000 monthly average identified patients in 2021.
 
@@ -523,23 +517,23 @@ raw_data$quarterly %>%
 ```
 Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
+::::{.row style="display: flex; padding-bottom: 15px;"}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "646,000 items prescribed in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>650,000 CNS stimulants and drugs for ADHD items prescribed in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "180,000 identified patients in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>180,000 identified patients received prescribing in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items and patients continue to trend upwards for CNS stimulants and drugs for ADHD.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Items and patients continue to trend upwards for CNS stimulants and drugs for ADHD.</b>", width = "100%")`
 :::
 ::::
 
-Prescribing of CNS stimulants and drugs for ADHD continues to show an upwards trend, with 646,000 items prescribed in October to December 2022. This was an increase on 607,000 items in the previous quarter, and 548,000 items in October to December 2021. Since 2017/18 there has been a 69.1% increase, with an estimated 264,000 more items prescribed in October to December 2022.
+Prescribing of CNS stimulants and drugs for ADHD continues to show an upwards trend, with 646,000 items prescribed in October to December 2022. This was an increase on 607,000 items in the previous quarter, and 548,000 items in October to December 2021. Since Q3 2017/18 there has been a 69.1% increase, with an estimated 264,000 more items prescribed compared to Q3 2022/23.
 
-Both items and identified patients are increasing over time. CNS stimulants and drugs used for ADHD has historically had a lower rate of patients identified than other BNF sections which means as this rate has increased it has affected a larger proportion of patients. Patient identification for this section has increased from 81.5% in 2017/18 to 87.7% in 2021/22. This increase in patients being identified may result in an overestimate of the actual increase in identified patients. More information about patient identification can be found in the introduction. 
+Both items and identified patients are increasing over time. CNS stimulants and drugs used for ADHD has historically had a lower rate of identified patients than other BNF sections. This means that patient counts are more likely to be impacted by over estimation than other drug groups, especially if identified patient rates increase over time. Patient identification for this drug group has increased from 81.5% in 2017/18 to 87.7% in 2021/22. More information about patient identification can be found in the introduction. 
 
-An estimated 180,000 identified patients were prescribed at least one CNS stimulants and drugs used for ADHD item in October to December 2022. This was a noticeable increase from 170,000 in the previous three months, and from 149,000 in October to December 2021. There has been an overall rise of 82,600 identified patients since October to December 2017, an 84.8% increase but as discussed some of this increase will be due to the increase in patients identified. 
+An estimated 180,000 identified patients were prescribed at least one CNS stimulants and drugs used for ADHD item in October to December 2022. This was a noticeable increase from 170,000 in the previous three months, and from 149,000 in October to December 2021. There has been an overall rise of 82,600 identified patients since October to December 2017, an 84.8% increase.
 
 #### Figure 8: Number of prescribed items and identified patients by month - BNF 4.4: CNS stimulants and drugs used for ADHD
 
@@ -576,12 +570,12 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Monthly there were an average of 116,000 patients.", width = "100%")`
+::::{.row style="display: flex; padding-bottom: 15px;"}
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>On average 120,000 patients received prescribing each month in 2022.</b>", width = "100%")`
 :::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items have increased 18.6% in 2022 from 2021.", width = "100%")`
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Prescribing of items increased by 19% between 2021 and 2022.</b>", width = "100%")`
 :::
 ::::
   
@@ -640,15 +634,15 @@ raw_data$quarterly %>%
 
 Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
+::::{.row style="display: flex; padding-bottom: 15px;"}
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "1.08 million items prescribed in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>1.1 million drugs for dementia items prescribed in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "242,000 identified patients in Q3 2022.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>240,000 identified patients received a drugs for dementia item in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items and patients have not shown a consistent trend upwards for drugs for dementia.", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>Items for drugs for dementia declined over the initial COVID-19 period, but are returning to their pre-pandemic upward trend.</b>", width = "100%")`
 :::
 ::::
 
@@ -691,12 +685,12 @@ chart_data$monthly %>%
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Monthly there were an average of 194,000 patients.", width = "100%")`
+::::{.row style="display: flex; padding-bottom: 15px;"}
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>On average, 190,000 patients received a drugs for dementia item each month in 2022.</b>", width = "100%")`
 :::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Items have increased 3.78% in 2022 from 2021.", width = "100%")`
+:::{.col-md-6}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Drugs for dementia items have increased by 3.8% between 2021 and 2022.</b>", width = "100%")`
 :::
 ::::
 The lack of consistent trends over time for dementia drugs can be seen again in Figure 10. There is some evidence of patterns across time, but these include seasonal patterns that can be seen in all other sections in this publication.
@@ -707,6 +701,18 @@ In 2022, 4.19 million drugs for dementia items were prescribed. This was also a 
 
 ## 3. Prescribing during the COVID-19 pandemic 
 
+::::{.row style="display: flex; padding-bottom: 15px;"}
+:::{.col-md-4}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Antidepressants, hypnotics and anxiolytics, and antipsychotics have generally remained within the range of values expected based on pre-pandemic trends.</b>", width = "100%")`
+:::
+:::{.col-md-4}
+`r mumhquarterly::infoBox_no_border("", text = "<b>CNS stimulants and drugs for ADHD have continued to increase beyond the range of expected items to be prescribed</b>", width = "100%")`
+:::
+:::{.col-md-4}
+`r mumhquarterly::infoBox_no_border("", text = "<b>Prescribing of drugs for dementia items has consistently been below the range of expected values for the previous 2 years.</b>", width = "100%")`
+:::
+::::
+
 The number of expected prescription items for the below sections during this period have been calculated by extrapolating figures for March 2020 to `r max_filter_12_months` according to:
 
 * the trend in prescription items for each section between April 2015 and February 2020
@@ -714,25 +720,14 @@ The number of expected prescription items for the below sections during this per
 * the typical differences between each month of the year observed between April 2015 and February 2020
 * the typical differences between each combination of 10 year age band group and gender
 
-A linear regression model has been used to estimate the number of items prescribed, to stay relatively simple and consistent with the model used in previous releases. The model estimates the expected number of items prescribed based on pre-covid trends, for each combination of age band and gender. These estimates have then been added together to get an estimate of the total items expected per month, with a 95% and 99% prediction interval calculated.
+A linear regression model has been used to estimate the number of items prescribed, to stay relatively simple and consistent with the model used in previous releases. The model estimates the expected number of items prescribed based on pre-pandemic trends, for each combination of age band and gender. These estimates have then been added together to get an estimate of the total items expected per month, with a 95% and 99% prediction interval calculated.
 
 `r mumhquarterly::infoBox_border("Prediction interval (PI)", text = "A range calculated based on the uncertainty around the fit of the model. A 95% PI means that if a new observation is taken from the population the model is based on, it is likely to fall within the interval of predicted values 95% of the time. A 99% PI means the new observation is likely to fall within the interval of predicted values 99% of the time.", width = "100%")`
 
-The data used in this model has been split into groups by 10 year age band and gender. As age band and gender were included in the model, the model was only fitted to data where age band and gender were both known. This means the charts of predictions made using the model are not based on the same full data used in the rest of this publication. These charts cannot be directly compared to each other or to the quarterly and monthly charts of items prescribed. More information on the methodology behind the model can be found in the [background and methodology document](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/MUMH_Background_Info_Methodology_v007.html).
-  
-::::{.row style="display: flex;"}
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Antidepressants, hypnotics and anxiolytics, and antipsychotics have generally remained within the range of values expected based on pre-covid trends.", width = "100%")`
-:::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "CNS stimulants and drugs for ADHD have continued to increase beyond the number of items prescribed that was predicted by the model.", width = "100%")`
-:::
-:::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "Prescribing of drugs for dementia items has remained below expected values for most months in the past 2 years.", width = "100%")`
-:::
-::::
+The data used in this model has been split into groups by patients' 10 year age band and gender. As age band and gender were included in the model, the model was only fitted to data where age band and gender were both known. This means the charts of predictions made using the model are not based on the same full data used in the rest of this publication. These charts cannot be directly compared to each other or to the quarterly and monthly charts of items prescribed. More information on the methodology behind the model can be found in the [background and methodology document](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/MUMH_Background_Info_Methodology_v007.html).
 
-### 3.1. Antidepressant Prescribing during the COVID-19 pandemic {.toc-ignore}
+
+### 3.1. Antidepressant Prescribing {.toc-ignore}
 
 #### Figure 11: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.3: Antidepressant drugs
 
@@ -746,11 +741,11 @@ The data used in this model has been split into groups by 10 year age band and g
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-Between March 2020 and December 2022, 234 million antidepressant items were prescribed.
+Between March 2020 and December 2022, there were 234 million antidepressant items were prescribed.
 
-There were 232 million antidepressant items prescribed to identified patients with a known age and gender over the same period. This was 0.58% more than the 230 million prescribed items expected based on historical trends, but remains inside the expected range of values over this period. 
+There were 232 million antidepressant items prescribed to identified patients with a known age and gender over the same period. This was less than 1% more than the 230 million prescribed items expected based on historical trends, and remains inside the expected range of values over this period. 
 
-### 3.2. Hypnotics and anxiolytics prescribing during the COVID-19 pandemic {.toc-ignore}
+### 3.2. Hypnotics and anxiolytics prescribing {.toc-ignore}
 
 #### Figure 12: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.1: Hypnotics and anxiolytics
 
@@ -766,9 +761,9 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 There were 39.9 million hypnotics and anxiolytics items prescribed between March 2020 and December 2022.
 
-During this same time, 38.6 million hypnotics and anxiolytics items were prescribed to identified patients with known age and gender. The expected number of items prescribed over this time was 38.5 million, so 0.32% more items were prescribed than expected. This difference is small and does not fall outside of the expected range of values for the period.
+During this same time, 38.6 million hypnotics and anxiolytics items were prescribed to identified patients with known age and gender. The expected number of items prescribed over this time was 38.5 million, so this remained within the expected range of values for the period.
 
-### 3.3. Drugs used in psychoses and related disorders prescribing during the COVID-19 pandemic {.toc-ignore}
+### 3.3. Drugs used in psychoses and related disorders prescribing {.toc-ignore}
 
 #### Figure 13: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.2: Drugs used in psychoses and related disorders
 
@@ -785,7 +780,7 @@ From March 2020 to December 2022, 37.3 million antipsychotic items were prescrib
 
 Identified patients with known age and gender had 36.1 million antipsychotic items prescribed within the same time period. This was 1.47% less than than the 36.6 million items that were expected to be prescribed. This was mostly within the range of values expected over the full time period. However, a small number of months have shown prescribing slightly outside this range, including most recently in October and December 2022.
 
-### 3.4. CNS stimulants and drugs used for ADHD prescribing during the COVID-19 pandemic {.toc-ignore}
+### 3.4. CNS stimulants and drugs used for ADHD prescribing {.toc-ignore}
 
 #### Figure 14: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.4: CNS stimulants and drugs used for ADHD
 
@@ -801,11 +796,11 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 From March 2020 to December 2022, 5.99 million CNS stimulants and drugs used for ADHD items were prescribed.
 
-There were 5.26 million CNS stimulants and drugs used for ADHD items prescribed over the same period to identified patients with known age and gender. This was 11.3% more than the 4.72 million items expected to be prescribed. The difference between actual and expected items prescribed has increased noticeably overall since March 2022. This upward trajectory is beyond the range of the expected values from the model.
+There were 5.26 million CNS stimulants and drugs used for ADHD items prescribed over the same period to identified patients with known age and gender. This was 11.3% more than the 4.72 million items expected to be prescribed. The difference between actual and expected items prescribed has increased noticeably overall since March 2022. This upward trajectory is beyond the range of the expected values.
 
-The model is based on data containing identified patients with known age and gender only. As CNS stimulants and drugs used for ADHD has a relatively low patient identification rate, a lower proportion of prescribing is included in the model data. For example, patient identification for this BNF section was 78.8% in Q1 of 2015/16, rising to 87.7% in Q3 of 2022/23. This may have an impact on how well the model can make predictions of expected values from the data. More information on patient identification can be found in the introduction.
+The model is based on data containing identified patients with known age and gender only. As CNS stimulants and drugs used for ADHD has a relatively low patient identification rate, a lower proportion of prescribing is included in the model data. For example, patient identification for this BNF section was 78.8% in Q1 of 2015/16, rising to 87.7% in Q3 of 2022/23. This may have an impact on how well the model can extrapolate expected values from the data.
 
-### 3.5. Drugs for dementia prescribing during the COVID-19 pandemic {.toc-ignore}
+### 3.5. Drugs for dementia prescribing {.toc-ignore}
 
 #### Figure 15: Expected and actual prescribing activity during the COVID-19 Pandemic - BNF 4.11: Drugs for dementia
 
@@ -821,11 +816,13 @@ Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu
 
 There were 11.6 million drugs for dementia items prescribed between March 2020 and December 2022.
 
-Of these items, 11.3 million drugs for dementia items were prescribed to identified patients with known age and gender across the same time period. This is significantly lower than the 12.7 million items expected to be prescribed, a difference of 11.3%. From December 2020 to December 2022, only 3 months have not fallen outside the range of expected values. Recently, the actual number of items prescribed has remained relatively stable, contrary to the increases that were predicted by the model.
+Of these items, 11.3 million drugs for dementia items were prescribed to identified patients with known age and gender across the same time period. This is significantly lower than the 12.7 million items expected to be prescribed, a difference of 11.3%. From December 2020 to December 2022, only 3 months have not fallen outside the range of expected values. Recently, the actual number of items prescribed has remained relatively stable, contrary to the increases that were expected.
 
 ---
 
 ## 4. Background
+
+This publication provides information on medicines used to treat mental health conditions in England. It covers medicines prescribed in England that are then dispensed in the community in England, Scotland, Wales, Isle of Man of the Channel Islands by a pharmacy, appliance contractor, dispensing doctor, or have been personally administered by a GP practice . The publication does not include data on medicines used in hospitals, prisons or prescribed by private doctors.
 
 ### 4.1. Antidepressant drugs {.toc-ignore}
 
@@ -889,13 +886,19 @@ Prescribing of medications in primary care is only part of the big picture for m
 
 This publication is part of a series by the NHSBSA. This quarterly summary is intended to supplement the [annual summary statistics](https://www.nhsbsa.nhs.uk/statistical-collections/medicines-used-mental-health-england/medicines-used-mental-health-england-201516-202122) released in each year and previous quarterly summaries. To learn more about how this series compares to our other publications, you can view the Official Statistics guidance table on our [statistical collections page](https://www.nhsbsa.nhs.uk/statistical-collections). 
 
+### 5.1 Changes to this publication {.toc-ignore}
+
+For this release we have changed the methodology of the model used to explore the impacts of the Coronavirus (COVID-19) pandemic on prescribing trends. The previous linear regression model included pre-pandemic trends, the number of dispensing days in each month, and the typical differences between months of the year. The new model remains a linear regression model to stay consistent with the approach used in previous releases for this financial year, but now includes age and gender as independent variables. Identified patients' age band and gender have been added into the model as an interaction term, to reflect the relationship between age and gender on the number of items prescribed. All variables used in the previous model remained statistically significant during variable selection, so were kept in the new model.
+
+The model has been fitted on monthly data from April 2015 to February 2020 to incorporate pre-pandemic prescribing trends. It was then applied to data from March 2020 to December 2022, to extrapolate expected values for this time period. Comparisons using statistical tests of model fit show the new model is more suitable for exploring prescribing trends in the data than the previous model. For example, prescribing of CNS stimulants and drugs for ADHD is higher in males aged 00-19 than females aged 80+. The new model takes into account these differences in prescribing trends between age band and gender groups.
+
 ### 5.1. Patient counts {.toc-ignore}
 
 The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients. A patient will be included, or counted, in each category or time period in which they received relevant prescriptions. For example, if a patient received a prescription item for an antidepressant drug in Q1 2020/21 and another in Q2 2020/21, then adding together those totals would count that patient twice. For the same reason, data on patient counts for different BNF sections should not be added together.
 
 ### 5.2. Rounding {.toc-ignore}
 
-The high-level figures in this statistical summary have been rounded where appropriate for clarity, in most cases to three significant figures. This is to make this narrative as accessible as possible to all readers. The summary tables released with this publication allow users to investigate this data at lower levels of granularity. Figures in the supplementary tables have not been rounded.
+The high-level figures in this statistical summary have been rounded where appropriate for clarity. In most cases rounding has been to three significant figures in the main text and two significant figures in the information boxes. This is to make this narrative as accessible as possible to all readers. The summary tables released with this publication allow users to investigate this data at lower levels of granularity. Figures in the supplementary tables have not been rounded.
 
 ### 5.3. Trends during COVID-19 {.toc-ignore}
 
