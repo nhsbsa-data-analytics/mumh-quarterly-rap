@@ -87,7 +87,7 @@ All drug groups saw a small decrease in both items prescribed and identified pat
 
 This publication provides information on medicines used to treat mental health conditions in England. It covers medicines prescribed in England that are then dispensed in the community in England, Scotland, Wales, Isle of Man of the Channel Islands. The publication does not include data on medicines used in hospitals, prisons or prescribed by private doctors. It also explores how the COVID-19 pandemic has affected the use of these medicines.
 
-The five sections of the BNF included in this publication cover medicines which are primarily use to treat anxiety, depression, psychosis, attention deficit hyperactivity disorder (ADHD), and dementia.
+The five sections of the BNF included in this publication cover medicines which are primarily used to treat anxiety, depression, psychosis, attention deficit hyperactivity disorder (ADHD), and dementia.
 
 This summary narrative does not discuss the costs associated with the provision of these medicines, but this information is available in the supporting summary tables which accompany this release. Medicines are not the only way to treat mental health conditions, and this publication does not capture information on the use of other mental health services, such as psychological therapies. Therefore, this publication may not give a complete picture of the number of people receiving treatment for mental health conditions. Information on where to find related statistics can be found in Section 4.
 
@@ -188,7 +188,7 @@ Source: [Quarterly Summary Tables - Quarterly table](https://nhsbsa-opendata.s3.
 `r mumhquarterly::infoBox_no_border("", text = "<b>22 million antidepressant items prescribed in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
-`r mumhquarterly::infoBox_no_border("", text = "<b>5.6 million identified patients received an antidepressant in Q3 2022.</b>", width = "100%")`
+`r mumhquarterly::infoBox_no_border("", text = "<b>6.6 million identified patients received an antidepressant in Q3 2022.</b>", width = "100%")`
 :::
 :::{.col-md-4}
 `r mumhquarterly::infoBox_no_border("", text = "<b>Items and patients continue to trend upwards for antidepressants.</b>", width = "100%")`
@@ -749,7 +749,7 @@ The data used in this model has been split into groups by patients' 10 year age 
 
 Source: [Quarterly Summary Tables - Monthly table](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/mumh_quarterly_dec22_v001.xlsx)
 
-Between March 2020 and December 2022, there were 234 million antidepressant items were prescribed.
+Between March 2020 and December 2022, there were 234 million antidepressant items prescribed.
 
 There were 232 million antidepressant items prescribed to identified patients with a known age and gender over the same period. This was less than 1% more than the 230 million prescribed items expected based on historical trends, and remains inside the expected range of values over this period. 
 
@@ -894,21 +894,21 @@ Prescribing of medications in primary care is only part of the big picture for m
 
 This publication is part of a series by the NHSBSA. This quarterly summary is intended to supplement the [annual summary statistics](https://www.nhsbsa.nhs.uk/statistical-collections/medicines-used-mental-health-england/medicines-used-mental-health-england-201516-202122) released in each year and previous quarterly summaries. To learn more about how this series compares to our other publications, you can view the Official Statistics guidance table on our [statistical collections page](https://www.nhsbsa.nhs.uk/statistical-collections). 
 
-### 5.1 Changes to this publication {.toc-ignore}
+### 5.1. Changes to this publication {.toc-ignore}
 
 For this release we have changed the methodology of the model used to explore the impacts of the Coronavirus (COVID-19) pandemic on prescribing trends. The previous linear regression model included pre-pandemic trends, the number of dispensing days in each month, and the typical differences between months of the year. The new model remains a linear regression model to stay consistent with the approach used in previous releases for this financial year, but now includes age and gender as independent variables. Identified patients' age band and gender have been added into the model as an interaction term, to reflect the relationship between age and gender on the number of items prescribed. All variables used in the previous model remained statistically significant during variable selection, so were kept in the new model.
 
 The model has been fitted on monthly data from April 2015 to February 2020 to incorporate pre-pandemic prescribing trends. It was then applied to data from March 2020 to December 2022, to extrapolate expected values for this time period. Comparisons using statistical tests of model fit show the new model is more suitable for exploring prescribing trends in the data than the previous model. For example, prescribing of CNS stimulants and drugs for ADHD is higher in males aged 00-19 than females aged 80+. The new model takes into account these differences in prescribing trends between age band and gender groups.
 
-### 5.1. Patient counts {.toc-ignore}
+### 5.2. Patient counts {.toc-ignore}
 
 The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients. A patient will be included, or counted, in each category or time period in which they received relevant prescriptions. For example, if a patient received a prescription item for an antidepressant drug in Q1 2020/21 and another in Q2 2020/21, then adding together those totals would count that patient twice. For the same reason, data on patient counts for different BNF sections should not be added together.
 
-### 5.2. Rounding {.toc-ignore}
+### 5.3. Rounding {.toc-ignore}
 
-The high-level figures in this statistical summary have been rounded where appropriate for clarity. In most cases rounding has been to three significant figures in the main text and two significant figures in the information boxes. This is to make this narrative as accessible as possible to all readers. The summary tables released with this publication allow users to investigate this data at lower levels of granularity. Figures in the supplementary tables have not been rounded.
+The high-level figures in this statistical summary have been rounded where appropriate for clarity. In most cases rounding has been to three significant figures in the main text and two significant figures in the key findings and information boxes. This is to make this narrative as accessible as possible to all readers. The summary tables released with this publication allow users to investigate this data at lower levels of granularity. Figures in the supplementary tables have not been rounded.
 
-### 5.3. Trends during COVID-19 {.toc-ignore}
+### 5.4. Trends during COVID-19 {.toc-ignore}
 
 The number of items for each BNF section in the 34-month period March 2020 to `r max_filter_12_months` were compared to the number of items expected to be prescribed based on trends from the 'pre-COVID-19' period. The monthly data for April 2015 to February 2020 was used to extrapolate expected figures for March 2020 to `r max_filter_12_months`. These figures were extrapolated according to:
 
@@ -924,11 +924,11 @@ This model states expected figures if trends had continued as before but doesn't
 *	any (and all) policy initiatives and guidance
 *	other local priorities and resources
 
-### 5.4. Averages {.toc-ignore}
+### 5.5. Averages {.toc-ignore}
 
 Where this document refers to 'average', this is the mean unless otherwise stated. This is calculated by adding the number of items/patients/months together and dividing this by the number of items/patients/months.
 
-### 5.5. Planned changes to this publication {.toc-ignore}
+### 5.6. Planned changes to this publication {.toc-ignore}
 
 This is an experimental official statistic release. Experimental statistics are newly developed or innovative statistics. These are published so that users and stakeholders can be involved in the assessment of their suitability and quality at an early stage. We will regularly be reviewing the methodology used within the statistics.
 

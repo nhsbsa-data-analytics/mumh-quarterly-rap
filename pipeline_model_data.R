@@ -1787,11 +1787,19 @@ rm(covpar1b)
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_dec22_v002.html")
+                  output_file = "outputs/mumh_quarterly_dec22_v001.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_dec22_v002.docx")
+                  output_file = "outputs/mumh_quarterly_dec22_v001.docx")
+
+rmarkdown::render("background.Rmd",
+                  output_format = "html_document",
+                  output_file = "outputs/mumh_quarterly_dec22_background.html")
+
+rmarkdown::render("background.Rmd",
+                  output_format = "word_document",
+                  output_file = "outputs/mumh_quarterly_dec22_background.docx")
 
 #logr::log_close()
 
