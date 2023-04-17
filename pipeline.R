@@ -3,7 +3,7 @@
 
 # 1. install required packages -------------------------------------------------
 # TODO: investigate using renv package for dependency management
-req_pkgs <- c("broom", "data.table", "dbplyr", "dplyr", "highcharter", "lubridate",
+req_pkgs <- c("broom", "data.table", "dbplyr", "dplyr", "DT" , "highcharter", "lubridate",
               "logr", "openxlsx", "rmarkdown", "rsample", "stringr", "tidyr", "yaml")
 
 #  utils::install.packages(req_pkgs, dependencies = TRUE)
