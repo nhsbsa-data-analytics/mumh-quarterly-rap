@@ -1,10 +1,10 @@
-# pipeline.R --------------------------------------------------------------
+# pipeline.R -------------------------------------------------------------------
 # This script is used to run the RAP for the MUMH quarterly publication
 
-# 1. install required packages --------------------------------------------
+# 1. install required packages -------------------------------------------------
 # TODO: investigate using renv package for dependency management
-req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
-              "logr", "highcharter", "lubridate", "dbplyr")
+req_pkgs <- c("broom", "data.table", "dbplyr", "dplyr", "highcharter", "lubridate",
+              "logr", "openxlsx", "rmarkdown", "rsample", "stringr", "tidyr", "yaml")
 
 #  utils::install.packages(req_pkgs, dependencies = TRUE)
 # # #
@@ -17,18 +17,18 @@ req_pkgs <- c("dplyr", "stringr", "data.table", "yaml", "openxlsx","rmarkdown",
 
 invisible(lapply(c(req_pkgs, "mumhquarterly", "nhsbsaR"), library, character.only = TRUE))
 
-# 2. setup logging --------------------------------------------------------
+# 2. setup logging -------------------------------------------------------------
 
 #lf <- logr::log_open(autolog = TRUE)
 
 # send code to log
 #logr::log_code()
 
-# 3. set options ----------------------------------------------------------
+# 3. set options ---------------------------------------------------------------
 
 mumhquarterly::mumh_options()
 
-# 4. load most recent data and add 3 months to max date -------------------
+# 4. load most recent data and add 3 months to max date ------------------------
 
 #get most recent monthly file
 recent_file_monthly <- rownames(file.info(
@@ -47,9 +47,9 @@ recent_file_monthly <- rownames(file.info(
 
 #read data
 recent_data_monthly <- data.table::fread(recent_file_monthly,
-                                 keepLeadingZeros = TRUE)
+                                         keepLeadingZeros = TRUE)
 
-#get most recent monthly file
+#get most recent quarterly file
 recent_file_quarterly <- rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -66,7 +66,26 @@ recent_file_quarterly <- rownames(file.info(
 
 #read data
 recent_data_quarterly <- data.table::fread(recent_file_quarterly,
-                                         keepLeadingZeros = TRUE)
+                                           keepLeadingZeros = TRUE)
+
+#get most recent monthly model data file
+recent_file_model <- rownames(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "model"
+  )
+))[which.max(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "model"
+  )
+)$mtime)]
+
+#read data
+recent_data_model <- data.table::fread(recent_file_model,
+                                       keepLeadingZeros = TRUE)
 
 
 #get max month
@@ -74,9 +93,9 @@ max_month <- as.Date(
   paste0(
     max(
       recent_data_monthly$YEAR_MONTH
-      ),
-    "01"
     ),
+    "01"
+  ),
   format = "%Y%m%d"
 )
 
@@ -91,7 +110,7 @@ max_month_plus_dw <- as.numeric(paste0(format(max_month_plus,
                                        format(max_month_plus,
                                               "%m")))
 
-# 5. extract data from NHSBSA DWH -----------------------------------------
+# 5. extract data from NHSBSA DWH ----------------------------------------------
 # build connection to database
 con <- con_nhsbsa(
   dsn = "FBS_8192k",
@@ -105,8 +124,8 @@ con <- con_nhsbsa(
 ym_dim <- dplyr::tbl(con,
                      from = dbplyr::in_schema("DIM", "YEAR_MONTH_DIM")) %>%
 
-#shrink table to remove unnecessary data
-dplyr::filter(
+  #shrink table to remove unnecessary data
+  dplyr::filter(
     YEAR_MONTH >= 201401L,
     YEAR_MONTH <= dplyr::sql(
       "MGMT.PKG_PUBLIC_DWH_FUNCTIONS.f_get_latest_period('EPACT2')"
@@ -148,167 +167,243 @@ max_month_dw <- as.Date(paste0(ltst_month,
                                "01"),
                         format = "%Y%m%d")
 
+#create table names
+
+time_table <- paste0("MUMH_MONTH_TDIM_", as.character(ltst_month))
+
+porg_table <- paste0("MUMH_MONTH_PORG_DIM_", as.character(ltst_month))
+
+drug_table <- paste0("MUMH_MONTH_DRUG_DIM_", as.character(ltst_month))
+
 # only get new data if max month in dwh is greater than that in most recent data
-if(max_month_dw <= max_month) {
-  print("No new quarterly data available in the Data Warehouse, will use most recent saved data.")
+ if(max_month_dw <= max_month) {
+ print("No new quarterly data available in the Data Warehouse, will use most recent saved data.")
+   DBI::dbDisconnect(con)
+   } else {
+
+  # build time dimension table in schema
+
+  # drop time dimension if exists
+
+  exists <- con %>%
+    DBI::dbExistsTable(name = time_table)
+  # Drop any existing table beforehand
+  if (exists) {
+  con %>%
+      DBI::dbRemoveTable(name = time_table)
+    }
+
+  # build table
+  # this will create a new table of all data, so table will be large
+  create_tdim(con) %>%
+    compute(time_table, analyze = FALSE, temporary = FALSE)
+
+  # if only getting new data for each quarterly publication use commented code below
+  # and append to previous data from shared area
+  #create_tdim(con, start = max_month_plus_dw) %>%
+  #compute(time_table, analyze = FALSE, temporary = FALSE)
+
+  # build org dimension table in schema
+
+  # drop org dimension if exists
+  exists <- con %>%
+    DBI::dbExistsTable(name = porg_table)
+  # Drop any existing table beforehand
+  if (exists) {
+    con %>%
+      DBI::dbRemoveTable(name = porg_table)
+  }
+
+  #build table
+  create_org_dim(con, country = 1) %>%
+    compute(porg_table, analyze = FALSE, temporary = FALSE)
+
+  # build drug dimension table in schema
+
+  # drop drug dimension if exists
+  exists <- con %>%
+    DBI::dbExistsTable(name = drug_table)
+  # Drop any existing table beforehand
+  if (exists) {
+    con %>%
+      DBI::dbRemoveTable(name = drug_table)
+  }
+
+  # build table
+  create_drug_dim(con, bnf_codes = c("0401", "0402", "0403", "0404", "0411"))  %>%
+    compute(drug_table, analyze = FALSE, temporary = FALSE)
+
+  #build table
+  age <- dplyr::tbl(con,
+                    from = dbplyr::in_schema("DIM", "AGE_DIM")) %>%
+    select(AGE,
+           DALL_5YR_BAND)
+
+  #create fact table
+  fact <- create_fact(con)
+
+  # drop raw data if exists
+  exists <- con %>%
+    DBI::dbExistsTable(name = "MUMH_RAW_DATA")
+  # Drop any existing table beforehand
+  if (exists) {
+    con %>%
+      DBI::dbRemoveTable(name = "MUMH_RAW_DATA")
+  }
+
+  ## create raw data in schema
+  fact %>%
+    inner_join(tbl(con, time_table) , by = "YEAR_MONTH") %>%
+    inner_join(tbl(con, porg_table) , by = c("PRESC_TYPE_PRNT" = "LVL_5_OUPDT",
+                                             "PRESC_ID_PRNT" = "LVL_5_OU")) %>%
+    inner_join(tbl(con, drug_table), by = c("CALC_PREC_DRUG_RECORD_ID" = "RECORD_ID",
+                                            "YEAR_MONTH" = "YEAR_MONTH")) %>%
+    inner_join(age,
+               by = c("CALC_AGE" = "AGE")) %>%
+    compute("MUMH_RAW_DATA", analyze = FALSE, temporary = FALSE)
+
+  ## build and collect quarterly data
+  mumh_quarterly <- tbl(con, "MUMH_RAW_DATA") %>%
+    group_by(
+      FINANCIAL_YEAR,
+      FINANCIAL_QUARTER,
+      IDENTIFIED_PATIENT_ID,
+      SECTION_DESCR,
+      BNF_SECTION,
+      IDENTIFIED_FLAG
+    ) %>%
+    summarise(
+      ITEM_COUNT = sum(ITEM_COUNT),
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC) / 100
+    ) %>%
+    mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
+                                     IDENTIFIED_FLAG == "N" ~ 0)) %>%
+    ungroup() %>%
+    group_by(FINANCIAL_YEAR,
+             FINANCIAL_QUARTER,
+             SECTION_DESCR,
+             BNF_SECTION,
+             IDENTIFIED_FLAG) %>%
+    summarise(
+      ITEM_COUNT = sum(ITEM_COUNT),
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+      PATIENT_COUNT = sum(PATIENT_COUNT)
+    ) %>%
+    rename(SECTION_NAME = SECTION_DESCR,
+           SECTION_CODE = BNF_SECTION) %>%
+    arrange(FINANCIAL_YEAR,
+            FINANCIAL_QUARTER,
+            SECTION_CODE,
+            desc(IDENTIFIED_FLAG)) %>%
+    collect
+
+  ## build and collect monthly data
+  mumh_monthly <- tbl(con, "MUMH_RAW_DATA") %>%
+    group_by(
+      FINANCIAL_YEAR,
+      FINANCIAL_QUARTER,
+      YEAR_MONTH,
+      IDENTIFIED_PATIENT_ID,
+      SECTION_DESCR,
+      BNF_SECTION,
+      IDENTIFIED_FLAG
+    ) %>%
+    summarise(
+      ITEM_COUNT = sum(ITEM_COUNT),
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC) / 100
+    ) %>%
+    mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
+                                     IDENTIFIED_FLAG == "N" ~ 0)) %>%
+    ungroup() %>%
+    group_by(
+      FINANCIAL_YEAR,
+      FINANCIAL_QUARTER,
+      YEAR_MONTH,
+      SECTION_DESCR,
+      BNF_SECTION,
+      IDENTIFIED_FLAG
+    ) %>%
+    summarise(
+      ITEM_COUNT = sum(ITEM_COUNT),
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+      PATIENT_COUNT = sum(PATIENT_COUNT)
+    ) %>%
+    rename(SECTION_NAME = SECTION_DESCR,
+           SECTION_CODE = BNF_SECTION) %>%
+    arrange(YEAR_MONTH, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
+    collect
+
+  ## build and collect model data
+  mumh_model <- tbl(con, "MUMH_RAW_DATA") %>%
+    mutate(
+      PDS_GENDER = case_when(PDS_GENDER == 1 ~ "M",
+                             PDS_GENDER == 2 ~ "F",
+                             TRUE ~ "U"),
+      DALL_5YR_BAND = case_when(is.na(DALL_5YR_BAND) ~ "Unknown",
+                                TRUE ~ DALL_5YR_BAND)
+    ) %>%
+    group_by(
+      FINANCIAL_YEAR,
+      FINANCIAL_QUARTER,
+      YEAR_MONTH,
+      IDENTIFIED_PATIENT_ID,
+      SECTION_DESCR,
+      BNF_SECTION,
+      IDENTIFIED_FLAG,
+      PDS_GENDER,
+      DALL_5YR_BAND
+    ) %>%
+    summarise(
+      ITEM_COUNT = sum(ITEM_COUNT),
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC) / 100
+    ) %>%
+    mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
+                                     IDENTIFIED_FLAG == "N" ~ 0)) %>%
+    ungroup() %>%
+    group_by(
+      FINANCIAL_YEAR,
+      FINANCIAL_QUARTER,
+      YEAR_MONTH,
+      SECTION_DESCR,
+      BNF_SECTION,
+      IDENTIFIED_FLAG,
+      PDS_GENDER,
+      DALL_5YR_BAND,
+    ) %>%
+    summarise(
+      ITEM_COUNT = sum(ITEM_COUNT),
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+      PATIENT_COUNT = sum(PATIENT_COUNT)
+    ) %>%
+    rename(SECTION_NAME = SECTION_DESCR,
+           SECTION_CODE = BNF_SECTION) %>%
+    arrange(YEAR_MONTH, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
+    collect
 
   DBI::dbDisconnect(con)
-} else {
 
-# build time dimension table in schema
+  # if only getting new data for each quarterly publication
+  # join any new data to most recent saved data
+  #mumh_monthly <- recent_data_monthly %>%
+    #bind_rows(mumh_monthly)
 
-# drop time dimension if exists
-exists <- con %>%
-  DBI::dbExistsTable(name = "MUMH_MONTH_TDIM")
-# Drop any existing table beforehand
-if (exists) {
-  con %>%
-    DBI::dbRemoveTable(name = "MUMH_MONTH_TDIM")
-}
+  #mumh_quarterly <- recent_data_quarterly %>%
+    #bind_rows(mumh_quarterly)
 
-#build table
-create_tdim(con, start = max_month_plus_dw) %>%
-  compute("MUMH_MONTH_TDIM", analyze = FALSE, temporary = FALSE)
+  #mumh_model <- recent_data_model %>%
+    #bind_rows(mumh_model)
 
-# build org dimension table in schema
+  save_data(mumh_quarterly, dir = "Y:/Official Stats/MUMH", filename = "mumh_quarterly")
 
-# drop org dimension if exists
-exists <- con %>%
-  DBI::dbExistsTable(name = "MUMH_MONTH_PORG_DIM")
-# Drop any existing table beforehand
-if (exists) {
-  con %>%
-    DBI::dbRemoveTable(name = "MUMH_MONTH_PORG_DIM")
-}
+  save_data(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_monthly")
 
-#build table
-create_org_dim(con, country = 1) %>%
-  compute("MUMH_MONTH_PORG_DIM", analyze = FALSE, temporary = FALSE)
+  save_data(mumh_model, dir = "Y:/Official Stats/MUMH", filename = "mumh_model")
+   }
 
-# build drug dimension table in schema
-
-# drop drug dimension if exists
-exists <- con %>%
-  DBI::dbExistsTable(name = "MUMH_MONTH_DRUG_DIM")
-# Drop any existing table beforehand
-if (exists) {
-  con %>%
-    DBI::dbRemoveTable(name = "MUMH_MONTH_DRUG_DIM")
-}
-
-# build table
-create_drug_dim(con, bnf_codes = c("0401", "0402", "0403", "0404", "0411"))  %>%
-  compute("MUMH_MONTH_DRUG_DIM", analyze = FALSE, temporary = FALSE)
-
-#create fact table
-fact <- create_fact(con)
-
-# drop raw data if exists
-exists <- con %>%
-  DBI::dbExistsTable(name = "MUMH_RAW_DATA")
-# Drop any existing table beforehand
-if (exists) {
-  con %>%
-    DBI::dbRemoveTable(name = "MUMH_RAW_DATA")
-}
-
-## create raw data in schema
-fact %>%
-  inner_join(tbl(con, "MUMH_MONTH_TDIM") , by = "YEAR_MONTH") %>%
-  inner_join(tbl(con, "MUMH_MONTH_PORG_DIM") , by = c("PRESC_TYPE_PRNT" = "LVL_5_OUPDT",
-                                                      "PRESC_ID_PRNT" = "LVL_5_OU")) %>%
-  inner_join(tbl(con, "MUMH_MONTH_DRUG_DIM"), by = c("CALC_PREC_DRUG_RECORD_ID" = "RECORD_ID",
-                                                     "YEAR_MONTH" = "YEAR_MONTH")) %>%
-  compute("MUMH_RAW_DATA", analyze = FALSE, temporary = FALSE)
-
-## build and collect quarterly data
-mumh_quarterly <- tbl(con, "MUMH_RAW_DATA") %>%
-  group_by(
-    FINANCIAL_YEAR,
-    FINANCIAL_QUARTER,
-    IDENTIFIED_PATIENT_ID,
-    SECTION_DESCR,
-    BNF_SECTION,
-    IDENTIFIED_FLAG
-  ) %>%
-  summarise(
-    ITEM_COUNT = sum(ITEM_COUNT),
-    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC) / 100
-  ) %>%
-  mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                   IDENTIFIED_FLAG == "N" ~ 0)) %>%
-  ungroup() %>%
-  group_by(FINANCIAL_YEAR,
-           FINANCIAL_QUARTER,
-           SECTION_DESCR,
-           BNF_SECTION,
-           IDENTIFIED_FLAG) %>%
-  summarise(
-    ITEM_COUNT = sum(ITEM_COUNT),
-    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
-    PATIENT_COUNT = sum(PATIENT_COUNT)
-  ) %>%
-  rename(SECTION_NAME = SECTION_DESCR,
-         SECTION_CODE = BNF_SECTION) %>%
-  arrange(FINANCIAL_YEAR,
-          FINANCIAL_QUARTER,
-          SECTION_CODE,
-          desc(IDENTIFIED_FLAG)) %>%
-  collect
-
-## build and collect monthly data
-mumh_monthly <- tbl(con, "MUMH_RAW_DATA") %>%
-  group_by(
-    FINANCIAL_YEAR,
-    FINANCIAL_QUARTER,
-    YEAR_MONTH,
-    IDENTIFIED_PATIENT_ID,
-    SECTION_DESCR,
-    BNF_SECTION,
-    IDENTIFIED_FLAG
-  ) %>%
-  summarise(
-    ITEM_COUNT = sum(ITEM_COUNT),
-    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC) / 100
-  ) %>%
-  mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                   IDENTIFIED_FLAG == "N" ~ 0)) %>%
-  ungroup() %>%
-  group_by(
-    FINANCIAL_YEAR,
-    FINANCIAL_QUARTER,
-    YEAR_MONTH,
-    SECTION_DESCR,
-    BNF_SECTION,
-    IDENTIFIED_FLAG
-  ) %>%
-  summarise(
-    ITEM_COUNT = sum(ITEM_COUNT),
-    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
-    PATIENT_COUNT = sum(PATIENT_COUNT)
-  ) %>%
-  rename(SECTION_NAME = SECTION_DESCR,
-         SECTION_CODE = BNF_SECTION) %>%
-  arrange(YEAR_MONTH, SECTION_CODE, desc(IDENTIFIED_FLAG)) %>%
-  collect
-
-DBI::dbDisconnect(con)
-
-##join any new data to most recent saved data
-mumh_monthly <- recent_data_monthly %>%
-  bind_rows(mumh_monthly)
-
-mumh_quarterly <- recent_data_quarterly %>%
-  bind_rows(mumh_quarterly)
-
-save_data(mumh_quarterly, dir = "Y:/Official Stats/MUMH", filename = "mumh_quarterly")
-
-save_data(mumh_monthly, dir = "Y:/Official Stats/MUMH", filename = "mumh_monthly")
-}
-
-# 6. import data ----------------------------------------------------------
+# 6. import data ---------------------------------------------------------------
 # import data from data folder to perform aggregations etc without having to
 # maintain connection to DWH
+
 #logr::sep("read data")
 
 raw_data <- list()
@@ -345,15 +440,31 @@ raw_data$quarterly <- data.table::fread(rownames(file.info(
 )$mtime)],
 keepLeadingZeros = TRUE)
 
+#read most recent model data file
+raw_data$model_data <- data.table::fread(rownames(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "model"
+  )
+))[which.max(file.info(
+  list.files(
+    "Y:/Official Stats/MUMH/data",
+    full.names = T,
+    pattern = "model"
+  )
+)$mtime)],
+keepLeadingZeros = TRUE)
+
 #logr::put(raw_data)
 
-#calculate dispensing days for sue in covid model
+#calculate dispensing days for use in covid model
 #use latest year of current financial year, eg. 2023 for financial year 2022/23
 dispensing_days <- mumhquarterly::get_dispensing_days(2023)
 
 #logr::put(dispensing_days)
 
-# 7. data manipulation ----------------------------------------------------
+# 7. data manipulation ---------------------------------------------------------
 
 #logr::sep("data manipulations")
 
@@ -414,8 +525,11 @@ chart_data$monthly <- raw_data$monthly %>%
 
 #logr::put(chart_data$monthly)
 
-# join monthly data to dispensing days to allow modelling
-model_data <- raw_data$monthly %>%
+# model data using old version of covid model for use in model testing
+# filter monthly raw data to identified patients only
+# join monthly raw data to dispensing days to allow modelling
+
+model_data_old <- raw_data$monthly %>%
   dplyr::group_by(YEAR_MONTH,
                   SECTION_NAME,
                   SECTION_CODE) %>%
@@ -431,9 +545,12 @@ model_data <- raw_data$monthly %>%
                    by = "YEAR_MONTH") %>%
   dplyr::ungroup()
 
-#logr::put(model_data)
+#logr::put(model_data_old)
 
-# 8. write data to .xlsx --------------------------------------------------
+# 8. write data to .xlsx -------------------------------------------------------
+# Text referencing time periods in sheet titles and notes needs to be manually updated
+# for example, 'April 2015 to December 2022' is the time period for current publication
+# To do: automate time periods in file and sheet titles and notes
 
 # create dataframe for full patient identification
 patient_identification_excel <- raw_data$quarterly %>%
@@ -458,9 +575,9 @@ sheetNames <- c("Patient_Identification",
                 "Monthly_Data",
                 "Quarterly_Data")
 
-wb <- create_wb(sheetNames)
+wb <- mumhquarterly::create_wb(sheetNames)
 
-#create metadata tab (will need to open file and auto row heights once ran)
+# create metadata tab (will need to open file to auto adjust some row height once ran)
 meta_fields <- c(
   "BNF Section Code",
   "BNF Section Name",
@@ -486,17 +603,17 @@ meta_descs <-
     "Where patients are identified via the flag, the number of patients that the data corresponds to. This will always be 0 where 'Identified Patient' = N."
   )
 
-create_metadata(wb,
+mumhquarterly::create_metadata(wb,
                 meta_fields,
                 meta_descs
 )
 
 #### Patient identification
 # write data to sheet
-write_sheet(
+mumhquarterly::write_sheet(
   wb,
   "Patient_Identification",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to September 2022 - Proportion of items for which an NHS number was recorded (%)",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to December 2022 - Proportion of items for which an NHS number was recorded (%)",
   c(
     "The below proportions reflect the percentage of prescription items where a PDS verified NHS number was recorded."
   ),
@@ -504,28 +621,29 @@ write_sheet(
   42
 )
 
-#left align columns A and B
-format_data(wb,
+# left align text/character columns A and B
+mumhquarterly::format_data(wb,
             "Patient_Identification",
             c("A", "B"),
             "left",
             "")
 
-#right align columns and round to 2 DP - C to AF (!!NEED TO UPDATE AS DATA EXPANDS!!)
-format_data(wb,
+# right align columns and round to 2 decimal places for numerical columns C to AG
+# column letter references will need to be updated whenever more data added
+mumhquarterly::format_data(wb,
             "Patient_Identification",
             c("C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
               "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-              "AA", "AB", "AC", "AD", "AE", "AF"),
+              "AA", "AB", "AC", "AD", "AE", "AF", "AG"),
             "right",
             "0.00")
 
 #### Monthly data
 # write data to sheet
-write_sheet(
+mumhquarterly::write_sheet(
   wb,
   "Monthly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to September 2022 totals by year month",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to December 2022 totals by year month",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -556,22 +674,22 @@ write_sheet(
   14
 )
 
-#left align columns A to F
-format_data(wb,
+# left align columns A to F
+mumhquarterly::format_data(wb,
             "Monthly_Data",
             c("A", "B", "C", "D", "E", "F"),
             "left",
             "")
 
-#right align columns G and H and round to whole numbers with thousand separator
-format_data(wb,
+# right align columns G and H and round to whole numbers with thousand separator
+mumhquarterly::format_data(wb,
             "Monthly_Data",
             c("G", "H"),
             "right",
             "#,##0")
 
-#right align column I and round to 2dp with thousand separator
-format_data(wb,
+# right align column I and round to 2 decimal places with thousand separator
+mumhquarterly::format_data(wb,
             "Monthly_Data",
             c("I"),
             "right",
@@ -579,10 +697,10 @@ format_data(wb,
 
 #### Quarterly data
 # write data to sheet
-write_sheet(
+mumhquarterly::write_sheet(
   wb,
   "Quarterly_Data",
-  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to September 2022 totals by quarter",
+  "Medicines Used in Mental Health - Quarterly Summary Statistics April 2015 to December 2022 totals by quarter",
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. Patient counts should not be aggregated to any other level than that which is displayed to prevent multiple counting of patients."
@@ -611,60 +729,598 @@ write_sheet(
   14
 )
 
-#left align columns A to F
-format_data(wb,
+# left align columns A to F
+mumhquarterly::format_data(wb,
             "Quarterly_Data",
             c("A", "B", "C", "D", "E"),
             "left",
             "")
 
-#right align columns G and H and round to whole numbers with thousand separator
-format_data(wb,
+# right align columns G and H and round to whole numbers with thousand separator
+mumhquarterly::format_data(wb,
             "Quarterly_Data",
             c("F", "G"),
             "right",
             "#,##0")
 
-#right align column I and round to 2dp with thousand separator
-format_data(wb,
+# right align column I and round to 2 decimal places with thousand separator
+mumhquarterly::format_data(wb,
             "Quarterly_Data",
             c("H"),
             "right",
             "#,##0.00")
 
-#save file into outputs folder
+# save file into outputs folder
+# file name will need to be updated to new time period for each new publication
 openxlsx::saveWorkbook(wb,
-                       "outputs/mumh_quarterly_sep22_v001.xlsx",
+                       "outputs/mumh_quarterly_dec22_v001.xlsx",
                        overwrite = TRUE)
 
-#Write covid model data to table for QR
+# 9. Covid model figures -------------------------------------------------------
+# this section is for building, testing, and implementing the new covid model
+# using patient ageband and gender data
+# To do: turn covid model into function to reduce size of code
 
-bnf_list <- c("0403", "0401", "0402", "0404", "0411")
+# join dispensing days to raw data, add columns for position of month in year,
+# position of month in full dataset, and month start date
+# keep original 5 year agebands and fill rows where ageband has no items recorded
+df5 <- raw_data$model_data |>
+  dplyr::group_by(YEAR_MONTH,
+                  SECTION_NAME,
+                  SECTION_CODE,
+                  IDENTIFIED_FLAG,
+                  PDS_GENDER,
+                  DALL_5YR_BAND) |>
+  dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT),
+                   ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+                   .groups = "drop") |>
+  tidyr::complete(DALL_5YR_BAND,
+                  nesting(YEAR_MONTH,
+                          SECTION_NAME,
+                          SECTION_CODE,
+                          IDENTIFIED_FLAG,
+                          PDS_GENDER),
+                  fill = list(ITEM_COUNT = 0,
+                              ITEM_PAY_DR_NIC = 0,
+                              PATIENT_COUNT = 0)) |>
+  tidyr::complete(IDENTIFIED_FLAG,
+                  nesting(YEAR_MONTH,
+                          SECTION_NAME,
+                          SECTION_CODE,
+                          DALL_5YR_BAND,
+                          PDS_GENDER),
+                  fill = list(ITEM_COUNT = 0,
+                              ITEM_PAY_DR_NIC = 0,
+                              PATIENT_COUNT = 0)) |>
+  tidyr::complete(PDS_GENDER,
+                  nesting(YEAR_MONTH,
+                          SECTION_NAME,
+                          SECTION_CODE,
+                          IDENTIFIED_FLAG,
+                          DALL_5YR_BAND),
+                  fill = list(ITEM_COUNT = 0,
+                              ITEM_PAY_DR_NIC = 0,
+                              PATIENT_COUNT = 0)) |>
+  dplyr::group_by(SECTION_NAME,
+                  SECTION_CODE,
+                  IDENTIFIED_FLAG,
+                  PDS_GENDER,
+                  DALL_5YR_BAND) |>
+  dplyr::group_by(SECTION_NAME, SECTION_CODE, IDENTIFIED_FLAG,
+                  PDS_GENDER, DALL_5YR_BAND) |>
+  dplyr::mutate(
+    MONTH_START = as.Date(paste0(YEAR_MONTH, "01"), format = "%Y%m%d"),
+    MONTH_NUM = lubridate::month(MONTH_START),
+    MONTH_INDEX = lubridate::interval(lubridate::dmy(01032015), as.Date(MONTH_START)) %/% months(1)
+  ) |>
+  dplyr::left_join(dispensing_days,
+                   by = "YEAR_MONTH") |>
+  dplyr::filter(!(IDENTIFIED_FLAG == "N" & PDS_GENDER == "F"),
+                !(IDENTIFIED_FLAG == "N" & PDS_GENDER == "M"),
+                !(PDS_GENDER == "U" | DALL_5YR_BAND == "Unknown")) %>%
+  dplyr::ungroup()
 
-for (i in 1:length(bnf_list)) {
-  bnf_data <- model_data %>%
-    covid_model() %>%
-    filter(SECTION_CODE == bnf_list[i], YEAR_MONTH > 202002) %>%
-    select(SECTION_NAME,
-           SECTION_CODE,
-           YEAR_MONTH,
-           ITEM_COUNT,
-           PRED_ITEMS_95_FIT,
-           PRED_ITEMS_95_LWR,
-           PRED_ITEMS_95_UPR)
+# repeat to create dataset with 10 year agebands instead of 5 year
+# only keep observations with known age and gender
+# and fill rows where ageband has no items recorded
+df10 <- raw_data$model |>
+  dplyr::mutate(BAND_10YR = dplyr::case_when(DALL_5YR_BAND %in% c("00-04", "05-09", "10-14", "15-19") ~ "00-19",
+                                             DALL_5YR_BAND %in% c("20-24", "25-29", "30-34", "35-39") ~ "20-39",
+                                             DALL_5YR_BAND %in% c("40-44", "45-49", "50-54", "55-59") ~ "40-59",
+                                             DALL_5YR_BAND %in% c("60-64", "65-69", "70-74", "75-79") ~ "60-79",
+                                             DALL_5YR_BAND == "Unknown" ~ "Unknown",
+                                             TRUE ~ "80+")) |>
+  dplyr::select(!(DALL_5YR_BAND)) |>
+  dplyr::group_by(YEAR_MONTH,
+                  SECTION_NAME,
+                  SECTION_CODE,
+                  IDENTIFIED_FLAG,
+                  PDS_GENDER,
+                  BAND_10YR) |>
+  dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT),
+                   ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
+                   .groups = "drop") |>
+  tidyr::complete(BAND_10YR,
+                  nesting(YEAR_MONTH,
+                          SECTION_NAME,
+                          SECTION_CODE,
+                          IDENTIFIED_FLAG,
+                          PDS_GENDER),
+                  fill = list(ITEM_COUNT = 0,
+                              ITEM_PAY_DR_NIC = 0,
+                              PATIENT_COUNT = 0)) |>
+  tidyr::complete(IDENTIFIED_FLAG,
+                  nesting(YEAR_MONTH,
+                          SECTION_NAME,
+                          SECTION_CODE,
+                          BAND_10YR,
+                          PDS_GENDER),
+                  fill = list(ITEM_COUNT = 0,
+                              ITEM_PAY_DR_NIC = 0,
+                              PATIENT_COUNT = 0)) |>
+  tidyr::complete(PDS_GENDER,
+                  nesting(YEAR_MONTH,
+                          SECTION_NAME,
+                          SECTION_CODE,
+                          IDENTIFIED_FLAG,
+                          BAND_10YR),
+                  fill = list(ITEM_COUNT = 0,
+                              ITEM_PAY_DR_NIC = 0,
+                              PATIENT_COUNT = 0)) |>
+  dplyr::group_by(SECTION_NAME,
+                  SECTION_CODE,
+                  IDENTIFIED_FLAG,
+                  PDS_GENDER,
+                  BAND_10YR) |>
+  dplyr::group_by(SECTION_NAME, SECTION_CODE, IDENTIFIED_FLAG,
+                  PDS_GENDER, BAND_10YR) |>
+  dplyr::mutate(
+    MONTH_START = as.Date(paste0(YEAR_MONTH, "01"), format = "%Y%m%d"),
+    MONTH_NUM = lubridate::month(MONTH_START),
+    MONTH_INDEX = lubridate::interval(lubridate::dmy(01032015), as.Date(MONTH_START)) %/% months(1)
+  ) |>
+  dplyr::left_join(dispensing_days,
+                   by = "YEAR_MONTH") |>
+  dplyr::filter(!(IDENTIFIED_FLAG == "N" & PDS_GENDER == "F"),
+                !(IDENTIFIED_FLAG == "N" & PDS_GENDER == "M"),
+                !(PDS_GENDER == "U" | BAND_10YR == "Unknown")) %>%
+  dplyr::ungroup()
 
-  fwrite(
-    bnf_data,
-    paste0(
-      "Y:/Official Stats/MUMH/Covid model tables/",
-      as.character(unlist(bnf_data[1, 1])),
-      ".csv"
-    )
+# create additional dataset with both agebands for use in variable selection later
+df_both <- raw_data$model |>
+  dplyr::mutate(BAND_10YR = dplyr::case_when(DALL_5YR_BAND %in% c("00-04", "05-09", "10-14", "15-19") ~ "00-19",
+                                             DALL_5YR_BAND %in% c("20-24", "25-29", "30-34", "35-39") ~ "20-39",
+                                             DALL_5YR_BAND %in% c("40-44", "45-49", "50-54", "55-59") ~ "40-59",
+                                             DALL_5YR_BAND %in% c("60-64", "65-69", "70-74", "75-79") ~ "60-79",
+                                             DALL_5YR_BAND == "Unknown" ~ "Unknown",
+                                             TRUE ~ "80+")) |>
+  dplyr::group_by(YEAR_MONTH,
+                  SECTION_NAME,
+                  SECTION_CODE,
+                  IDENTIFIED_FLAG,
+                  PDS_GENDER,
+                  DALL_5YR_BAND,
+                  BAND_10YR) |>
+  dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT),
+                   ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)) |>
+  dplyr::group_by(SECTION_NAME, SECTION_CODE, IDENTIFIED_FLAG,
+                  PDS_GENDER, BAND_10YR, DALL_5YR_BAND) |>
+  dplyr::mutate(
+    MONTH_START = as.Date(paste0(YEAR_MONTH, "01"), format = "%Y%m%d"),
+    MONTH_NUM = lubridate::month(MONTH_START),
+    MONTH_INDEX = lubridate::interval(lubridate::dmy(01032015), as.Date(MONTH_START)) %/% months(1)
+  ) |>
+  dplyr::left_join(dispensing_days,
+                   by = "YEAR_MONTH") |>
+  dplyr::filter(!(IDENTIFIED_FLAG == "N" & PDS_GENDER == "F"),
+                !(IDENTIFIED_FLAG == "N" & PDS_GENDER == "M"),
+                !(PDS_GENDER == "U" | DALL_5YR_BAND == "Unknown" | BAND_10YR == "Unknown")) |>
+  dplyr::ungroup()
+
+# add columns to separate out months into individual factor variables
+# for use in later predictions
+df5 <- df5 %>%
+  dplyr::mutate(
+    m_01 = 1*(MONTH_NUM == 1),
+    m_02 = 1*(MONTH_NUM == 2),
+    m_03 = 1*(MONTH_NUM == 3),
+    m_04 = 1*(MONTH_NUM == 4),
+    m_05 = 1*(MONTH_NUM == 5),
+    m_06 = 1*(MONTH_NUM == 6),
+    m_07 = 1*(MONTH_NUM == 7),
+    m_08 = 1*(MONTH_NUM == 8),
+    m_09 = 1*(MONTH_NUM == 9),
+    m_10 = 1*(MONTH_NUM == 10),
+    m_11 = 1*(MONTH_NUM == 11),
+    m_12 = 1*(MONTH_NUM == 12)
   )
+
+# repeat for 10 year ageband data
+df10 <- df10 %>%
+  dplyr::mutate(
+    m_01 = 1*(MONTH_NUM == 1),
+    m_02 = 1*(MONTH_NUM == 2),
+    m_03 = 1*(MONTH_NUM == 3),
+    m_04 = 1*(MONTH_NUM == 4),
+    m_05 = 1*(MONTH_NUM == 5),
+    m_06 = 1*(MONTH_NUM == 6),
+    m_07 = 1*(MONTH_NUM == 7),
+    m_08 = 1*(MONTH_NUM == 8),
+    m_09 = 1*(MONTH_NUM == 9),
+    m_10 = 1*(MONTH_NUM == 10),
+    m_11 = 1*(MONTH_NUM == 11),
+    m_12 = 1*(MONTH_NUM == 12)
+  )
+
+## Model exploration and fitting
+
+# explore variable selection for use in model
+# check if smaller or larger agebands makes a difference
+# test and train data for df_both dataset, split by pre-covd trend data and covid data
+both_time <- df_both %>%
+  ungroup() %>%
+  dplyr::mutate(time_period = case_when(YEAR_MONTH <= 202002 ~ "pre_covid",
+                                        TRUE ~ "covid"))
+
+both_split <- rsample::group_initial_split(both_time, time_period)
+both_train <- rsample::training(both_split)
+both_test <- rsample::testing(both_split)
+
+# build 5yr vs 10yr agebands model for each BNF section using full set of variables
+# linear model using lm() function
+mod_0401_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER*as.factor(DALL_5YR_BAND),
+                 data = filter(both_train, SECTION_CODE == "0401"))
+mod_0401_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                  + PDS_GENDER*as.factor(BAND_10YR),
+                  data = filter(both_train, SECTION_CODE == "0401"))
+
+mod_0402_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER*as.factor(DALL_5YR_BAND),
+                 data = filter(both_train, SECTION_CODE == "0402"))
+mod_0402_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                  + PDS_GENDER*as.factor(BAND_10YR),
+                  data = filter(both_train, SECTION_CODE == "0402"))
+
+mod_0403_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER*as.factor(DALL_5YR_BAND),
+                 data = filter(both_train, SECTION_CODE == "0403"))
+mod_0403_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                  + PDS_GENDER*as.factor(BAND_10YR),
+                  data = filter(both_train, SECTION_CODE == "0403"))
+
+mod_0404_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER*as.factor(DALL_5YR_BAND),
+                 data = filter(both_train, SECTION_CODE == "0404"))
+mod_0404_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                  + PDS_GENDER*as.factor(BAND_10YR),
+                  data = filter(both_train, SECTION_CODE == "0404"))
+
+mod_0411_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER*as.factor(DALL_5YR_BAND),
+                 data = filter(both_train, SECTION_CODE == "0411"))
+mod_0411_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                  + PDS_GENDER*as.factor(BAND_10YR),
+                  data = filter(both_train, SECTION_CODE == "0411"))
+
+# compare model fits using Akaike Information Criteria (AIC)
+# lower AIC is generally considered preferable depending on other considerations
+
+# 5 year band vs 10 year band, 5 year band consistently has lower AIC
+broom::glance(mod_0401_5)
+broom::glance(mod_0401_10)
+
+broom::glance(mod_0402_5)
+broom::glance(mod_0402_10)
+
+broom::glance(mod_0403_5)
+broom::glance(mod_0403_10)
+
+broom::glance(mod_0404_5)
+broom::glance(mod_0404_10)
+
+broom::glance(mod_0411_5)
+broom::glance(mod_0411_10)
+
+# however evidence of overfitting of model, suggests 10 year ageband should be used
+
+# fit further models using 10 year agebands (with known age and gender)
+# split 10yr ageband dataset
+# BNF section 0404 used as main example to reduce code repetition, other sections
+# used in MUMH publication gave similar overall results
+
+df10_time <- df10 %>%
+  ungroup() %>%
+  dplyr::mutate(time_period = case_when(YEAR_MONTH <= 202002 ~ "pre_covid",
+                                        TRUE ~ "covid"))
+
+df10_item <- rsample::group_initial_split(df10_time, time_period)
+df10_train <- rsample::training(df10_item)
+df10_test <- rsample::testing(df10_item)
+
+# most basic linear model with only dispensing days
+mod_0404.0 <- lm(ITEM_COUNT ~ DISPENSING_DAYS,
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+# add month position in year
+mod_0404.1 <- lm(ITEM_COUNT ~ DISPENSING_DAYS + as.factor(MONTH_NUM),
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+# add month position in full time series
+mod_0404.2 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM),
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+# add ageband
+mod_0404.3 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + as.factor(BAND_10YR),
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+# add gender
+mod_0404.4 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER,
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+# add age and gender separately
+mod_0404.5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER + as.factor(BAND_10YR),
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+# add age and gender as an interaction
+mod_0404.6 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
+                 + PDS_GENDER*as.factor(BAND_10YR),
+                 data = filter(df10_train, SECTION_CODE == "0404"))
+
+#change plot window to two by two
+par(mfrow = c(2,2))
+
+# plot residuals to assess whether model assumptions are met
+# compare previous model fitted on new data and new model on new data
+# evidence of heteroscedasticity, to keep in mind when building future model
+# as another type of model (such as forecasting) may be better suited to the data
+# and/or possible exploration to see if non-linear relationship
+# poisson glm explored but did not offer improvement on the linear model
+# log transformation of data also applied but did not look suitable for data or interpretation
+plot(mod_0404.2)
+plot(mod_0404.6)
+
+# compare model fits using AIC
+broom::glance(mod_0404.0)
+broom::glance(mod_0404.1)
+broom::glance(mod_0404.2)
+broom::glance(mod_0404.3)
+broom::glance(mod_0404.4)
+broom::glance(mod_0404.5)
+broom::glance(mod_0404.6)
+
+# mod_0404.6 gives lower AIC
+# resulting model is large but AIC tends to balance number of variables with
+# whether adding variables improves model fit
+summary(mod_0404.6)
+
+#testing of model variables for other BNF sections gave similar overall results
+
+# model needs to use the separate individual month number variables instead of MONTH_NUM
+# fit every level of MONTH_NUM as its own variable instead of a level
+# first month (January) is excluded from model as all other months compared against it
+# AIC is the same as if MONTH_NUM was used instead
+
+mod_0401 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
+               + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
+               + PDS_GENDER*as.factor(BAND_10YR),
+               data = filter(df10_train, SECTION_CODE == "0401"))
+
+mod_0402 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
+               + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
+               + PDS_GENDER*as.factor(BAND_10YR),
+               data = filter(df10_train, SECTION_CODE == "0402"))
+
+mod_0403 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
+               + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
+               + PDS_GENDER*as.factor(BAND_10YR),
+               data = filter(df10_train, SECTION_CODE == "0403"))
+
+mod_0404 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
+               + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
+               + PDS_GENDER*as.factor(BAND_10YR),
+               data = filter(df10_train, SECTION_CODE == "0404"))
+
+mod_0411 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
+               + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
+               + PDS_GENDER*as.factor(BAND_10YR),
+               data = filter(df10_train, SECTION_CODE == "0411"))
+
+## Model predictions
+
+# fit final model onto full time series of known data, extrapolate expected values
+# based on pre-covid trends
+
+# select dataset based on one used in final model selection and assign as 'df'
+df <- df10
+
+# add functions for use in making predictions and prediction intervals
+# calculate numbers manually rather than use predict() since predictions
+# are summed from predictions for each combination of ageband and gender to get
+# total items per month
+# Therefore prediction intervals must be manually calculated using `fast_agg_pred`
+# as prediction interval is for summed total value not each original predicted value
+
+# Function obtained from external open source code, and adjusted for use in MUMH
+fast_agg_pred <- function (w, lmObject, newdata, alpha = 0.95) {
+  ## input checking
+  if (!inherits(lmObject, "lm")) stop("'lmObject' is not a valid 'lm' object!")
+  if (!is.data.frame(newdata)) newdata <- as.data.frame(newdata)
+  if (length(w) != nrow(newdata)) stop("length(w) does not match nrow(newdata)")
+  ## extract "terms" object from the fitted model, but delete response variable
+  tm <- delete.response(terms(lmObject))
+  ## linear predictor matrix
+  Xp <- model.matrix(tm, newdata)
+  ## predicted values by direct matrix-vector multiplication
+  pred <- c(Xp %*% coef(lmObject))
+  ## mean of the aggregation
+  agg_mean <- c(crossprod(pred, w))
+  ## residual variance
+  sig2 <- c(crossprod(residuals(lmObject))) / df.residual(lmObject)
+  ## efficiently compute variance of the aggregation without matrix-matrix computations
+  QR <- lmObject$qr   ## qr object of fitted model
+  piv <- QR$pivot     ## pivoting index
+  r <- QR$rank        ## model rank / numeric rank
+  u <- forwardsolve(t(QR$qr), c(crossprod(Xp, w))[piv], r)
+  agg_variance <- c(crossprod(u)) * sig2
+  ## adjusted variance of the aggregation
+  agg_variance_adj <- agg_variance + c(crossprod(w)) * sig2
+  ## t-distribution quantiles
+  Qt <- c(-1, 1) * qt((1 - alpha) / 2, lmObject$df.residual, lower.tail = FALSE)
+  ## names of CI and PI
+  NAME <- c("lower", "upper")
+  ## CI
+  CI <- setNames(agg_mean + Qt * sqrt(agg_variance), NAME)
+  ## PI
+  PI <- setNames(agg_mean + Qt * sqrt(agg_variance_adj), NAME)
+  ## return
+  list(mean = agg_mean, var = agg_variance, CI = CI, PI = PI)
 }
 
-# 9. output figures needed for QR purposes --------------------------------
-### BUILD FILTERS
+# create function to make aggregated predictions by month
+# default 95% prediction interval and 99% prediction interval
+month_pred_fun <- function(month, data, model, alpha = 0.95){
+  data <- data %>%
+    dplyr::filter(YEAR_MONTH == month)
+
+  pred <- fast_agg_pred(rep.int(1, nrow(data)), data, lmObject = model, alpha = alpha)
+  pred99 <- fast_agg_pred(rep.int(1, nrow(data)), data, lmObject = model, alpha = 0.99)
+  output <- data.frame(unit = 1)
+
+  output$YEAR_MONTH <- month
+  output$mean_fit <- pred[["mean"]]
+  output$var <- pred[["var"]]
+  output$PIlwr <- pred[["PI"]][["lower"]]
+  output$PIupr <- pred[["PI"]][["upper"]]
+  output$PIlwr99 <- pred99[["PI"]][["lower"]]
+  output$PIupr99 <- pred99[["PI"]][["upper"]]
+  output$unit <- NULL
+
+  return(output)
+
+}
+
+# select month list for predictions - use from March 2020 onwards
+# final month will need to be changed in each future release as time series expands
+## To do: wrap code into a function to run on a list of each section
+pred_month_list <- df %>%
+  dplyr::filter(YEAR_MONTH >= 202003 & YEAR_MONTH <= 202212) %>%
+  pull(YEAR_MONTH) %>%
+  unique()
+
+## 0401 Hypnotics and Anxiolytics item prediction
+df_0401 <- df %>%
+  dplyr::filter(SECTION_CODE == "0401")
+
+#default PI of 95%
+pred_0401 <- lapply(pred_month_list, month_pred_fun, data = df_0401, model = mod_0401)
+
+unlist(pred_0401)
+
+rbindlist(pred_0401)
+
+df_0401_sum <- df_0401 %>%
+  dplyr::group_by(YEAR_MONTH, SECTION_CODE) %>%
+  dplyr::summarise(total_items = sum(ITEM_COUNT)) %>%
+  left_join(rbindlist(pred_0401)) %>%
+  dplyr::mutate(YEAR_MONTH_string = as.character(YEAR_MONTH)) %>%
+  ungroup()
+
+## 0402 Antipsychotics item prediction
+df_0402 <- df %>%
+  dplyr::filter(SECTION_CODE == "0402")
+
+#default PI of 95%
+pred_0402 <- lapply(pred_month_list, month_pred_fun, data = df_0402, model = mod_0402)
+
+unlist(pred_0402)
+
+rbindlist(pred_0402)
+
+df_0402_sum <- df_0402 %>%
+  dplyr::group_by(YEAR_MONTH, SECTION_CODE) %>%
+  dplyr::summarise(total_items = sum(ITEM_COUNT)) %>%
+  left_join(rbindlist(pred_0402)) %>%
+  dplyr::mutate(YEAR_MONTH_string = as.character(YEAR_MONTH)) %>%
+  ungroup()
+
+## 0403 Antidepressants items prediction
+df_0403 <- df %>%
+  dplyr::filter(SECTION_CODE == "0403")
+
+#default PI of 95%
+pred_0403 <- lapply(pred_month_list, month_pred_fun, data = df_0403, model = mod_0403)
+
+unlist(pred_0403)
+
+rbindlist(pred_0403)
+
+df_0403_sum <- df_0403 %>%
+  dplyr::group_by(YEAR_MONTH, SECTION_CODE) %>%
+  dplyr::summarise(total_items = sum(ITEM_COUNT)) %>%
+  left_join(rbindlist(pred_0403)) %>%
+  dplyr::mutate(YEAR_MONTH_string = as.character(YEAR_MONTH)) %>%
+  ungroup()
+
+## 0404 CNS stimulants and drugs for ADHD prediction
+df_0404 <- df %>%
+  dplyr::filter(SECTION_CODE == "0404")
+
+#default PI of 95%
+pred_0404 <- lapply(pred_month_list, month_pred_fun, data = df_0404, model = mod_0404)
+
+unlist(pred_0404)
+
+rbindlist(pred_0404)
+
+df_0404_sum <- df_0404 %>%
+  dplyr::group_by(YEAR_MONTH, SECTION_CODE) %>%
+  dplyr::summarise(total_items = sum(ITEM_COUNT)) %>%
+  left_join(rbindlist(pred_0404)) %>%
+  dplyr::mutate(YEAR_MONTH_string = as.character(YEAR_MONTH)) %>%
+  ungroup()
+
+## 0411 Drugs for dementia items prediction
+df_0411 <- df %>%
+  dplyr::filter(SECTION_CODE == "0411")
+
+#default PI of 95%
+pred_0411 <- lapply(pred_month_list, month_pred_fun, data = df_0411, model = mod_0411)
+
+unlist(pred_0411)
+
+rbindlist(pred_0411)
+
+df_0411_sum <- df_0411 %>%
+  dplyr::group_by(YEAR_MONTH, SECTION_CODE) %>%
+  dplyr::summarise(total_items = sum(ITEM_COUNT)) %>%
+  left_join(rbindlist(pred_0411)) %>%
+  dplyr::mutate(YEAR_MONTH_string = as.character(YEAR_MONTH)) %>%
+  ungroup()
+
+# write data for all sections to csv for QR purposes
+
+covid_model_predictions <- rbind(df_0401_sum,
+                                 df_0402_sum,
+                                 df_0403_sum,
+                                 df_0404_sum,
+                                 df_0411_sum)
+
+# update month in file name for new publications
+fwrite(covid_model_predictions, "Y:/Official Stats/MUMH/Covid model tables/dec22.csv")
+
+# get table of sum of actual items across all months from Feb 2020 to Dec 2022, sum of
+# total expected items, absolute difference between them and percentage change between them
+actual_items <- covid_model_predictions %>%
+  dplyr::filter(YEAR_MONTH >= 202003 & YEAR_MONTH <= 202212) %>%
+  dplyr::group_by(SECTION_CODE) %>%
+  dplyr::summarise(total_actual_items = sum(total_items),
+                   total_expected_items = sum(mean_fit),
+                   difference = (total_actual_items - total_expected_items),
+                   percent_diff = ((total_actual_items - total_expected_items) / total_expected_items * 100))
+
+# save as excel file for use in QR
+# update month in file name for new publications
+fwrite(actual_items, "Y:/Official Stats/MUMH/QR Data/QR_dec22_model.csv")
+
+# 10. output figures needed for QR purposes --------------------------------
 #first get max month and quarter
 max_month <- max(raw_data$monthly$YEAR_MONTH)
 
@@ -674,7 +1330,7 @@ quarter <- raw_data$monthly %>%
   pull(FINANCIAL_QUARTER)
 
 #get previous quarter for filtering
-prev_quarter <- lubridate::quarter(
+prev_quarter <- quarter(
   #uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
   type = "quarter",
@@ -683,7 +1339,7 @@ prev_quarter <- lubridate::quarter(
 )
 
 #get financial year of previous quarter
-prev_quarter_fy <- lubridate::quarter(
+prev_quarter_fy <- quarter(
   #uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
   type = "year.quarter",
@@ -698,7 +1354,7 @@ prev_quarter_filter <- paste0(prev_quarter_fy-1, "/", prev_quarter_fy,
                               " Q", prev_quarter)
 
 #get previous year for filtering
-prev_year <- lubridate::quarter(
+prev_year <- quarter(
   #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "quarter",
@@ -707,7 +1363,7 @@ prev_year <- lubridate::quarter(
 )
 
 #get financial year of previous year
-prev_year_fy <- lubridate::quarter(
+prev_year_fy <- quarter(
   #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "year.quarter",
@@ -721,8 +1377,7 @@ prev_year_fy <- lubridate::quarter(
 prev_year_filter <- paste0(prev_year_fy - 1, "/", prev_year_fy,
                            " Q", prev_year)
 
-
-prev_5_year <- lubridate::quarter(
+prev_5_year <- quarter(
   #uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
   type = "quarter",
@@ -731,7 +1386,7 @@ prev_5_year <- lubridate::quarter(
 )
 
 #get financial year of previous quarter
-prev_5_year_quarter_fy <- lubridate::quarter(
+prev_5_year_quarter_fy <- quarter(
   #uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
   type = "year.quarter",
@@ -793,6 +1448,8 @@ qrwb <- openxlsx::createWorkbook()
 openxlsx::modifyBaseFont(qrwb, fontName = "Arial", fontSize = 10)
 
 #loop through bnf_list
+bnf_list <- c("0403", "0401", "0402", "0404", "0411")
+
 for(j in 1:length(bnf_list)){
 
   # create data
@@ -943,41 +1600,6 @@ for(j in 1:length(bnf_list)){
     ((`12_month_volume` - `12_month_volume_prev`) / `12_month_volume_prev`) *
     100
 
-  #covid model volumes
-  covid_data <- model_data %>%
-    covid_model() %>%
-    filter(SECTION_CODE == code, YEAR_MONTH > 202002) %>%
-    select(SECTION_NAME,
-           SECTION_CODE,
-           YEAR_MONTH,
-           ITEM_COUNT,
-           PRED_ITEMS_95_FIT) %>%
-    ungroup()
-
-  covid_data_min <- format(as.Date(paste0(202003, "01"),
-                                   format = "%Y%m%d"),
-                           format = "%B %Y")
-
-  covid_data_month_count <- covid_data %>%
-    select(YEAR_MONTH) %>%
-    unique() %>%
-    nrow()
-
-  covid_volume_actual <- covid_data %>%
-    select(ITEM_COUNT) %>%
-    colSums(.) %>%
-    as.numeric()
-
-  covid_volume_predicted <- covid_data %>%
-    select(PRED_ITEMS_95_FIT) %>%
-    colSums(.) %>%
-    as.numeric()
-
-  covid_volume_dif <- covid_volume_actual - covid_volume_predicted
-  covid_volume_dif_per <-
-    ((covid_volume_actual - covid_volume_predicted) / covid_volume_predicted) *
-    100
-
   #build names for use in narratives
   name_formatted <- ""
   if(name == "Hypnotics and anxiolytics") {
@@ -999,8 +1621,8 @@ for(j in 1:length(bnf_list)){
 
   #build data
   qr_data <- data.frame(
-    Section_Name = rep(name, 29),
-    Section_Formatted = rep(name_formatted, 29),
+    Section_Name = rep(name, 25),
+    Section_Formatted = rep(name_formatted, 25),
     Period = c(
       quarter,
       prev_year_filter,
@@ -1026,11 +1648,7 @@ for(j in 1:length(bnf_list)){
       paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
       paste0(min_filter_12_months, " to ", max_filter_12_months),
       paste0(min_filter_prev_12_months, " to ", max_filter_prev_12_months),
-      paste0(min_filter_prev_12_months, " to ", max_filter_12_months),
-      paste0(covid_data_min, " to ", max_filter_12_months),
-      paste0(covid_data_min, " to ", max_filter_12_months),
-      paste0(covid_data_min, " to ", max_filter_12_months),
-      paste0(covid_data_min, " to ", max_filter_12_months)
+      paste0(min_filter_prev_12_months, " to ", max_filter_12_months)
     ),
     Measure = c(
       "Items",
@@ -1057,11 +1675,7 @@ for(j in 1:length(bnf_list)){
       "% change patients",
       "Items",
       "Items",
-      "% change items",
-      "Items",
-      "Items predicted",
-      "Items diff (pred to act)",
-      "% items diff (pred to act)"
+      "% change items"
     ),
     Value = c(
       cur_quart_volume,
@@ -1088,46 +1702,38 @@ for(j in 1:length(bnf_list)){
       average_patient_change,
       `12_month_volume`,
       `12_month_volume_prev`,
-      volume_change,
-      covid_volume_actual,
-      covid_volume_predicted,
-      covid_volume_dif,
-      covid_volume_dif_per
+      volume_change
     ),
     Rounded = c(
-      format_number(cur_quart_volume),
-      format_number(prev_year_quart_volume),
-      format_number(annual_per_change, percentage = T),
-      format_number(prev_quart_volume),
-      format_number(quarterly_per_change, percentage = T),
-      format_number(prev_5_year_quart_volume),
-      format_number((
+      mumhquarterly::format_number(cur_quart_volume),
+      mumhquarterly::format_number(prev_year_quart_volume),
+      mumhquarterly::format_number(annual_per_change, percentage = T),
+      mumhquarterly::format_number(prev_quart_volume),
+      mumhquarterly::format_number(quarterly_per_change, percentage = T),
+      mumhquarterly::format_number(prev_5_year_quart_volume),
+      mumhquarterly::format_number((
         cur_quart_volume - prev_5_year_quart_volume
       )),
-      format_number(annual_5_per_change, percentage = T),
-      format_number(cur_quart_patients),
-      format_number(prev_year_quart_patients),
-      format_number(annual_per_change_patients, percentage = T),
-      format_number(prev_quart_patients),
-      format_number(quarterly_per_change_patients, percentage = T),
-      format_number(prev_5_year_quart_patients),
-      format_number((
+      mumhquarterly::format_number(annual_5_per_change, percentage = T),
+      mumhquarterly::format_number(cur_quart_patients),
+      mumhquarterly::format_number(prev_year_quart_patients),
+      mumhquarterly::format_number(annual_per_change_patients, percentage = T),
+      mumhquarterly::format_number(prev_quart_patients),
+      mumhquarterly::format_number(quarterly_per_change_patients, percentage = T),
+      mumhquarterly::format_number(prev_5_year_quart_patients),
+      mumhquarterly::format_number((
         cur_quart_patients - prev_5_year_quart_patients
       )),
-      format_number(annual_5_per_change_patients, percentage = T),
-      format_number(prev_5_year_quart_identified, percentage = T),
-      format_number(current_quart_identified, percentage = T),
-      format_number(current_quart_identified - prev_5_year_quart_identified),
-      format_number(ave_12_month_patients),
-      format_number(ave_12_month_patients_prev),
-      format_number(average_patient_change, percentage = T),
-      format_number(`12_month_volume`),
-      format_number(`12_month_volume_prev`),
-      format_number(volume_change, percentage = T),
-      format_number(covid_volume_actual),
-      format_number(covid_volume_predicted),
-      format_number(covid_volume_dif),
-      format_number(covid_volume_dif_per, percentage = T)
+      mumhquarterly::format_number(annual_5_per_change_patients, percentage = T),
+      mumhquarterly::format_number(prev_5_year_quart_identified, percentage = T),
+      mumhquarterly::format_number(current_quart_identified, percentage = T),
+      mumhquarterly::format_number(current_quart_identified - prev_5_year_quart_identified),
+      mumhquarterly::format_number(ave_12_month_patients),
+      mumhquarterly::format_number(ave_12_month_patients_prev),
+      mumhquarterly::format_number(average_patient_change, percentage = T),
+      mumhquarterly::format_number(`12_month_volume`),
+      mumhquarterly::format_number(`12_month_volume_prev`),
+      mumhquarterly::format_number(volume_change, percentage = T)
     )
   )
 
@@ -1136,11 +1742,11 @@ for(j in 1:length(bnf_list)){
 
   #write data to sheet
   openxlsx::writeDataTable(qrwb,
-                      sheet = code,
-                      startRow = 1,
-                      x = qr_data,
-                      tableName = paste0("table_", code),
-                      tableStyle = "none")
+                           sheet = code,
+                           startRow = 1,
+                           x = qr_data,
+                           tableName = paste0("table_", code),
+                           tableStyle = "none")
 
   #auto width columns
   setColWidths(qrwb,
@@ -1157,538 +1763,26 @@ openxlsx::saveWorkbook(
     max_filter_12_months,
     ".xlsx"
   ),
-  overwrite = T
+  overwrite = FALSE
 )
 
-# 10. automate narratives --------------------------------------------------
-
-#ordinal number function
-ordinal_number <- function(x) {
-  data <- data.frame(
-    Number = c(1,2,3,4),
-    Word = c("first", "second", "third", "fourth")
-  ) %>%
-    filter(Number == x)
-
-  return(data[1,2])
-}
-
-ordinal_quarter <- ordinal_number(
-  as.numeric(str_sub(quarter,-1,-1))
-)
-
-ordinal_quarter_prev <- ordinal_number(
-  as.numeric(str_sub(prev_quarter_filter,-1,-1))
-)
-
-fy_formatted <- paste0(
-  str_sub(quarter, 1,5),
-  str_sub(quarter, 8,9)
-)
-
-fy_formatted_prev <- paste0(
-  str_sub(prev_year_filter, 1,5),
-  str_sub(prev_year_filter, 8,9)
-)
-
-fy_formatted_prev_5<- paste0(
-  str_sub(filter_5_years, 1,5),
-  str_sub(filter_5_years, 8,9)
-)
-
-#build loop to output narrative for each bnf section
-tables <- list()
-tables$`0401` <- table_0401
-tables$`0402` <- table_0402
-tables$`0403` <- table_0403
-tables$`0404` <- table_0404
-tables$`0411` <- table_0411
-
-for(k in 1:length(tables)) {
-narrative_data <- tables[[k]]
-
-#paragraph 1 sentence 1
-par1a <- paste0(
-  "There were ",
-  narrative_data$Rounded[1],
-  " ",
-  narrative_data$Section_Name[1],
-  " prescribed in the ",
-  ordinal_quarter,
-  " quarter of financial year ",
-  fy_formatted,
-  "."
-)
-
-#paragraph 1 sentence 2
-#check for annual increase/decrease in items
-year_change_items <- ""
-if (narrative_data$Value[1] > narrative_data$Value[2]) {
-  year_change_items <- " increase"
-} else {
-  year_change_items <- " decrease"
-}
-
-#check for quarterly increase/decrease in items
-quarter_change_items <- ""
-if (narrative_data$Value[1] > narrative_data$Value[4]) {
-  quarter_change_items <- " increase"
-} else {
-  quarter_change_items <- " decrease"
-}
-
-par1b <- paste0(
-  "This was a ",
-  narrative_data$Rounded[3],
-  year_change_items,
-  " from ",
-  narrative_data$Rounded[2],
-  " items compared with the same quarter a year ago, and a ",
-  narrative_data$Rounded[5],
-  quarter_change_items,
-  " from ",
-  narrative_data$Rounded[4],
-  " items in the previous quarter."
-)
-
-#paragraph 1 sentence 3
-#check for 5 year increase / decrease
-year_5_change_items <- ""
-year_5_change_items2 <- ""
-year_5_up_down <- ""
-if (narrative_data$Value[1] > narrative_data$Value[6]) {
-  year_5_change_items <- "increasing"
-  year_5_change_items2 <- "an increase"
-  year_5_up_down <- " more "
-} else {
-  year_5_change_items <- "decreasing"
-  year_5_change_items2 <- "a decrease"
-  year_5_up_down <- " fewer "
-}
-
-par1c <-   paste0(
-  "Prescribing of ",
-  narrative_data$Section_Name[1],
-  " has been ",
-  year_5_change_items,
-  " since ",
-  fy_formatted_prev_5,
-  ", with ",
-  narrative_data$Rounded[7],
-  year_5_up_down,
-  "items prescribed in ",
-  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted),
-  " when compared to ",
-  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted_prev_5),
-  ", ",
-  year_5_change_items2,
-  " of ",
-  narrative_data$Rounded[8],
-  " over the period."
-)
-
-#build 1st paragraph
-assign(
-  paste0("par1_", names(tables)[k]),
-  paste0(
-    par1a,
-    " ",
-    par1b,
-    " ",
-    par1c
-  )
-)
-
-#paragraph 1 sentence 3 alternative for none linear increase
-#check for 5 year increase / decrease
-year_5_change_items_a <- ""
-year_5_change_items2_a <- ""
-year_5_up_down_a <- ""
-if (narrative_data$Value[1] > narrative_data$Value[6]) {
-  year_5_change_items_a <- "increased"
-  year_5_change_items2_a <- "an increase"
-  year_5_up_down_a <- " more "
-} else {
-  year_5_change_items_a <- "decreased"
-  year_5_change_items2_a <- "a decrease"
-  year_5_up_down_a <- " fewer "
-}
-
-par1c_a <-   paste0(
-  "Prescribing of ",
-  narrative_data$Section_Name[1],
-  " has ",
-  year_5_change_items_a,
-  " since ",
-  fy_formatted_prev_5,
-  ", with ",
-  narrative_data$Rounded[7],
-  year_5_up_down_a,
-  "items prescribed in ",
-  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted),
-  " when compared to ",
-  paste0(str_sub(quarter, -2, -1), " of ", fy_formatted_prev_5),
-  ", ",
-  year_5_change_items2_a,
-  " of ",
-  narrative_data$Rounded[8],
-  " over the period."
-)
-
-#build 1st paragraph with alternative sentence 3
-assign(
-  paste0("par1_a", names(tables)[k]),
-  paste0(
-    par1a,
-    " ",
-    par1b,
-    " ",
-    par1c_a
-  )
-)
-
-#remove sentences from environment
-rm(par1a)
-rm(par1b)
-rm(par1c)
-rm(par1c_a)
-
-#paragraph 2 sentence 1
-par2a <- paste0(
-  "There were an estimated ",
-  narrative_data$Rounded[9],
-  " identified patients who were prescribed at least one ",
-  narrative_data$Section_Formatted[1],
-  " in quarter ",
-  str_sub(quarter,-1,-1),
-  " of ",
-  fy_formatted,
-  "."
-)
-
-#paragraph 2 sentence 2
-#check for annual increase/decrease in patients
-year_change_patients <- ""
-if(narrative_data$Value[9] > narrative_data$Value[10]) {
-  year_change_patients <- " increase"
-} else {
-  year_change_patients <- " decrease"
-}
-
-#check for quarterly increase/decrease in patients
-quarter_change_patients <- ""
-if(narrative_data$Value[9] > narrative_data$Value[12]) {
-  quarter_change_patients <- " increase"
-} else {
-  quarter_change_patients <- " decrease"
-}
-
-par2b <- paste0(
-  "This was a ",
-  narrative_data$Rounded[11],
-  year_change_patients,
-  " from ",
-  narrative_data$Rounded[10],
-  " identified patients when compared with the same quarter in ",
-  fy_formatted_prev,
-  ", and a ",
-  narrative_data$Rounded[13],
-  quarter_change_patients,
-  " from ",
-  narrative_data$Rounded[12],
-  " identified patients in the previous quarter."
-)
-
-#paragraph 2 sentence 3
-par2c <- paste0(
-  "The long-term trends for patients receiving ",
-  narrative_data$Section_Name[1],
-  " are similar to the overall prescribing of items."
-)
-
-#paragraph 2 sentence 4
-#check for 5 year increase/decrease in patients
-year_5_change_patients <- ""
-year_5_up_down_patients <- ""
-year_5_estimate <- ""
-year_5_change_patients2 <- ""
-if(narrative_data$Value[9] > narrative_data$Value[14]) {
-  year_5_change_patients <- " an increase "
-  year_5_up_down_patients <- " more "
-  year_5_estimate <- " overestimate "
-  year_5_change_patients2 <- " increase "
-} else {
-  year_5_change_patients <- " a decrease "
-  year_5_up_down_patients<- " fewer "
-  year_5_estimate <- " underestimate "
-  year_5_change_patients2 <- " decrease "
-}
-
-#check for vowel at beginning of section name
-vowel_check <- tolower(substr(narrative_data$Section_Formatted[1], 1, 1))
-and_a <- "a "
-if(vowel_check %in% c("a", "e", "i", "o", "u")) {
-  and_a <- "an "
-}
-
-par2d <- paste0(
-  "There were ",
-  narrative_data$Rounded[15],
-  year_5_up_down_patients,
-  "identified patients who received ",
-  and_a,
-  narrative_data$Section_Formatted[1],
-  " in quarter ",
-  str_sub(quarter,-1,-1),
-  " of ",
-  fy_formatted,
-  " compared to quarter ",
-  str_sub(quarter,-1,-1),
-  " of ",
-  fy_formatted_prev_5,
-  ", ",
-  year_5_change_patients,
-  "of ",
-  narrative_data$Rounded[16],
-  "."
-)
-
-#paragraph 2 sentence 5
-par2e <- paste0(
-  "However, it should be noted that this is likely to be an",
-  year_5_estimate,
-  "of the actual",
-  year_5_change_patients2,
-  "in patient numbers, as the proportion of patients who could be identified increased."
-)
-
-#paragraph 2 sentence 6
-par2f <- paste0(
-  "In ",
-  paste0(str_sub(quarter,-2,-1), " of ", fy_formatted_prev_5),
-  ", ",
-  narrative_data$Rounded[17],
-  " of items were prescribed to identified patients, this increased by ",
-  narrative_data$Rounded[19],
-  " percentage points in ",
-  paste0(str_sub(quarter,-2,-1), " of ", fy_formatted),
-  " to ",
-  narrative_data$Rounded[18],
-  " of items."
-)
-
-#build paragraph 2
-assign(
-  paste0("par2_", names(tables)[k]),
-  paste0(
-    par2a,
-    " ",
-    par2b,
-    " ",
-    par2c,
-    " ",
-    par2d,
-    " ",
-    par2e,
-    " ",
-    par2f
-  )
-)
-
-#remove sentences from environment
-rm(par2a)
-rm(par2b)
-rm(par2c)
-rm(par2d)
-rm(par2e)
-rm(par2f)
-
-#paragraph 3
-assign(
-  paste0("par3_", names(tables)[k]),
-  paste0(
-    "The monthly time series for ",
-    narrative_data$Section_Name[1],
-    " show some regular patterns as well as month-to-month variation. Some of the regular changes may reflect seasonal patterns; most notably there tends to be less prescribing in months with fewer dispensing days, such as February."
-  )
-)
-
-#paragraph 4
-par4 <- paste0(
-  "As patients can appear in more than one month of data, adding the patients for different months together would result in an inaccurate estimate of the number of unique patients that have received prescribing in this period. Therefore, we have calculated the average number of patients for comparison purposes. This average is a mean, calculated by summing the number of patients for the periods in question and dividing by the number of months in the period."
-)
-
-#paragraph 5
-#paragraph 5 sentence 1``
-par5a <- paste0(
-  "The monthly average number of identified patients receiving at least one ",
-  narrative_data$Section_Formatted[1],
-  " in the 12 months ",
-  min_filter_12_months,
-  " to ",
-  max_filter_12_months,
-  " was ",
-  narrative_data$Rounded[20],
-  "."
-)
-
-#paragraph 5 sentence 2
-#check for 12 month increase/decrease in average patients
-year_change_ave_patients <- ""
-year_up_down_ave_patients <- ""
-if(narrative_data$Value[20] > narrative_data$Value[21]) {
-  year_change_ave_patients <- " an increase "
-  year_up_down_ave_patients <- " more "
-} else {
-  year_change_ave_patients <- " a decrease "
-  year_up_down_ave_patients<- " fewer "
-}
-
-par5b <- paste0(
-  "This was",
-  year_change_ave_patients,
-  "of ",
-  narrative_data$Rounded[22],
-  " from a monthly average of ",
-  narrative_data$Rounded[21],
-  " identified patients in the period ",
-  min_filter_prev_12_months,
-  " to ",
-  max_filter_prev_12_months,
-  "."
-)
-
-#build paragraph 5
-assign(
-  paste0("par5_", names(tables)[k]),
-  paste0(
-    par5a,
-    " ",
-    par5b
-  )
-)
-
-#remove sentences from environment
-rm(par5a)
-rm(par5b)
-
-#paragraph 6
-#paragraph 6 sentence 1
-par6a <- paste0(
-  "There were ",
-  narrative_data$Rounded[23],
-  " ",
-  narrative_data$Section_Name[1],
-  " prescribed in the 12 months ",
-  min_filter_12_months,
-  " to ",
-  max_filter_12_months,
-  "."
-)
-
-#check for 12 month increase/decrease in items
-year_change_12_month_items <- ""
-year_up_down_12_month_items <- ""
-if(narrative_data$Value[23] > narrative_data$Value[24]) {
-  year_change_12_month_items <- " increase "
-  year_up_down_12_month_items <- " more "
-} else {
-  year_change_12_month_items <- " decrease "
-  year_up_down_12_month_items<- " fewer "
-}
-
-#paragraph 6 sentence 2
-par6b <- paste0(
-  "This was a ",
-  narrative_data$Rounded[25],
-  year_change_12_month_items,
-  "from ",
-  narrative_data$Rounded[24],
-  " items when compared with ",
-  min_filter_prev_12_months,
-  " to ",
-  max_filter_prev_12_months,
-  "."
-)
-
-#build paragraph 6
-assign(
-  paste0("par6_", names(tables)[k]),
-  paste0(
-    par6a,
-    " ",
-    par6b
-  )
-)
-
-#remove sentences from environment
-rm(par6a)
-rm(par6b)
-
-#paragraph 7
-par7 <- paste0(
-  "It should be noted, national lockdowns were implemented between 23 March to 4 July 2020, 5 November to 2 December 2020, and from 6 January 2021 with relaxation of lockdown restrictions commencing from March 2021 onwards. Further measures without a lockdown were implemented on 30 November 2021 due to the emergence of the Omicron variant of COVID-19. All remaining domestic legal restrictions were officially lifted in England on 24 February 2022."
-  )
-
-#covid paragraph
-#covid paragraph sentence 1
-covpar1a <- paste0(
-  "In the ",
-  covid_data_month_count,
-  "-month period from ",
-  covid_data_min,
-  " to ",
-  max_filter_12_months,
-  ", ",
-  narrative_data$Rounded[26],
-  " ",
-  narrative_data$Section_Name[1],
-  " were prescribed in England."
-)
-
-#covid paragraph sentence 2
-#check if covid volumes are more/less than predicied
-covid_up_down <- ""
-if(narrative_data$Value[26] > narrative_data$Value[27]) {
-  covid_up_down <- " more "
-} else {
-  covid_up_down<- " fewer "
-}
-covpar1b <- paste0(
-  "This was ",
-  narrative_data$Rounded[28],
-  " or ",
-  narrative_data$Rounded[29],
-  covid_up_down,
-  "than the ",
-  narrative_data$Rounded[27],
-  " items expected based on historical trends."
-  )
-
-#build covid paragraph
-assign(
-  paste0("covpar_", names(tables)[k]),
-  paste0(
-    covpar1a,
-    " ",
-    covpar1b
-  )
-)
-
-#remove sentences from environment
-rm(covpar1a)
-rm(covpar1b)
-}
-
-# 11. render markdown ------------------------------------------------------
+# 11. render markdown narrative and background ---------------------------------
+# change file names for new publications
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/mumh_quarterly_sep22_v001.html")
+                  output_file = "outputs/mumh_quarterly_dec22_v001.html")
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/mumh_quarterly_sep22_v001.docx")
+                  output_file = "outputs/mumh_quarterly_dec22_v001.docx")
+
+rmarkdown::render("background.Rmd",
+                  output_format = "html_document",
+                  output_file = "outputs/mumh_quarterly_dec22_background.html")
+
+rmarkdown::render("background.Rmd",
+                  output_format = "word_document",
+                  output_file = "outputs/mumh_quarterly_dec22_background.docx")
 
 #logr::log_close()
-
