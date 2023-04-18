@@ -17,20 +17,13 @@ req_pkgs <- c("broom", "data.table", "dbplyr", "dplyr", "DT" , "highcharter", "l
 
 invisible(lapply(c(req_pkgs, "mumhquarterly", "nhsbsaR"), library, character.only = TRUE))
 
-# 2. setup logging -------------------------------------------------------------
-
-#lf <- logr::log_open(autolog = TRUE)
-
-# send code to log
-#logr::log_code()
-
-# 3. set options ---------------------------------------------------------------
+# 2. set options ---------------------------------------------------------------
 
 mumhquarterly::mumh_options()
 
-# 4. load most recent data and add 3 months to max date ------------------------
+# 3. load most recent data and add 3 months to max date ------------------------
 
-#get most recent monthly file
+# get most recent monthly file
 recent_file_monthly <- rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -45,11 +38,11 @@ recent_file_monthly <- rownames(file.info(
   )
 )$mtime)]
 
-#read data
+# read data
 recent_data_monthly <- data.table::fread(recent_file_monthly,
                                          keepLeadingZeros = TRUE)
 
-#get most recent quarterly file
+# get most recent quarterly file
 recent_file_quarterly <- rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -64,11 +57,11 @@ recent_file_quarterly <- rownames(file.info(
   )
 )$mtime)]
 
-#read data
+# read data
 recent_data_quarterly <- data.table::fread(recent_file_quarterly,
                                            keepLeadingZeros = TRUE)
 
-#get most recent monthly model data file
+# get most recent monthly model data file
 recent_file_model <- rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -83,12 +76,11 @@ recent_file_model <- rownames(file.info(
   )
 )$mtime)]
 
-#read data
+# read data
 recent_data_model <- data.table::fread(recent_file_model,
                                        keepLeadingZeros = TRUE)
 
-
-#get max month
+# get max month
 max_month <- as.Date(
   paste0(
     max(
@@ -99,18 +91,18 @@ max_month <- as.Date(
   format = "%Y%m%d"
 )
 
-#get max month plus one
+# get max month plus one
 max_month_plus <- as.Date(paste0(max(recent_data_monthly$YEAR_MONTH),
                                  "01"),
                           format = "%Y%m%d") %m+% months(1)
 
-#convert to DW format
+# convert to DW format
 max_month_plus_dw <- as.numeric(paste0(format(max_month_plus,
                                               "%Y"),
                                        format(max_month_plus,
                                               "%m")))
 
-# 5. extract data from NHSBSA DWH ----------------------------------------------
+# 4. extract data from NHSBSA Data Warehouse -----------------------------------
 # build connection to database
 con <- con_nhsbsa(
   dsn = "FBS_8192k",
@@ -120,11 +112,11 @@ con <- con_nhsbsa(
   password = rstudioapi::askForPassword()
 )
 
-#get max month available in DWH
+# get max month available in DWH
 ym_dim <- dplyr::tbl(con,
                      from = dbplyr::in_schema("DIM", "YEAR_MONTH_DIM")) %>%
 
-  #shrink table to remove unnecessary data
+  # shrink table to remove unnecessary data
   dplyr::filter(
     YEAR_MONTH >= 201401L,
     YEAR_MONTH <= dplyr::sql(
@@ -162,12 +154,12 @@ ltst_month <- ym_dim %>%
   dplyr::distinct() %>%
   dplyr::pull(YEAR_MONTH)
 
-#get max month in dwh
+# get max month in dwh
 max_month_dw <- as.Date(paste0(ltst_month,
                                "01"),
                         format = "%Y%m%d")
 
-#create table names
+# create table names
 
 time_table <- paste0("MUMH_MONTH_TDIM_", as.character(ltst_month))
 
@@ -214,7 +206,7 @@ drug_table <- paste0("MUMH_MONTH_DRUG_DIM_", as.character(ltst_month))
       DBI::dbRemoveTable(name = porg_table)
   }
 
-  #build table
+  # build table
   create_org_dim(con, country = 1) %>%
     compute(porg_table, analyze = FALSE, temporary = FALSE)
 
@@ -233,13 +225,13 @@ drug_table <- paste0("MUMH_MONTH_DRUG_DIM_", as.character(ltst_month))
   create_drug_dim(con, bnf_codes = c("0401", "0402", "0403", "0404", "0411"))  %>%
     compute(drug_table, analyze = FALSE, temporary = FALSE)
 
-  #build table
+  # build table
   age <- dplyr::tbl(con,
                     from = dbplyr::in_schema("DIM", "AGE_DIM")) %>%
     select(AGE,
            DALL_5YR_BAND)
 
-  #create fact table
+  # create fact table
   fact <- create_fact(con)
 
   # drop raw data if exists
@@ -400,15 +392,13 @@ drug_table <- paste0("MUMH_MONTH_DRUG_DIM_", as.character(ltst_month))
   save_data(mumh_model, dir = "Y:/Official Stats/MUMH", filename = "mumh_model")
    }
 
-# 6. import data ---------------------------------------------------------------
+# 5. import data ---------------------------------------------------------------
 # import data from data folder to perform aggregations etc without having to
 # maintain connection to DWH
 
-#logr::sep("read data")
-
 raw_data <- list()
 
-#read most recent monthly file
+# read most recent monthly file
 raw_data$monthly <- data.table::fread(rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -424,7 +414,7 @@ raw_data$monthly <- data.table::fread(rownames(file.info(
 )$mtime)],
 keepLeadingZeros = TRUE)
 
-#read most recent quarterly file
+# read most recent quarterly file
 raw_data$quarterly <- data.table::fread(rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -440,7 +430,7 @@ raw_data$quarterly <- data.table::fread(rownames(file.info(
 )$mtime)],
 keepLeadingZeros = TRUE)
 
-#read most recent model data file
+# read most recent model data file
 raw_data$model_data <- data.table::fread(rownames(file.info(
   list.files(
     "Y:/Official Stats/MUMH/data",
@@ -456,17 +446,11 @@ raw_data$model_data <- data.table::fread(rownames(file.info(
 )$mtime)],
 keepLeadingZeros = TRUE)
 
-#logr::put(raw_data)
-
-#calculate dispensing days for use in covid model
-#use latest year of current financial year, eg. 2023 for financial year 2022/23
+# calculate dispensing days for use in covid model
+# use latest year of current financial year, eg. 2023 for financial year 2022/23
 dispensing_days <- mumhquarterly::get_dispensing_days(2023)
 
-#logr::put(dispensing_days)
-
-# 7. data manipulation ---------------------------------------------------------
-
-#logr::sep("data manipulations")
+# 6. data manipulation ---------------------------------------------------------
 
 # patient identification rates for most recent data
 period <- raw_data$quarterly %>%
@@ -475,8 +459,6 @@ period <- raw_data$quarterly %>%
   dplyr::slice_max(FINANCIAL_QUARTER,
                    n = 4) %>%
   dplyr::pull()
-
-#logr::put(period)
 
 # create dataframe
 patient_identification <- raw_data$quarterly %>%
@@ -496,8 +478,6 @@ patient_identification <- raw_data$quarterly %>%
   tidyr::pivot_wider(names_from = FINANCIAL_QUARTER,
                      values_from = RATE) %>%
   dplyr::arrange(`BNF Section Code`)
-
-#logr::put(patient_identification)
 
 # chart data for use in markdown
 
@@ -523,8 +503,6 @@ chart_data$monthly <- raw_data$monthly %>%
                    by = "YEAR_MONTH") %>%
   dplyr::ungroup()
 
-#logr::put(chart_data$monthly)
-
 # model data using old version of covid model for use in model testing
 # filter monthly raw data to identified patients only
 # join monthly raw data to dispensing days to allow modelling
@@ -545,11 +523,9 @@ model_data_old <- raw_data$monthly %>%
                    by = "YEAR_MONTH") %>%
   dplyr::ungroup()
 
-#logr::put(model_data_old)
-
-# 8. write data to .xlsx -------------------------------------------------------
+# 7. write data to .xlsx -------------------------------------------------------
 # Text referencing time periods in sheet titles and notes needs to be manually updated
-# for example, 'April 2015 to December 2022' is the time period for current publication
+# for example 'April 2015 to December 2022' is the time period for current publication
 # To do: automate time periods in file and sheet titles and notes
 
 # create dataframe for full patient identification
@@ -566,8 +542,6 @@ patient_identification_excel <- raw_data$quarterly %>%
   tidyr::pivot_wider(names_from = FINANCIAL_QUARTER,
                      values_from = RATE) %>%
   dplyr::arrange(`BNF Section Code`)
-
-#logr::put(patient_identification_excel)
 
 # create wb object
 # create list of sheetnames needed (overview and metadata created automatically)
@@ -756,10 +730,10 @@ openxlsx::saveWorkbook(wb,
                        "outputs/mumh_quarterly_dec22_v001.xlsx",
                        overwrite = TRUE)
 
-# 9. Covid model figures -------------------------------------------------------
-# this section is for building, testing, and implementing the new covid model
+# 8. Covid model figures -------------------------------------------------------
+# this section builds, tests and implements the new covid model
 # using patient ageband and gender data
-# To do: turn covid model into function to reduce size of code
+# To do: turn new covid model back into function to reduce size of code
 
 # join dispensing days to raw data, add columns for position of month in year,
 # position of month in full dataset, and month start date
@@ -1320,8 +1294,8 @@ actual_items <- covid_model_predictions %>%
 # update month in file name for new publications
 fwrite(actual_items, "Y:/Official Stats/MUMH/QR Data/QR_dec22_model.csv")
 
-# 10. output figures needed for QR purposes --------------------------------
-#first get max month and quarter
+# 9. output figures needed for QR purposes --------------------------------
+# first get max month and quarter
 max_month <- max(raw_data$monthly$YEAR_MONTH)
 
 quarter <- raw_data$monthly %>%
@@ -1329,74 +1303,74 @@ quarter <- raw_data$monthly %>%
   tail(1) %>%
   pull(FINANCIAL_QUARTER)
 
-#get previous quarter for filtering
+# get previous quarter for filtering
 prev_quarter <- quarter(
-  #uses max_month minus 3 months
+  # uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
   type = "quarter",
-  #set for fiscal year starting in April
+  # set for fiscal year starting in April
   fiscal_start = 4
 )
 
-#get financial year of previous quarter
+# get financial year of previous quarter
 prev_quarter_fy <- quarter(
-  #uses max_month minus 3 months
+  # uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(3),
   type = "year.quarter",
-  #set for fiscal year starting in April
+  # set for fiscal year starting in April
   fiscal_start = 4
 ) %>%
   substr(1, 4) %>%
   as.numeric()
 
-#build filter for previous quarter
+# build filter for previous quarter
 prev_quarter_filter <- paste0(prev_quarter_fy-1, "/", prev_quarter_fy,
                               " Q", prev_quarter)
 
-#get previous year for filtering
+# get previous year for filtering
 prev_year <- quarter(
-  #uses max_month minus 12 months
+  # uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "quarter",
-  #set for fiscal year starting in April
+  # set for fiscal year starting in April
   fiscal_start = 4
 )
 
-#get financial year of previous year
+# get financial year of previous year
 prev_year_fy <- quarter(
-  #uses max_month minus 12 months
+  # uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(12),
   type = "year.quarter",
-  #set for fiscal year starting in April
+  # set for fiscal year starting in April
   fiscal_start = 4
 ) %>%
   substr(1, 4) %>%
   as.numeric()
 
-#build filter for previous year
+# build filter for previous year
 prev_year_filter <- paste0(prev_year_fy - 1, "/", prev_year_fy,
                            " Q", prev_year)
 
 prev_5_year <- quarter(
-  #uses max_month minus 12 months
+  # uses max_month minus 12 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
   type = "quarter",
-  #set for fiscal year starting in April
+  # set for fiscal year starting in April
   fiscal_start = 4
 )
 
-#get financial year of previous quarter
+# get financial year of previous quarter
 prev_5_year_quarter_fy <- quarter(
-  #uses max_month minus 3 months
+  # uses max_month minus 3 months
   as.Date(paste0(max_month, "01"), format = "%Y%m%d") %m-% months(60),
   type = "year.quarter",
-  #set for fiscal year starting in April
+  # set for fiscal year starting in April
   fiscal_start = 4
 ) %>%
   substr(1, 4) %>%
   as.numeric()
 
-#build filter for previous quarter
+# build filter for previous quarter
 filter_5_years <-
   paste0(prev_5_year_quarter_fy - 1,
          "/",
@@ -1404,7 +1378,7 @@ filter_5_years <-
          " Q",
          prev_5_year)
 
-#build filters for previous 12 month period and 12 month period prior to that
+# build filters for previous 12 month period and 12 month period prior to that
 filter_12_months <-
   as.numeric(format(as.Date(paste0(max_month, "01"),
                             format = "%Y%m%d") -
@@ -1417,7 +1391,7 @@ filter_prev_12_months <-
                       months(12:23),
                     format = "%Y%m"))
 
-#get min and max dates of each quarter formatted as nice text
+# get min and max dates of each quarter formatted as nice text
 min_filter_12_months <-
   format(as.Date(paste0(min(filter_12_months), "01"),
                  format = "%Y%m%d"),
@@ -1442,12 +1416,12 @@ max_filter_prev_12_months <-
   format = "%Y%m%d"),
   format = "%B %Y")
 
-#create blank workbook for saving
+# create blank workbook for saving
 qrwb <- openxlsx::createWorkbook()
 
 openxlsx::modifyBaseFont(qrwb, fontName = "Arial", fontSize = 10)
 
-#loop through bnf_list
+# loop through bnf_list
 bnf_list <- c("0403", "0401", "0402", "0404", "0411")
 
 for(j in 1:length(bnf_list)){
@@ -1460,12 +1434,12 @@ for(j in 1:length(bnf_list)){
     unique() %>%
     pull()
 
-  #add sheet to wb with bnf_code
+  # add sheet to wb with bnf_code
   openxlsx::addWorksheet(qrwb,
                          sheetName = code,
                          gridLines = FALSE)
 
-  #current quarter volume
+  # current quarter volume
   cur_quart_volume <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == quarter) %>%
@@ -1473,7 +1447,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #previous quarter volume
+  # previous quarter volume
   prev_quart_volume <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == prev_quarter_filter) %>%
@@ -1481,7 +1455,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #previous year quarter volume
+  # previous year quarter volume
   prev_year_quart_volume <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == prev_year_filter) %>%
@@ -1489,7 +1463,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #get volume from same quarter 5 years ago
+  # get volume from same quarter 5 years ago
   prev_5_year_quart_volume <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == filter_5_years) %>%
@@ -1506,7 +1480,7 @@ for(j in 1:length(bnf_list)){
     ((cur_quart_volume - prev_5_year_quart_volume) / prev_5_year_quart_volume) *
     100
 
-  #get patient count of current quarter
+  # get patient count of current quarter
   cur_quart_patients <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == quarter) %>%
@@ -1514,7 +1488,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #previous quarter patient count
+  # previous quarter patient count
   prev_quart_patients <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == prev_quarter_filter) %>%
@@ -1522,7 +1496,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #previous year quarter patient count
+  # previous year quarter patient count
   prev_year_quart_patients <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == prev_year_filter) %>%
@@ -1530,7 +1504,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #get patient count from same quarter 5 years ago
+  # get patient count from same quarter 5 years ago
   prev_5_year_quart_patients <- raw_data$quarterly %>%
     filter(SECTION_CODE == code,
            FINANCIAL_QUARTER == filter_5_years) %>%
@@ -1547,7 +1521,7 @@ for(j in 1:length(bnf_list)){
     ((cur_quart_patients - prev_5_year_quart_patients) / prev_5_year_quart_patients) *
     100
 
-  #get identified patient rates
+  # get identified patient rates
   current_quart_identified <- patient_identification_excel %>%
     filter(`BNF Section Code` == code) %>%
     select(quarter) %>%
@@ -1560,7 +1534,7 @@ for(j in 1:length(bnf_list)){
     colSums(.) %>%
     as.numeric()
 
-  #average monthly patients
+  # average monthly patients
   ave_12_month_patients <- raw_data$monthly %>%
     filter(SECTION_CODE == code,
            YEAR_MONTH %in% filter_12_months,
@@ -1581,7 +1555,7 @@ for(j in 1:length(bnf_list)){
     ((ave_12_month_patients - ave_12_month_patients_prev) / ave_12_month_patients_prev) *
     100
 
-  #monthly volumes
+  # monthly volumes
   `12_month_volume` <- raw_data$monthly %>%
     filter(SECTION_CODE == code,
            YEAR_MONTH %in% filter_12_months) %>%
@@ -1600,7 +1574,7 @@ for(j in 1:length(bnf_list)){
     ((`12_month_volume` - `12_month_volume_prev`) / `12_month_volume_prev`) *
     100
 
-  #build names for use in narratives
+  # build names for use in narratives
   name_formatted <- ""
   if(name == "Hypnotics and anxiolytics") {
     name <- "hypnotics and anxiolytics"
@@ -1619,7 +1593,7 @@ for(j in 1:length(bnf_list)){
     name_formatted <- "drug for dementia item"
   }
 
-  #build data
+  # build data
   qr_data <- data.frame(
     Section_Name = rep(name, 25),
     Section_Formatted = rep(name_formatted, 25),
@@ -1737,10 +1711,10 @@ for(j in 1:length(bnf_list)){
     )
   )
 
-  #output tables to global enviroment for narrative automation
+  # output tables to global enviroment for narrative automation
   assign(paste0("table_", code), qr_data, envir = globalenv())
 
-  #write data to sheet
+  # write data to sheet
   openxlsx::writeDataTable(qrwb,
                            sheet = code,
                            startRow = 1,
@@ -1748,14 +1722,14 @@ for(j in 1:length(bnf_list)){
                            tableName = paste0("table_", code),
                            tableStyle = "none")
 
-  #auto width columns
+  # auto width columns
   setColWidths(qrwb,
                sheet = code,
                cols = 1:5,
                widths = "auto")
 }
 
-#save workbook in shared QR folder
+# save workbook in shared QR folder
 openxlsx::saveWorkbook(
   qrwb,
   paste0(
@@ -1766,7 +1740,7 @@ openxlsx::saveWorkbook(
   overwrite = FALSE
 )
 
-# 11. render markdown narrative and background ---------------------------------
+# 10. render markdown narrative and background ---------------------------------
 # change file names for new publications
 
 rmarkdown::render("mumh-quarterly-narrative.Rmd",
@@ -1784,5 +1758,3 @@ rmarkdown::render("background.Rmd",
 rmarkdown::render("background.Rmd",
                   output_format = "word_document",
                   output_file = "outputs/mumh_quarterly_dec22_background.docx")
-
-#logr::log_close()
