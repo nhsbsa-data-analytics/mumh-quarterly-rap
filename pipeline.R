@@ -794,11 +794,11 @@ df5 <- raw_data$model_data |>
                 !(PDS_GENDER == "U" | DALL_5YR_BAND == "Unknown")) %>%
   dplyr::ungroup()
 
-# repeat to create dataset with 10 year agebands instead of 5 year
+# repeat to create dataset with 20 year agebands instead of 5 year
 # only keep observations with known age and gender
 # and fill rows where ageband has no items recorded
-df10 <- raw_data$model |>
-  dplyr::mutate(BAND_10YR = dplyr::case_when(DALL_5YR_BAND %in% c("00-04", "05-09", "10-14", "15-19") ~ "00-19",
+df20 <- raw_data$model |>
+  dplyr::mutate(BAND_20YR = dplyr::case_when(DALL_5YR_BAND %in% c("00-04", "05-09", "10-14", "15-19") ~ "00-19",
                                              DALL_5YR_BAND %in% c("20-24", "25-29", "30-34", "35-39") ~ "20-39",
                                              DALL_5YR_BAND %in% c("40-44", "45-49", "50-54", "55-59") ~ "40-59",
                                              DALL_5YR_BAND %in% c("60-64", "65-69", "70-74", "75-79") ~ "60-79",
@@ -810,11 +810,11 @@ df10 <- raw_data$model |>
                   SECTION_CODE,
                   IDENTIFIED_FLAG,
                   PDS_GENDER,
-                  BAND_10YR) |>
+                  BAND_20YR) |>
   dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT),
                    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC),
                    .groups = "drop") |>
-  tidyr::complete(BAND_10YR,
+  tidyr::complete(BAND_20YR,
                   nesting(YEAR_MONTH,
                           SECTION_NAME,
                           SECTION_CODE,
@@ -827,7 +827,7 @@ df10 <- raw_data$model |>
                   nesting(YEAR_MONTH,
                           SECTION_NAME,
                           SECTION_CODE,
-                          BAND_10YR,
+                          BAND_20YR,
                           PDS_GENDER),
                   fill = list(ITEM_COUNT = 0,
                               ITEM_PAY_DR_NIC = 0,
@@ -837,7 +837,7 @@ df10 <- raw_data$model |>
                           SECTION_NAME,
                           SECTION_CODE,
                           IDENTIFIED_FLAG,
-                          BAND_10YR),
+                          BAND_20YR),
                   fill = list(ITEM_COUNT = 0,
                               ITEM_PAY_DR_NIC = 0,
                               PATIENT_COUNT = 0)) |>
@@ -845,9 +845,9 @@ df10 <- raw_data$model |>
                   SECTION_CODE,
                   IDENTIFIED_FLAG,
                   PDS_GENDER,
-                  BAND_10YR) |>
+                  BAND_20YR) |>
   dplyr::group_by(SECTION_NAME, SECTION_CODE, IDENTIFIED_FLAG,
-                  PDS_GENDER, BAND_10YR) |>
+                  PDS_GENDER, BAND_20YR) |>
   dplyr::mutate(
     MONTH_START = as.Date(paste0(YEAR_MONTH, "01"), format = "%Y%m%d"),
     MONTH_NUM = lubridate::month(MONTH_START),
@@ -857,12 +857,12 @@ df10 <- raw_data$model |>
                    by = "YEAR_MONTH") |>
   dplyr::filter(!(IDENTIFIED_FLAG == "N" & PDS_GENDER == "F"),
                 !(IDENTIFIED_FLAG == "N" & PDS_GENDER == "M"),
-                !(PDS_GENDER == "U" | BAND_10YR == "Unknown")) %>%
+                !(PDS_GENDER == "U" | BAND_20YR == "Unknown")) %>%
   dplyr::ungroup()
 
 # create additional dataset with both agebands for use in variable selection later
 df_both <- raw_data$model |>
-  dplyr::mutate(BAND_10YR = dplyr::case_when(DALL_5YR_BAND %in% c("00-04", "05-09", "10-14", "15-19") ~ "00-19",
+  dplyr::mutate(BAND_20YR = dplyr::case_when(DALL_5YR_BAND %in% c("00-04", "05-09", "10-14", "15-19") ~ "00-19",
                                              DALL_5YR_BAND %in% c("20-24", "25-29", "30-34", "35-39") ~ "20-39",
                                              DALL_5YR_BAND %in% c("40-44", "45-49", "50-54", "55-59") ~ "40-59",
                                              DALL_5YR_BAND %in% c("60-64", "65-69", "70-74", "75-79") ~ "60-79",
@@ -874,11 +874,11 @@ df_both <- raw_data$model |>
                   IDENTIFIED_FLAG,
                   PDS_GENDER,
                   DALL_5YR_BAND,
-                  BAND_10YR) |>
+                  BAND_20YR) |>
   dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT),
                    ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)) |>
   dplyr::group_by(SECTION_NAME, SECTION_CODE, IDENTIFIED_FLAG,
-                  PDS_GENDER, BAND_10YR, DALL_5YR_BAND) |>
+                  PDS_GENDER, BAND_20YR, DALL_5YR_BAND) |>
   dplyr::mutate(
     MONTH_START = as.Date(paste0(YEAR_MONTH, "01"), format = "%Y%m%d"),
     MONTH_NUM = lubridate::month(MONTH_START),
@@ -888,7 +888,7 @@ df_both <- raw_data$model |>
                    by = "YEAR_MONTH") |>
   dplyr::filter(!(IDENTIFIED_FLAG == "N" & PDS_GENDER == "F"),
                 !(IDENTIFIED_FLAG == "N" & PDS_GENDER == "M"),
-                !(PDS_GENDER == "U" | DALL_5YR_BAND == "Unknown" | BAND_10YR == "Unknown")) |>
+                !(PDS_GENDER == "U" | DALL_5YR_BAND == "Unknown" | BAND_20YR == "Unknown")) |>
   dplyr::ungroup()
 
 # add columns to separate out months into individual factor variables
@@ -909,8 +909,8 @@ df5 <- df5 %>%
     m_12 = 1*(MONTH_NUM == 12)
   )
 
-# repeat for 10 year ageband data
-df10 <- df10 %>%
+# repeat for 20 year ageband data
+df20 <- df20 %>%
   dplyr::mutate(
     m_01 = 1*(MONTH_NUM == 1),
     m_02 = 1*(MONTH_NUM == 2),
@@ -930,7 +930,7 @@ df10 <- df10 %>%
 
 # explore variable selection for use in model
 # check if smaller or larger agebands makes a difference
-# test and train data for df_both dataset, split by pre-covd trend data and covid data
+# test and train data for df_both dataset, split by pre-covid trend data and covid data
 both_time <- df_both %>%
   ungroup() %>%
   dplyr::mutate(time_period = case_when(YEAR_MONTH <= 202002 ~ "pre_covid",
@@ -940,47 +940,47 @@ both_split <- rsample::group_initial_split(both_time, time_period)
 both_train <- rsample::training(both_split)
 both_test <- rsample::testing(both_split)
 
-# build 5yr vs 10yr agebands model for each BNF section using full set of variables
+# build 5yr vs 20yr agebands model for each BNF section using full set of variables
 # linear model using lm() function
 mod_0401_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
                  + PDS_GENDER*as.factor(DALL_5YR_BAND),
                  data = filter(both_train, SECTION_CODE == "0401"))
 mod_0401_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                  + PDS_GENDER*as.factor(BAND_10YR),
+                  + PDS_GENDER*as.factor(BAND_20YR),
                   data = filter(both_train, SECTION_CODE == "0401"))
 
 mod_0402_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
                  + PDS_GENDER*as.factor(DALL_5YR_BAND),
                  data = filter(both_train, SECTION_CODE == "0402"))
 mod_0402_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                  + PDS_GENDER*as.factor(BAND_10YR),
+                  + PDS_GENDER*as.factor(BAND_20YR),
                   data = filter(both_train, SECTION_CODE == "0402"))
 
 mod_0403_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
                  + PDS_GENDER*as.factor(DALL_5YR_BAND),
                  data = filter(both_train, SECTION_CODE == "0403"))
 mod_0403_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                  + PDS_GENDER*as.factor(BAND_10YR),
+                  + PDS_GENDER*as.factor(BAND_20YR),
                   data = filter(both_train, SECTION_CODE == "0403"))
 
 mod_0404_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
                  + PDS_GENDER*as.factor(DALL_5YR_BAND),
                  data = filter(both_train, SECTION_CODE == "0404"))
 mod_0404_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                  + PDS_GENDER*as.factor(BAND_10YR),
+                  + PDS_GENDER*as.factor(BAND_20YR),
                   data = filter(both_train, SECTION_CODE == "0404"))
 
 mod_0411_5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
                  + PDS_GENDER*as.factor(DALL_5YR_BAND),
                  data = filter(both_train, SECTION_CODE == "0411"))
 mod_0411_10 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                  + PDS_GENDER*as.factor(BAND_10YR),
+                  + PDS_GENDER*as.factor(BAND_20YR),
                   data = filter(both_train, SECTION_CODE == "0411"))
 
 # compare model fits using Akaike Information Criteria (AIC)
 # lower AIC is generally considered preferable depending on other considerations
 
-# 5 year band vs 10 year band, 5 year band consistently has lower AIC
+# 5 year band vs 20 year band, 5 year band consistently has lower AIC
 broom::glance(mod_0401_5)
 broom::glance(mod_0401_10)
 
@@ -996,47 +996,47 @@ broom::glance(mod_0404_10)
 broom::glance(mod_0411_5)
 broom::glance(mod_0411_10)
 
-# however evidence of overfitting of model, suggests 10 year ageband should be used
+# however evidence of overfitting of model, suggests 20 year ageband should be used
 
-# fit further models using 10 year agebands (with known age and gender)
-# split 10yr ageband dataset
+# fit further models using 20 year agebands (with known age and gender)
+# split 20yr ageband dataset
 # BNF section 0404 used as main example to reduce code repetition, other sections
 # used in MUMH publication gave similar overall results
 
-df10_time <- df10 %>%
+df20_time <- df20 %>%
   ungroup() %>%
   dplyr::mutate(time_period = case_when(YEAR_MONTH <= 202002 ~ "pre_covid",
                                         TRUE ~ "covid"))
 
-df10_item <- rsample::group_initial_split(df10_time, time_period)
-df10_train <- rsample::training(df10_item)
-df10_test <- rsample::testing(df10_item)
+df20_item <- rsample::group_initial_split(df20_time, time_period)
+df20_train <- rsample::training(df20_item)
+df20_test <- rsample::testing(df20_item)
 
 # most basic linear model with only dispensing days
 mod_0404.0 <- lm(ITEM_COUNT ~ DISPENSING_DAYS,
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 # add month position in year
 mod_0404.1 <- lm(ITEM_COUNT ~ DISPENSING_DAYS + as.factor(MONTH_NUM),
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 # add month position in full time series
 mod_0404.2 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM),
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 # add ageband
 mod_0404.3 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                 + as.factor(BAND_10YR),
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 + as.factor(BAND_20YR),
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 # add gender
 mod_0404.4 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
                  + PDS_GENDER,
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 # add age and gender separately
 mod_0404.5 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                 + PDS_GENDER + as.factor(BAND_10YR),
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 + PDS_GENDER + as.factor(BAND_20YR),
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 # add age and gender as an interaction
 mod_0404.6 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + as.factor(MONTH_NUM)
-                 + PDS_GENDER*as.factor(BAND_10YR),
-                 data = filter(df10_train, SECTION_CODE == "0404"))
+                 + PDS_GENDER*as.factor(BAND_20YR),
+                 data = filter(df20_train, SECTION_CODE == "0404"))
 
 #change plot window to two by two
 par(mfrow = c(2,2))
@@ -1074,28 +1074,28 @@ summary(mod_0404.6)
 
 mod_0401 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
                + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
-               + PDS_GENDER*as.factor(BAND_10YR),
-               data = filter(df10_train, SECTION_CODE == "0401"))
+               + PDS_GENDER*as.factor(BAND_20YR),
+               data = filter(df20_train, SECTION_CODE == "0401"))
 
 mod_0402 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
                + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
-               + PDS_GENDER*as.factor(BAND_10YR),
-               data = filter(df10_train, SECTION_CODE == "0402"))
+               + PDS_GENDER*as.factor(BAND_20YR),
+               data = filter(df20_train, SECTION_CODE == "0402"))
 
 mod_0403 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
                + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
-               + PDS_GENDER*as.factor(BAND_10YR),
-               data = filter(df10_train, SECTION_CODE == "0403"))
+               + PDS_GENDER*as.factor(BAND_20YR),
+               data = filter(df20_train, SECTION_CODE == "0403"))
 
 mod_0404 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
                + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
-               + PDS_GENDER*as.factor(BAND_10YR),
-               data = filter(df10_train, SECTION_CODE == "0404"))
+               + PDS_GENDER*as.factor(BAND_20YR),
+               data = filter(df20_train, SECTION_CODE == "0404"))
 
 mod_0411 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
                + m_04 + m_05 + m_06 + m_07 + m_08 + m_09 + m_10 + m_11 + m_12
-               + PDS_GENDER*as.factor(BAND_10YR),
-               data = filter(df10_train, SECTION_CODE == "0411"))
+               + PDS_GENDER*as.factor(BAND_20YR),
+               data = filter(df20_train, SECTION_CODE == "0411"))
 
 ## Model predictions
 
@@ -1103,7 +1103,7 @@ mod_0411 <- lm(ITEM_COUNT ~ MONTH_INDEX + DISPENSING_DAYS + m_02 + m_03
 # based on pre-covid trends
 
 # select dataset based on one used in final model selection and assign as 'df'
-df <- df10
+df <- df20
 
 # add functions for use in making predictions and prediction intervals
 # calculate numbers manually rather than use predict() since predictions

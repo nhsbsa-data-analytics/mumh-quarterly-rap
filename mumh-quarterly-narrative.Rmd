@@ -726,13 +726,13 @@ The number of expected prescription items for the below sections during this per
 * the trend in prescription items for each section between April 2015 and February 2020
 * the number of dispensing days that occur in each month
 * the typical differences between each month of the year observed between April 2015 and February 2020
-* the typical differences between each combination of 10 year age band group and gender
+* the typical differences between each combination of 20 year age band group and gender
 
 A linear regression model has been used to estimate the number of items prescribed, to stay relatively simple and consistent with the model used in previous releases. The model estimates the expected number of items prescribed based on pre-pandemic trends, for each combination of age band and gender. These estimates have then been added together to get an estimate of the total items expected per month, with a 95% and 99% prediction interval calculated.
 
 `r mumhquarterly::infoBox_border("Prediction interval (PI)", text = "A range calculated based on the uncertainty around the fit of the model. A 95% PI means that if a new observation is taken from the population the model is based on, it is likely to fall within the interval of predicted values 95% of the time. A 99% PI means the new observation is likely to fall within the interval of predicted values 99% of the time.", width = "100%")`
 
-The data used in this model has been split into groups by patients' 10 year age band and gender. As age band and gender were included in the model, the model was only fitted to data where age band and gender were both known. This means the charts of predictions made using the model are not based on the same full data used in the rest of this publication. These charts cannot be directly compared to each other or to the quarterly and monthly charts of items prescribed. More information on the methodology behind the model can be found in the [background and methodology document](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/MUMH_Background_Info_Methodology_v007.html).
+The data used in this model has been split into groups by patients' 20 year age band and gender. As age band and gender were included in the model, the model was only fitted to data where age band and gender were both known. This means the charts of predictions made using the model are not based on the same full data used in the rest of this publication. These charts cannot be directly compared to each other or to the quarterly and monthly charts of items prescribed. More information on the methodology behind the model can be found in the [background and methodology document](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/mumh/MUMH_Background_Info_Methodology_v007.html).
 
 
 ### 3.1. Antidepressant Prescribing {.toc-ignore}
@@ -915,7 +915,7 @@ The number of items for each BNF section in the 34-month period March 2020 to `r
 * the trends between April 2015 and February 2020
 * the number of dispensing days that occur in each month
 * the typical differences between each month of the year observed between April 2015 and February 2020
-* the typical differences between each combination of 10 year age band group and gender
+* the typical differences between each combination of 20 year age band group and gender
 
 This model states expected figures if trends had continued as before but doesn't confirm causation of any differences. Factors other than COVID-19 may have influenced prescribing, such as:
 
