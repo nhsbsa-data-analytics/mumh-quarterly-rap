@@ -145,19 +145,26 @@ Where a practice or other prescribing organisation has closed, the latest postco
 
 Where a prescribing organisation’s postcode has not been able to be matched to NSPL or the prescriber has not been identified, the records are reported as ‘unknown’ IMD decile. 
 
-
-
 ### 2.2 Changes to BNF classifications {.toc-ignore}
 
 These statistics use the BNF therapeutic classifications defined in the British National Formulary (BNF) using the classification system prior to BNF edition 70. Every January, the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing classification between years of MUMH data. The NHSBSA publishes the latest BNF information each year via its information systems. This is currently done via the [Information Services Portal (ISP)](https://www.nhsbsa.nhs.uk/access-our-data-products/information-services-portal-isp) but may in the near future be transitioned to the [NHSBSA Open Data Portal (ODP)](https://opendata.nhsbsa.net/).
 
 ### 2.3 Item trends during COVID-19 {.toc-ignore}
 
-The number of items for each BNF section in the 28 month period March 2020 to June 2022 were compared to the number of items expected to be prescribed based on trends from the ‘pre-COVID-19’ period. The monthly data for April 2015 to February 2020 was used to create a linear regression forecast for March 2020 to December 2021, with the actual totals compared. By using a linear regression, this predicts a future value based on a line of best fit of previous values. This linear regression extrapolated figures according to:
+The number of items for each BNF section in the 34 month period March 2020 to December 2022 were compared to the number of items expected to be prescribed based on trends from the ‘pre-COVID-19’ period. The monthly data for April 2015 to February 2020 was used to create a linear regression forecast for March 2020 to December 2022, with the actual totals compared. By using a linear regression, this predicts a future value based on a line of best fit of previous values. This linear regression extrapolated figures according to:
 
 *	the trends between April 2015 and February 2020
 *	the number of dispensing days that occur in each month
 *	the typical differences between each month of the year observed between April 2015 and February 2020
+* the typical differences between each combination of 20 year age band group and gender
+
+Age band and gender were added into the model as an interaction term, to include the relationship between age and gender on the number of items prescribed. This means the model estimates the number of items prescribed for every possible combination of age band and gender. This gave an improved model compared to adding age band and gender separately.
+
+Multiple models were fitted with different combinations of independent variables in the data, to see which were of interest for use in making predictions. These models were compared using the Akaike Information Criterion (AIC) to choose a final model. The AIC of a model is a value based on balancing how well the model fits the data against the complexity of the model. A lower AIC value indicates a more suitable model. 
+
+The final model was also tested using smaller 5 year age bands. This increased the number of age band levels used, and therefore the number of possible combinations with gender. Although the model using 5 year age bands had a lower AIC, this model was not selected because of evidence of overfitting. Overfitting occurs when adding many variables into a model improves the fit of the model on its training data, but makes the model less generalisable to new data. Twenty year age bands were used instead to reduce both the overall complexity of the model and the risk of overfitting. The model was kept relatively simplistic overall, to stay consistent with the model used in previous releases across the financial year.
+
+The model estimates the expected number of items prescribed per month based on pre-covid trends, for every combination of age band and gender. These estimates were added together to get an estimate of the total items expected. Prediction intervals at the 95% and 99% level were created. Prediction intervals were calculated based on the total items expected, and not on the individual predictions by age band and gender. They were also calculated to take into account that each predicted value was an aggregate. The total expected items were then compared to the actual items prescribed in each month.
 
 This model states expected figures if trends had continued as before but doesn't confirm causation of any differences. Factors other than COVID-19 may have influenced prescribing, such as:
 
@@ -166,12 +173,19 @@ This model states expected figures if trends had continued as before but doesn't
 *	any (and all) policy initiatives and guidance
 *	other local priorities and resources
 
-
 ## 3. Changes to this publication
 
 ### 3.1. Age band and sex breakdown {.toc-ignore}
 
-From 2021/2022 we have amended the annual publication  to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries.
+From 2021/2022 we have amended the annual publication  to show patients broken down by age band and gender, previous publications included a break down by age band and a break down by sex but not combined a breakdown. Patients broken down by age band alone remain in the statistical tables but not the statistical summaries. Age band and gender breakdowns have been used in the model for item trends during COVID-19 in the England October to December 2022 quarterly publication onwards. This data is not otherwise included in the statistical summaries or statistical tables for the quarterly publications.
+
+### 3.2. Item trends during COVID-19  {.toc-ignore}
+
+The linear regression model used to predict trends was updated to include age and gender as discussed in 2.3. Previously the linear regression model was based only on:
+
+*	the trends between April 2015 and February 2020
+*	the number of dispensing days that occur in each month
+*	the typical differences between each month of the year observed between April 2015 and February 2020
 
 <!-- ### 3.3. Planned changes to this publication {.toc-ignore} -->
 
