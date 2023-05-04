@@ -52,6 +52,8 @@ knitr::opts_chunk$set(echo = FALSE,
 
 Published 9 March 2023
 
+Last reviewed and updated 3 May 2023
+
 `r mumhquarterly::infoBox_border(header = "Changes to these statistics", text = paste0("For this release, we have made changes to the methodology of the model used to explore the impacts of the Coronavirus (COVID-19) pandemic on prescribing trends. We are interested in any feedback about the publication or these changes, which you can send by using our ", htmltools::HTML("<a href='https://online1.snapsurveys.com/Official_Statistics_Feedback'>Official Statistics feedback survey</a>"),"."), width = "100%")`
 
 ## Key findings
@@ -899,6 +901,8 @@ This publication is part of a series by the NHSBSA. This quarterly summary is in
 For this release we have changed the methodology of the model used to explore the impacts of the Coronavirus (COVID-19) pandemic on prescribing trends. The previous linear regression model included pre-pandemic trends, the number of dispensing days in each month, and the typical differences between months of the year. The new model remains a linear regression model to stay consistent with the approach used in previous releases for this financial year, but now includes age and gender as independent variables. Identified patients' age band and gender have been added into the model as an interaction term, to reflect the relationship between age and gender on the number of items prescribed. All variables used in the previous model remained statistically significant during variable selection, so were kept in the new model.
 
 The model has been fitted on monthly data from April 2015 to February 2020 to incorporate pre-pandemic prescribing trends. It was then applied to data from March 2020 to December 2022, to extrapolate expected values for this time period. Comparisons using statistical tests of model fit show the new model is more suitable for exploring prescribing trends in the data than the previous model. For example, prescribing of CNS stimulants and drugs for ADHD is higher in males aged 00-19 than females aged 80+. The new model takes into account these differences in prescribing trends between age band and gender groups.
+
+The text of the summary narrative and background documentation has been updated in May 2023 to correctly refer to the agebands used as 20 year agebands instead of 10 year agebands. The underlying data, charts, and interpretation of analysis within this publication have not changed.
 
 ### 5.2. Patient counts {.toc-ignore}
 
