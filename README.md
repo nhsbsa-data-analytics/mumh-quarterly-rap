@@ -1,4 +1,6 @@
 # MUMH quarterly RAP
+This repository is now archived and is read-only. You can find an updated Medicines Used in Mental Health Reproducible Analytical Pipeline on the [NHSBSA Data Analytics GitHub](https://github.com/nhsbsa-data-analytics/medicines-used-in-mental-health).
+
 ## What is the MUMH RAP?
 This repository is for the Reproducible Analytical Pipeline (RAP) used to produce the outputs for the [Medicines Used in Mental Health quarterly publication](https://www.nhsbsa.nhs.uk/statistical-collections/medicines-used-mental-health-england). The annual publication is produced using a separate RAP. 
 The RAP is designed using guidance from the [Reproducible Analytical Pipelines](https://gss.civilservice.gov.uk/reproducible-analytical-pipelines/) working practices and principles from the [AQUA Book guidelines](https://www.gov.uk/government/publications/the-aqua-book-guidance-on-producing-quality-analysis-for-government).
